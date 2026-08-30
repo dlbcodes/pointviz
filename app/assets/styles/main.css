@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@import "@dlbcodes/ui/tokens.css";
+@source "../../../node_modules/@dlbcodes/ui/dist";
+@import "./fonts.css" layer(utilities);
+@source "../error.vue";
+
+@theme {
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Instrument Serif", system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+
+    --breakpoint-720: 720px;
+    --breakpoint-840: 840px;
+    --breakpoint-1280: 1280px;
+}
+
+@layer base {
+    html {
+        @apply antialiased;
+    }
+
+    body {
+        @apply min-h-dvh bg-bg-base font-sans text-text-primary antialiased;
+    }
+}
+
+:root {
+    --color-bg-base: oklch(1 0 0);
+    --color-bg-surface: oklch(0.976 0 0);
+    --color-bg-raised: oklch(1 0 0);
+    --color-bg-elevated: oklch(0.9851 0 0);
+    --color-bg-subtle: oklch(0.95 0 0);
+    --color-bg-inverse: oklch(0.2046 0 0);
+
+    --color-text-primary: oklch(0.1448 0 0);
+    --color-text-secondary: oklch(0.5555 0 0);
+    --color-text-tertiary: oklch(0.7155 0 0);
+    --color-text-inverse: oklch(0.9851 0 0);
+
+    --color-border-subtle: oklch(0.9219 0 0);
+    --color-border-default: oklch(0.9219 0 0);
+    --color-border-strong: oklch(0.7155 0 0);
+
+    --color-brand-100: oklch(0.1448 0 0);
+    --color-brand-200: oklch(0.2046 0 0);
+
+    --color-accent-pro-200: oklch(0.66 0.22 37.3);
+    --color-accent-pro-200: oklch(0.66 0.22 37.3);
+
+    --color-chart-1: oklch(0.72 0.14 182); /* teal */
+    --color-chart-2: oklch(0.72 0.14 55); /* amber */
+    --color-chart-3: oklch(0.72 0.14 275); /* indigo */
+    --color-chart-4: oklch(0.72 0.14 350); /* pink */
+    --color-chart-5: oklch(0.72 0.14 130); /* green */
+}
