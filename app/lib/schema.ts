@@ -20,11 +20,18 @@ const ValueLabels = z.union([
 	}),
 ]);
 
+const TextStyle = z.strictObject({
+	size: z.enum(["sm", "md", "lg", "xl"]).optional(),
+	color: HEX.optional(),
+});
+
 const StyleSchema = z.strictObject({
 	theme: z.enum(THEME_NAMES as [string, ...string[]]).optional(),     // whole house style
 	palette: z.enum(PALETTE_NAMES as [string, ...string[]]).optional(), // named series-color set
 	colors: z.array(HEX).optional(),                                    // explicit per-series hex
 	gridColor: HEX.optional(),                                          // grid-line override
+	title: TextStyle.optional(),      // title text size/color
+	subtitle: TextStyle.optional(),   // subtitle text size/color
 	backgroundColor: HEX.optional(),
 	showValues: ValueLabels.optional(),                                // value labels on marks
 	legend: z

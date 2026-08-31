@@ -20,8 +20,8 @@ const suggestions = [
     "Use a colorblind-safe palette",
     "Make it horizontal and sorted descending",
     "Show values inside the bars",
-    "Apply the DataPoint theme",
-    "Put the legend on top",
+    // "Apply the DataPoint theme",
+    // "Put the legend on top",
 ];
 
 const focusInput = (e: MouseEvent): void => {
@@ -59,7 +59,7 @@ const onKeydown = (e: KeyboardEvent): void => {
                     :key="s"
                     type="button"
                     :disabled="pending"
-                    class="rounded-full bg-bg-base border border-border-default px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary disabled:opacity-50"
+                    class="rounded-lg bg-bg-base border border-border-default px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary disabled:opacity-50"
                     @click="useSuggestion(s)"
                 >
                     {{ s }}

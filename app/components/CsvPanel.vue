@@ -1,7 +1,15 @@
 <!-- app/components/CsvPanel.vue -->
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Button } from "@dlbcodes/ui";
+import {
+    Button,
+    Field,
+    FieldLabel,
+    FieldContent,
+    FieldDescription,
+    FieldError,
+    Textarea,
+} from "@dlbcodes/ui";
 import { csvToSpec } from "~/composables/useCsvImport";
 
 const { loadSpec } = useChartSpec();
@@ -18,29 +26,26 @@ function importCsv() {
 
 <template>
     <div class="space-y-3">
-        <h3
-            class="text-xs font-mono font-medium tracking-wider text-text-tertiary"
-        >
-            Paste CSV
-        </h3>
-        <p class="text-xs font-mono text-text-tertiary leading-relaxed">
-            First column = categories, other columns = series. Header row
-            required.
-        </p>
+        <Field :invalid="!!parsed.error">
+            <FieldLabel>Paste CSV</FieldLabel>
+            <FieldContent>
+                <Textarea
+                    v-model="raw"
+                    :rows="8"
+                    class="font-mono text-xs"
+                    placeholder="country,domestic,external&#10;Japan,178.1,26.1&#10;Italy,90.0,48.9"
+                />
+                <FieldDescription>
+                    First column = categories, other columns = series. Header
+                    row required.
+                </FieldDescription>
+                <FieldError v-if="parsed.error">{{ parsed.error }}</FieldError>
+            </FieldContent>
+        </Field>
 
-        <textarea
-            v-model="raw"
-            class="w-full h-40 rounded-lg border border-border-default p-3 text-xs font-mono text-text-primary focus:outline-none focus:ring-2 focus:ring-chart-teal/20 focus:border-chart-teal resize-none"
-            placeholder="country,domestic,external&#10;Japan,178.1,26.1&#10;Italy,90.0,48.9"
-        ></textarea>
-
-        <!-- Live parse feedback -->
-        <p v-if="parsed.error" class="text-xs font-mono text-danger-500">
-            {{ parsed.error }}
-        </p>
-
+        <!-- Parse preview — the safety net before importing -->
         <div
-            v-else-if="parsed.preview"
+            v-if="parsed.preview"
             class="rounded-lg border border-border-default p-3 text-xs font-mono text-text-secondary space-y-1"
         >
             <div>

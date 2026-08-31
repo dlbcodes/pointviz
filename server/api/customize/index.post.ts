@@ -21,6 +21,14 @@ const PatchSchema = z.object({
 			colors: z.array(HEX).optional(),
 			gridColor: HEX.optional(),
 			backgroundColor: HEX.optional(),
+			title: z.object({
+				size: z.enum(["sm", "md", "lg", "xl"]).optional(),
+				color: HEX.optional(),
+			}).optional(),
+			subtitle: z.object({
+				size: z.enum(["sm", "md", "lg", "xl"]).optional(),
+				color: HEX.optional(),
+			}).optional(),
 			showValues: z.union([
 				z.boolean(),
 				z.object({
@@ -53,6 +61,7 @@ Examples:
 - "show the values and put the legend on top" → { "style": { "showValues": true, "legend": { "position": "top" } } }
 - "lighten the grid to #eeeeee" → { "style": { "gridColor": "#eeeeee" } }
 - "set the background to light gray" → { "style": { "backgroundColor": "#dddddd" } }
+- "make the title bigger" → { "style": { "title": { "size": "lg" } } }
 
 Fields you may patch:
 - type (bar/line/area), orientation (vertical/horizontal), stack, title, subtitle, source
@@ -64,6 +73,7 @@ Fields you may patch:
 - style.showValues: boolean
 - style.legend: { visible, position }
 - style.xAxis / style.yAxis: { visible, label }
+- style.title / style.subtitle: { size (sm/md/lg/xl), color (hex) } — these control the APPEARANCE of the title/subtitle. The top-level "title"/"subtitle" fields are the TEXT itself. "make the title bigger" → style.title.size; "rename the title to X" → title.
 - style.showValues: true/false, OR { show, position (inside/top/right/left/bottom), color (hex) } for label placement and color
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.

@@ -27,14 +27,14 @@ const option = computed(() =>
             class="flex-1 flex flex-col items-center justify-center gap-2 overflow-auto"
         >
             <div
-                class="w-full max-w-6xl aspect-video bg-bg-base border border-border-default rounded-xl"
+                class="w-full max-w-6xl aspect-video bg-bg-base border border-border-default rounded-xl overflow-hidden"
             >
                 <ClientOnly>
                     <VChart
                         v-if="isValid && option"
                         :option="option"
                         autoresize
-                        class="h-full w-full p-4"
+                        class="h-full w-full"
                     />
                     <div
                         v-else

@@ -2,6 +2,10 @@
 import type { ChartSpec } from "~/lib/schema";
 import { THEMES, NAMED_PALETTES, type ThemeName, type ChartTheme } from "~/lib/theme";
 
+// Semantic type scale the compiler owns — the agent picks sm/md/lg/xl, we map to px.
+const TITLE_SIZES = { sm: 16, md: 18, lg: 22, xl: 26 } as const;
+const SUBTITLE_SIZES = { sm: 10, md: 12, lg: 14, xl: 16 } as const;
+
 function resolveStyle(spec: ChartSpec, tokenTheme: ChartTheme) {
 	const name = (spec.style?.theme ?? "default") as ThemeName;
 	const base = THEMES[name];
@@ -114,8 +118,14 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
 				text: title,
 				subtext: subtitle,
 				left: 0,
-				textStyle: { fontSize: 14, color: s.titleColor },
-				subtextStyle: { color: s.subtitleColor },
+				textStyle: {
+					fontSize: TITLE_SIZES[style?.title?.size ?? "md"],
+					color: style?.title?.color ?? s.titleColor,
+				},
+				subtextStyle: {
+					fontSize: SUBTITLE_SIZES[style?.subtitle?.size ?? "md"],
+					color: style?.subtitle?.color ?? s.subtitleColor,
+				},
 			}
 			: undefined,
 		tooltip: { trigger: "axis", axisPointer: { type: type === "bar" ? "shadow" : "line" } },

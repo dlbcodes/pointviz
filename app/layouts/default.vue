@@ -28,14 +28,14 @@ const { title, isValid } = useChartSpec();
             </div>
 
             <!-- Dynamic chart title (from shared state) -->
-            <div class="flex flex-1 justify-center px-4">
+            <!-- <div class="flex flex-1 justify-center px-4">
                 <h2
                     class="max-w-md truncate font-mono text-sm font-medium"
                     :class="title ? 'text-text-primary' : 'text-text-tertiary'"
                 >
                     {{ title || "Untitled chart" }}
                 </h2>
-            </div>
+            </div> -->
 
             <!-- Actions -->
             <div class="flex items-center gap-2">
