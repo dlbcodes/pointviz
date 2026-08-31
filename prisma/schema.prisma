@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?
+
+  plan             Plan     @default(FREE)
+  customizeCount   Int      @default(0)
+  customizeResetAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  charts Chart[]
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+model Chart {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  title     String?
+  spec      Json
+  isPublic  Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
