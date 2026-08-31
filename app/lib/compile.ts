@@ -33,17 +33,17 @@ function resolveStyle(spec: ChartSpec, tokenTheme: ChartTheme) {
 	};
 }
 
-function legendConfig(style: ChartSpec["style"], color: string) {
+function legendConfig(style: ChartSpec["style"], color: string, topOffset: number) {
 	const legend = style?.legend;
 	if (legend?.visible === false) return { show: false };
 	const pos = legend?.position ?? "bottom";
 	const placement =
 		pos === "top"
-			? { top: 0, orient: "horizontal" as const }
+			? { top: topOffset, orient: "horizontal" as const }
 			: pos === "left"
-				? { left: 0, orient: "vertical" as const }
+				? { left: 0, top: "middle" as const, orient: "vertical" as const }
 				: pos === "right"
-					? { right: 0, orient: "vertical" as const }
+					? { right: 0, top: "middle" as const, orient: "vertical" as const }
 					: { bottom: 0, orient: "horizontal" as const };
 	return { show: true, textStyle: { color }, ...placement };
 }
@@ -61,7 +61,8 @@ function resolveLabel(
 		show: cfg.show !== false,
 		position: cfg.position ?? (horizontal ? "right" : "top"),
 		color: cfg.color ?? defaultColor,
-		fontSize: 10,
+		fontWeight: 500,
+		fontSize: 11,
 	};
 }
 
@@ -69,25 +70,41 @@ function applyAxisStyle(
 	axis: Record<string, unknown>,
 	labelColor: string,
 	gridColor: string,
-	style?: { visible: boolean; label?: string },
+	style?: { visible: boolean; label?: string; position?: "left" | "right" },
 ) {
 	const isValue = axis.type === "value";
 	return {
 		...axis,
 		show: style?.visible !== false,
-		axisLabel: { color: labelColor },
-		axisLine: { lineStyle: { color: gridColor } },
+		axisTick: { show: false }, // no tick marks — cleaner
+		axisLine: { show: false, lineStyle: { color: gridColor } }, // no axis frame on either axis
+		axisLabel: {
+			color: labelColor,
+			fontWeight: 500, // medium — the "typeset" feel
+			fontSize: 11,
+		},
+		// left/right is meaningful for the value/category axis on the y side;
+		// on the x-axis ECharts expects top/bottom, so this is a harmless no-op there.
+		...(style?.position ? { position: style.position } : {}),
 		...(isValue
-			? { splitLine: { lineStyle: { color: gridColor, type: "dashed" as const } } }
-			: {}),
+			? {
+				splitLine: {
+					lineStyle: { color: gridColor, type: "dashed" as const, opacity: 0.6 },
+				},
+			}
+			: { splitLine: { show: false } }),
 		...(style?.label
-			? { name: style.label, nameGap: 28, nameTextStyle: { color: labelColor } }
+			? {
+				name: style.label,
+				nameGap: 28,
+				nameTextStyle: { color: labelColor, fontWeight: 500 },
+			}
 			: {}),
 	};
 }
 
 export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
-	const { type, orientation, stack, categories, series, title, subtitle, style } = spec;
+	const { type, orientation, stack, categories, series, title, subtitle, style, goals } = spec;
 	const s = resolveStyle(spec, tokenTheme);
 	const horizontal = orientation === "horizontal";
 
@@ -103,24 +120,64 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
 		s.axisLabelColor, s.gridColor, style?.yAxis,
 	);
 
-	const legend = legendConfig(style, s.subtitleColor);
+	// --- Vertical stack math for the top region: title block → legend → gap → plot ---
+	const hasTitle = !!title;
+	// title + subtitle block height (fixed estimate at default sizes)
+	const titleBlockHeight = hasTitle ? 64 : 0;
+
 	const legendPos = style?.legend?.position ?? "bottom";
-	const legendVisible = legend.show !== false;
+	const legendVisible = style?.legend?.visible !== false;
+	const legendOnTop = legendVisible && legendPos === "top";
+	// legend-on-top sits BELOW the title block, not over it
+	const legendTop = titleBlockHeight + (hasTitle ? 8 : 0);
+
+	const legend = legendConfig(style, s.subtitleColor, legendTop);
 
 	// Normalize value-label config once, applied to every series below.
 	const label = resolveLabel(style?.showValues, horizontal, s.axisLabelColor);
 
+	// Goal/target lines — horizontal reference lines at a value on the value axis.
+	// Attached to the first series only, so they render once across the plot.
+	const markLine =
+		goals?.length
+			? {
+				silent: true,
+				symbol: "none" as const,
+				data: goals.map((g) => ({
+					// vertical chart → horizontal line at yAxis value;
+					// horizontal chart → vertical line at xAxis value.
+					...(horizontal ? { xAxis: g.value } : { yAxis: g.value }),
+					lineStyle: {
+						color: g.color ?? s.subtitleColor,
+						type: "dashed" as const,
+						width: 1.5,
+					},
+					label: {
+						show: !!g.label,
+						formatter: g.label ?? "",
+						position: "end" as const,
+						color: g.color ?? s.subtitleColor,
+						fontSize: 11,
+						fontWeight: 500,
+					},
+				})),
+			}
+			: undefined;
+
 	return {
 		backgroundColor: s.background,
 		color: s.palette,
-		title: title
+		title: hasTitle
 			? {
 				text: title,
 				subtext: subtitle,
 				left: 0,
+				top: 4,
+				itemGap: 6, // space between title and subtitle
 				textStyle: {
 					fontSize: TITLE_SIZES[style?.title?.size ?? "md"],
 					color: style?.title?.color ?? s.titleColor,
+					fontWeight: 600,
 				},
 				subtextStyle: {
 					fontSize: SUBTITLE_SIZES[style?.subtitle?.size ?? "md"],
@@ -128,23 +185,42 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
 				},
 			}
 			: undefined,
-		tooltip: { trigger: "axis", axisPointer: { type: type === "bar" ? "shadow" : "line" } },
+		tooltip: {
+			trigger: "axis",
+			axisPointer: { type: "line", lineStyle: { color: s.gridColor, type: "dashed" } },
+			backgroundColor: "#333333",
+			borderWidth: 0,
+			padding: [8, 12],
+			textStyle: { color: "#ffffff", fontSize: 14 },
+			extraCssText: "border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.16);",
+		},
 		legend,
 		grid: {
-			left: legendVisible && legendPos === "left" ? 96 : 8,
-			right: legendVisible && legendPos === "right" ? 96 : 24,
-			top: (title ? 64 : 24) + (legendVisible && legendPos === "top" ? 24 : 0),
-			bottom: 24 + (legendVisible && legendPos === "bottom" ? 24 : 0),
+			left: legendVisible && legendPos === "left" ? 120 : 32,
+			right: legendVisible && legendPos === "right" ? 120 : 32,
+			// top = title block + legend band (if on top) + breathing gap before plot
+			top: titleBlockHeight + (legendOnTop ? 32 : 0) + 24,
+			bottom: 32 + (legendVisible && legendPos === "bottom" ? 28 : 0),
 			containLabel: true,
 		},
 		xAxis: physicalX,
 		yAxis: physicalY,
-		series: series.map((ser) => ({
+		series: series.map((ser, i) => ({
 			name: ser.name,
 			type: type === "area" ? "line" : type,
 			stack: stack ? "total" : undefined,
-			areaStyle: type === "area" ? {} : undefined,
+			areaStyle: type === "area" ? { opacity: 0.15 } : undefined,
+			barCategoryGap: "40%",
+			// Disable the fade-others-on-hover behavior that vanishes bars on transparent bg
+			emphasis: { disabled: true },
+			itemStyle:
+				type === "bar"
+					? { borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0] }
+					: undefined,
+			smooth: type !== "bar" ? 0.35 : undefined,
+			lineStyle: type !== "bar" ? { width: 2.5 } : undefined,
 			label,
+			...(i === 0 && markLine ? { markLine } : {}), // goal lines on first series only
 			data: ser.values,
 		})),
 	};

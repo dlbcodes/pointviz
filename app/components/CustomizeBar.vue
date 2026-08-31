@@ -20,8 +20,8 @@ const suggestions = [
     "Use a colorblind-safe palette",
     "Make it horizontal and sorted descending",
     "Show values inside the bars",
-    // "Apply the DataPoint theme",
-    // "Put the legend on top",
+    "Apply the DataPoint theme",
+    "Put the legend on top",
 ];
 
 const focusInput = (e: MouseEvent): void => {
@@ -53,13 +53,15 @@ const onKeydown = (e: KeyboardEvent): void => {
 <template>
     <div v-if="canCustomize" class="mx-auto w-full max-w-3xl space-y-1.5">
         <Panel class="overflow-visible">
-            <PanelHeader class="flex flex-wrap gap-1.5 pb-2">
+            <PanelHeader
+                class="flex flex-nowrap gap-1.5 overflow-x-auto pb-2 no-scrollbar"
+            >
                 <button
                     v-for="s in suggestions"
                     :key="s"
                     type="button"
                     :disabled="pending"
-                    class="rounded-lg bg-bg-base border border-border-default px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary disabled:opacity-50"
+                    class="shrink-0 rounded-lg bg-bg-base border border-border-default px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary disabled:opacity-50"
                     @click="useSuggestion(s)"
                 >
                     {{ s }}
@@ -67,7 +69,7 @@ const onKeydown = (e: KeyboardEvent): void => {
             </PanelHeader>
 
             <PanelContent
-                class="flex cursor-text flex-col gap-2 p-3 border border-border-default"
+                class="flex cursor-text flex-col gap-2 p-3 border border-border-subtle"
                 @click="focusInput"
             >
                 <Textarea

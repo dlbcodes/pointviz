@@ -23,4 +23,27 @@ export default defineNuxtConfig({
       ],
     },
   },
+  app: {
+    head: {
+      titleTemplate: "%s · PointViz",
+      title: "PointViz",
+      meta: [
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        {
+          name: "description",
+          content: "Turn any Figma design into a template your AI rebuilds directly in your stack. Paste a link, connect to Claude, remix.",
+        },
+        { property: "og:site_name", content: "PointViz" },
+        { property: "og:type", content: "website" },
+        { property: "og:image", content: "/og-image.png" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: "/og-image.png" },
+      ],
+      link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "icon", href: "/favicon.ico" },
+      ],
+    },
+  },
 })

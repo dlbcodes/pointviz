@@ -8,6 +8,7 @@ import {
 	LegendComponent,
 	TitleComponent,
 	DatasetComponent,
+	MarkLineComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
 
@@ -20,6 +21,7 @@ use([
 	LegendComponent,
 	TitleComponent,
 	DatasetComponent,
+	MarkLineComponent,
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {

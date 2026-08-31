@@ -70,7 +70,7 @@ const tabs = [
                     error ? "Invalid spec" : isValid ? "Data loaded" : "Ready"
                 }}</span
             >
-            <span>PointViz Engine v0.1 • @dlbcodes/ui</span>
+            <span>PointViz Engine v0.1 </span>
         </footer>
 
         <!-- Resize handle with grip affordance -->

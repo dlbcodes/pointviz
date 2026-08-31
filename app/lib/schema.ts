@@ -9,6 +9,7 @@ const HEX = z
 const AxisStyle = z.strictObject({
 	visible: z.boolean().default(true),
 	label: z.string().optional(),
+	position: z.enum(["left", "right"]).optional(), // which side the axis sits on
 });
 
 const ValueLabels = z.union([
@@ -24,6 +25,13 @@ const TextStyle = z.strictObject({
 	size: z.enum(["sm", "md", "lg", "xl"]).optional(),
 	color: HEX.optional(),
 });
+
+const GoalSchema = z.strictObject({
+	value: z.number(),
+	label: z.string().optional(),
+	color: HEX.optional(),
+});
+
 
 const StyleSchema = z.strictObject({
 	theme: z.enum(THEME_NAMES as [string, ...string[]]).optional(),     // whole house style
@@ -59,6 +67,7 @@ export const ChartShapeSchema = z.strictObject({
 	style: StyleSchema.optional(),
 	categories: z.array(z.string()).min(1),
 	series: z.array(SeriesSchema).min(1),
+	goals: z.array(GoalSchema).optional(),
 });
 
 export const ChartSpecSchema = ChartShapeSchema.check((ctx) => {

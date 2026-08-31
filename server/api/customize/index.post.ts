@@ -14,6 +14,11 @@ const PatchSchema = z.object({
 	title: z.string().optional(),
 	subtitle: z.string().optional(),
 	source: z.string().optional(),
+	goals: z.array(z.object({
+		value: z.number(),
+		label: z.string().optional(),
+		color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
+	})).optional(),
 	style: z
 		.object({
 			theme: z.enum(THEME_NAMES as [string, ...string[]]).optional(),
@@ -43,8 +48,16 @@ const PatchSchema = z.object({
 					position: z.enum(["top", "bottom", "left", "right"]).optional(),
 				})
 				.optional(),
-			xAxis: z.object({ visible: z.boolean().optional(), label: z.string().optional() }).optional(),
-			yAxis: z.object({ visible: z.boolean().optional(), label: z.string().optional() }).optional(),
+			xAxis: z.object({
+				visible: z.boolean().optional(),
+				label: z.string().optional(),
+				position: z.enum(["left", "right"]).optional(),
+			}).optional(),
+			yAxis: z.object({
+				visible: z.boolean().optional(),
+				label: z.string().optional(),
+				position: z.enum(["left", "right"]).optional(),
+			}).optional(),
 		})
 		.optional(),
 });
@@ -62,6 +75,9 @@ Examples:
 - "lighten the grid to #eeeeee" → { "style": { "gridColor": "#eeeeee" } }
 - "set the background to light gray" → { "style": { "backgroundColor": "#dddddd" } }
 - "make the title bigger" → { "style": { "title": { "size": "lg" } } }
+- "add a goal line at 50000 labeled Target" → { "goals": [{ "value": 50000, "label": "Target" }] }
+- "move the y-axis to the right" → { "style": { "yAxis": { "position": "right" } } }
+- "remove the goal line" → { "goals": [] }
 
 Fields you may patch:
 - type (bar/line/area), orientation (vertical/horizontal), stack, title, subtitle, source
@@ -75,6 +91,8 @@ Fields you may patch:
 - style.xAxis / style.yAxis: { visible, label }
 - style.title / style.subtitle: { size (sm/md/lg/xl), color (hex) } — these control the APPEARANCE of the title/subtitle. The top-level "title"/"subtitle" fields are the TEXT itself. "make the title bigger" → style.title.size; "rename the title to X" → title.
 - style.showValues: true/false, OR { show, position (inside/top/right/left/bottom), color (hex) } for label placement and color
+- goals: array of { value (number), label (optional), color (optional hex) } — horizontal target/reference lines at a value. Replaces existing goals.
+- style.yAxis.position / style.xAxis.position: "left" or "right" — which side the axis sits on.
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.
