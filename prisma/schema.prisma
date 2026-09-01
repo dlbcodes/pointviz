@@ -34,6 +34,7 @@ model Chart {
   title     String?
   spec      Json
   isPublic  Boolean  @default(false)
+  specVersion Int @default(1)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

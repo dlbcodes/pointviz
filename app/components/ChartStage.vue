@@ -5,6 +5,8 @@ import { compileToECharts } from "~/lib/compile";
 import { resolveTheme, type ChartTheme } from "~/lib/theme";
 import { THEMES, type ThemeName } from "~/lib/theme";
 
+const { undo, redo, canUndo, canRedo } = useChartSpec();
+
 const { spec, error, isEmpty, isValid } = useChartSpec();
 const { registerChart } = useChartExport();
 const chartRef = ref();
@@ -33,12 +35,53 @@ const chartBackground = computed(() => {
     const bg = THEMES[themeName].background;
     return bg === "transparent" ? undefined : bg;
 });
+
+onMounted(() => {
+    const handler = (e: KeyboardEvent) => {
+        // Don't hijack undo while typing in an input/textarea (let native undo work there)
+        const t = e.target as HTMLElement;
+        if (t.tagName === "TEXTAREA" || t.tagName === "INPUT") return;
+
+        if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+            e.preventDefault();
+            undo();
+        } else if (
+            (e.metaKey || e.ctrlKey) &&
+            (e.key === "y" || (e.key === "z" && e.shiftKey))
+        ) {
+            e.preventDefault();
+            redo();
+        }
+    };
+    window.addEventListener("keydown", handler);
+    onUnmounted(() => window.removeEventListener("keydown", handler));
+});
 </script>
 
 <template>
     <main
         class="flex flex-1 flex-col overflow-hidden bg-bg-surface/20 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)]"
     >
+        <div>
+            <Button
+                variant="ghost"
+                size="icon"
+                :disabled="!canUndo"
+                aria-label="Undo"
+                @click="undo"
+            >
+                <PhArrowCounterClockwise class="size-4" />
+            </Button>
+            <Button
+                variant="ghost"
+                size="icon"
+                :disabled="!canRedo"
+                aria-label="Redo"
+                @click="redo"
+            >
+                <PhArrowClockwise class="size-4" />
+            </Button>
+        </div>
         <!-- Chart region: grows, scrolls, chart sits toward the top -->
         <div
             class="flex-1 flex flex-col items-center justify-center gap-2 overflow-auto"

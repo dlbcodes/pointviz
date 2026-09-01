@@ -2,33 +2,26 @@
 import * as z from "zod";
 import { ChartSpecSchema, type ChartSpec } from "~/lib/schema";
 
-interface ParseResult {
-	spec: ChartSpec | null;
-	error: string | null;
-}
+const MAX_HISTORY = 50;
 
 export function useChartSpec() {
 	const rawInput = useState<string>("chart:raw", () => "");
 
-	const parsed = computed<ParseResult>(() => {
-		const text = rawInput.value.trim();
-		if (!text) return { spec: null, error: null };
+	// Undo/redo stacks — snapshots of rawInput. Shared across the app via useState.
+	const past = useState<string[]>("chart:past", () => []);
+	const future = useState<string[]>("chart:future", () => []);
 
-		// Stage 1: JSON syntax
+	const parsed = computed(() => {
+		const text = rawInput.value.trim();
+		if (!text) return { spec: null as ChartSpec | null, error: null as string | null };
 		let json: unknown;
 		try {
 			json = JSON.parse(text);
 		} catch (e) {
-			const msg = e instanceof Error ? e.message : "parse error";
-			return { spec: null, error: `Invalid JSON: ${msg}` };
+			return { spec: null, error: `Invalid JSON: ${e instanceof Error ? e.message : "parse error"}` };
 		}
-
-		// Stage 2: schema / semantic validity
 		const result = ChartSpecSchema.safeParse(json);
-		if (!result.success) {
-			return { spec: null, error: z.prettifyError(result.error) };
-		}
-
+		if (!result.success) return { spec: null, error: z.prettifyError(result.error) };
 		return { spec: result.data, error: null };
 	});
 
@@ -38,9 +31,43 @@ export function useChartSpec() {
 	const isValid = computed(() => spec.value !== null && error.value === null);
 	const title = computed(() => spec.value?.title ?? "");
 
+	const canUndo = computed(() => past.value.length > 0);
+	const canRedo = computed(() => future.value.length > 0);
+
+	// The core change primitive: push current state to history, then set the new value.
+	// Every source of change (customize, examples, CSV, import, share) calls loadSpec,
+	// so instrumenting it here makes undo cover all of them.
 	function loadSpec(json: string) {
+		if (json === rawInput.value) return; // no-op, don't pollute history
+		past.value.push(rawInput.value);
+		if (past.value.length > MAX_HISTORY) past.value.shift();
+		future.value = []; // a new change invalidates the redo branch
 		rawInput.value = json;
 	}
 
-	return { rawInput, spec, error, title, isEmpty, isValid, loadSpec };
+	function undo() {
+		if (!canUndo.value) return;
+		future.value.push(rawInput.value);
+		rawInput.value = past.value.pop()!;
+	}
+
+	function redo() {
+		if (!canRedo.value) return;
+		past.value.push(rawInput.value);
+		rawInput.value = future.value.pop()!;
+	}
+
+	return {
+		rawInput,
+		spec,
+		error,
+		title,
+		isEmpty,
+		isValid,
+		loadSpec,
+		undo,
+		redo,
+		canUndo,
+		canRedo,
+	};
 }

@@ -20,8 +20,18 @@ export type ChartModel = runtime.Types.Result.DefaultSelection<Prisma.$ChartPayl
 
 export type AggregateChart = {
   _count: ChartCountAggregateOutputType | null
+  _avg: ChartAvgAggregateOutputType | null
+  _sum: ChartSumAggregateOutputType | null
   _min: ChartMinAggregateOutputType | null
   _max: ChartMaxAggregateOutputType | null
+}
+
+export type ChartAvgAggregateOutputType = {
+  specVersion: number | null
+}
+
+export type ChartSumAggregateOutputType = {
+  specVersion: number | null
 }
 
 export type ChartMinAggregateOutputType = {
@@ -29,6 +39,7 @@ export type ChartMinAggregateOutputType = {
   slug: string | null
   title: string | null
   isPublic: boolean | null
+  specVersion: number | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -39,6 +50,7 @@ export type ChartMaxAggregateOutputType = {
   slug: string | null
   title: string | null
   isPublic: boolean | null
+  specVersion: number | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,6 +62,7 @@ export type ChartCountAggregateOutputType = {
   title: number
   spec: number
   isPublic: number
+  specVersion: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -57,11 +70,20 @@ export type ChartCountAggregateOutputType = {
 }
 
 
+export type ChartAvgAggregateInputType = {
+  specVersion?: true
+}
+
+export type ChartSumAggregateInputType = {
+  specVersion?: true
+}
+
 export type ChartMinAggregateInputType = {
   id?: true
   slug?: true
   title?: true
   isPublic?: true
+  specVersion?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -72,6 +94,7 @@ export type ChartMaxAggregateInputType = {
   slug?: true
   title?: true
   isPublic?: true
+  specVersion?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -83,6 +106,7 @@ export type ChartCountAggregateInputType = {
   title?: true
   spec?: true
   isPublic?: true
+  specVersion?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -127,6 +151,18 @@ export type ChartAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ChartAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ChartSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ChartMinAggregateInputType
@@ -157,6 +193,8 @@ export type ChartGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: ChartCountAggregateInputType | true
+  _avg?: ChartAvgAggregateInputType
+  _sum?: ChartSumAggregateInputType
   _min?: ChartMinAggregateInputType
   _max?: ChartMaxAggregateInputType
 }
@@ -167,10 +205,13 @@ export type ChartGroupByOutputType = {
   title: string | null
   spec: runtime.JsonValue
   isPublic: boolean
+  specVersion: number
   userId: string
   createdAt: Date
   updatedAt: Date
   _count: ChartCountAggregateOutputType | null
+  _avg: ChartAvgAggregateOutputType | null
+  _sum: ChartSumAggregateOutputType | null
   _min: ChartMinAggregateOutputType | null
   _max: ChartMaxAggregateOutputType | null
 }
@@ -199,6 +240,7 @@ export type ChartWhereInput = {
   title?: Prisma.StringNullableFilter<"Chart"> | string | null
   spec?: Prisma.JsonFilter<"Chart">
   isPublic?: Prisma.BoolFilter<"Chart"> | boolean
+  specVersion?: Prisma.IntFilter<"Chart"> | number
   userId?: Prisma.StringFilter<"Chart"> | string
   createdAt?: Prisma.DateTimeFilter<"Chart"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Chart"> | Date | string
@@ -211,6 +253,7 @@ export type ChartOrderByWithRelationInput = {
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   spec?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  specVersion?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -226,6 +269,7 @@ export type ChartWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringNullableFilter<"Chart"> | string | null
   spec?: Prisma.JsonFilter<"Chart">
   isPublic?: Prisma.BoolFilter<"Chart"> | boolean
+  specVersion?: Prisma.IntFilter<"Chart"> | number
   userId?: Prisma.StringFilter<"Chart"> | string
   createdAt?: Prisma.DateTimeFilter<"Chart"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Chart"> | Date | string
@@ -238,12 +282,15 @@ export type ChartOrderByWithAggregationInput = {
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   spec?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  specVersion?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ChartCountOrderByAggregateInput
+  _avg?: Prisma.ChartAvgOrderByAggregateInput
   _max?: Prisma.ChartMaxOrderByAggregateInput
   _min?: Prisma.ChartMinOrderByAggregateInput
+  _sum?: Prisma.ChartSumOrderByAggregateInput
 }
 
 export type ChartScalarWhereWithAggregatesInput = {
@@ -255,6 +302,7 @@ export type ChartScalarWhereWithAggregatesInput = {
   title?: Prisma.StringNullableWithAggregatesFilter<"Chart"> | string | null
   spec?: Prisma.JsonWithAggregatesFilter<"Chart">
   isPublic?: Prisma.BoolWithAggregatesFilter<"Chart"> | boolean
+  specVersion?: Prisma.IntWithAggregatesFilter<"Chart"> | number
   userId?: Prisma.StringWithAggregatesFilter<"Chart"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Chart"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Chart"> | Date | string
@@ -266,6 +314,7 @@ export type ChartCreateInput = {
   title?: string | null
   spec: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: boolean
+  specVersion?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutChartsInput
@@ -277,6 +326,7 @@ export type ChartUncheckedCreateInput = {
   title?: string | null
   spec: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: boolean
+  specVersion?: number
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -288,6 +338,7 @@ export type ChartUpdateInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutChartsNestedInput
@@ -299,6 +350,7 @@ export type ChartUncheckedUpdateInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -310,6 +362,7 @@ export type ChartCreateManyInput = {
   title?: string | null
   spec: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: boolean
+  specVersion?: number
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -321,6 +374,7 @@ export type ChartUpdateManyMutationInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -331,6 +385,7 @@ export type ChartUncheckedUpdateManyInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -352,9 +407,14 @@ export type ChartCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   spec?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  specVersion?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ChartAvgOrderByAggregateInput = {
+  specVersion?: Prisma.SortOrder
 }
 
 export type ChartMaxOrderByAggregateInput = {
@@ -362,6 +422,7 @@ export type ChartMaxOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  specVersion?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -372,9 +433,14 @@ export type ChartMinOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  specVersion?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ChartSumOrderByAggregateInput = {
+  specVersion?: Prisma.SortOrder
 }
 
 export type ChartCreateNestedManyWithoutUserInput = {
@@ -429,6 +495,7 @@ export type ChartCreateWithoutUserInput = {
   title?: string | null
   spec: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: boolean
+  specVersion?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -439,6 +506,7 @@ export type ChartUncheckedCreateWithoutUserInput = {
   title?: string | null
   spec: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: boolean
+  specVersion?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -478,6 +546,7 @@ export type ChartScalarWhereInput = {
   title?: Prisma.StringNullableFilter<"Chart"> | string | null
   spec?: Prisma.JsonFilter<"Chart">
   isPublic?: Prisma.BoolFilter<"Chart"> | boolean
+  specVersion?: Prisma.IntFilter<"Chart"> | number
   userId?: Prisma.StringFilter<"Chart"> | string
   createdAt?: Prisma.DateTimeFilter<"Chart"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Chart"> | Date | string
@@ -489,6 +558,7 @@ export type ChartCreateManyUserInput = {
   title?: string | null
   spec: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: boolean
+  specVersion?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -499,6 +569,7 @@ export type ChartUpdateWithoutUserInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -509,6 +580,7 @@ export type ChartUncheckedUpdateWithoutUserInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -519,6 +591,7 @@ export type ChartUncheckedUpdateManyWithoutUserInput = {
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spec?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  specVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -531,6 +604,7 @@ export type ChartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   title?: boolean
   spec?: boolean
   isPublic?: boolean
+  specVersion?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -543,6 +617,7 @@ export type ChartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   title?: boolean
   spec?: boolean
   isPublic?: boolean
+  specVersion?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -555,6 +630,7 @@ export type ChartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   title?: boolean
   spec?: boolean
   isPublic?: boolean
+  specVersion?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -567,12 +643,13 @@ export type ChartSelectScalar = {
   title?: boolean
   spec?: boolean
   isPublic?: boolean
+  specVersion?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ChartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "spec" | "isPublic" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["chart"]>
+export type ChartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "spec" | "isPublic" | "specVersion" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["chart"]>
 export type ChartInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -594,6 +671,7 @@ export type $ChartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     title: string | null
     spec: runtime.JsonValue
     isPublic: boolean
+    specVersion: number
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -1026,6 +1104,7 @@ export interface ChartFieldRefs {
   readonly title: Prisma.FieldRef<"Chart", 'String'>
   readonly spec: Prisma.FieldRef<"Chart", 'Json'>
   readonly isPublic: Prisma.FieldRef<"Chart", 'Boolean'>
+  readonly specVersion: Prisma.FieldRef<"Chart", 'Int'>
   readonly userId: Prisma.FieldRef<"Chart", 'String'>
   readonly createdAt: Prisma.FieldRef<"Chart", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Chart", 'DateTime'>

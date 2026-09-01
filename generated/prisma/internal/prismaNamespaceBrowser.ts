@@ -92,6 +92,7 @@ export const ChartScalarFieldEnum = {
   title: 'title',
   spec: 'spec',
   isPublic: 'isPublic',
+  specVersion: 'specVersion',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

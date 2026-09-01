@@ -6,7 +6,7 @@ import { THEME_NAMES, PALETTE_NAMES } from "~/lib/theme";
 import { requireUser } from "~~/server/utils/auth";
 import { prisma } from "~~/server/utils/prisma";
 
-const FREE_LIMIT = 2;
+const FREE_LIMIT = 25;
 const WINDOW_MS = 1000 * 60 * 60 * 24; // per day
 
 const HEX = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);

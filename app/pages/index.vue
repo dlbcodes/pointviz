@@ -1,7 +1,8 @@
-<!-- pages/index.vue -->
+<!-- app/pages/index.vue -->
+<script setup lang="ts">
+definePageMeta({ layout: "default" });
+</script>
+
 <template>
-    <div class="flex flex-1 overflow-hidden">
-        <AppSidebar />
-        <ChartStage />
-    </div>
+    <ChartBuilder />
 </template>
