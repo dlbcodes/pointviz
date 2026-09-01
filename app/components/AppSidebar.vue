@@ -30,7 +30,7 @@ const tabs = [
 <template>
     <aside
         class="relative hidden md:flex shrink-0 flex-col border-r border-border-default"
-        :class="dragging ? 'border-brand-100 text-brand-100' : ''"
+        :class="dragging ? 'border-brand-100 ' : ''"
         :style="{ width: `${width}px` }"
     >
         <!-- Tabs (data entry only) -->

@@ -57,7 +57,7 @@ useSeoMeta({ robots: "noindex, nofollow" });
                 v-if="option"
                 :option="option"
                 autoresize
-                class="min-h-0 w-full flex-1 p-3"
+                class="min-h-0 w-full flex-1"
             />
             <div v-else class="flex flex-1 items-center justify-center">
                 <span class="text-xs text-text-tertiary"

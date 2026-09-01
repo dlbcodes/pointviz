@@ -39,20 +39,22 @@ function format() {
     <div class="flex flex-col gap-5">
         <!-- ── AI import (metered) + copy-prompt (free) ── -->
         <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-1.5">
-                <PhSparkle class="size-4 text-chart-teal" weight="fill" />
-                <span class="text-sm font-medium text-text-primary"
-                    >Import with AI</span
-                >
-            </div>
-
-            <Textarea
-                v-model="rawData"
-                :rows="5"
-                :disabled="pending"
-                class="font-mono text-xs"
-                placeholder="Paste raw data — CSV, a spreadsheet range, or messy numbers. AI turns it into a chart."
-            />
+            <Field>
+                <FieldLabel class="flex items-center gap-1.5">
+                    <PhSparkle class="size-4 text-chart-teal" weight="fill" />
+                    Import with AI
+                </FieldLabel>
+                <FieldContent>
+                    <Textarea
+                        v-model="rawData"
+                        :rows="5"
+                        autosize
+                        :disabled="pending"
+                        class="font-mono text-xs"
+                        placeholder="Paste raw data — CSV, a spreadsheet range, or messy numbers. AI turns it into a chart."
+                    />
+                </FieldContent>
+            </Field>
 
             <div class="flex items-center gap-2">
                 <Button
@@ -111,6 +113,7 @@ function format() {
                 <Textarea
                     v-model="rawInput"
                     :rows="14"
+                    autosize
                     class="font-mono text-xs"
                     placeholder="Paste your PointViz JSON here…"
                 />

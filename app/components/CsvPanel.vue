@@ -32,6 +32,7 @@ function importCsv() {
                 <Textarea
                     v-model="raw"
                     :rows="8"
+                    autosize
                     class="font-mono text-xs"
                     placeholder="country,domestic,external&#10;Japan,178.1,26.1&#10;Italy,90.0,48.9"
                 />
