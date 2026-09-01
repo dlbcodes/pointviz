@@ -30,6 +30,14 @@ export default defineNuxtConfig({
       include: ["/account(/*)?"],
     },
   },
+  routeRules: {
+    "/embed/**": {
+      headers: {
+        "X-Frame-Options": "", // clear any deny
+        "Content-Security-Policy": "frame-ancestors *;", // allow embedding anywhere
+      },
+    },
+  },
   app: {
     head: {
       titleTemplate: "%s · PointViz",

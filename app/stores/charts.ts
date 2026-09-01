@@ -73,6 +73,12 @@ export const useChartStore = defineStore("charts", () => {
 		return chart;
 	}
 
+	async function setPublic(id: string, isPublic: boolean) {
+		const updated = await chartApiService.update(id, { isPublic });
+		const i = savedCharts.value.findIndex((c) => c.id === id);
+		if (i !== -1) savedCharts.value[i] = updated;
+	}
+
 	// ── Autosave: sync a SAVED chart's changes back, debounced ──
 	watchDebounced(
 		spec, // the valid, parsed spec — never fires on invalid/mid-edit state
@@ -105,5 +111,6 @@ export const useChartStore = defineStore("charts", () => {
 		openChart,
 		deleteChart,
 		createFromStarter,
+		setPublic
 	};
 });
