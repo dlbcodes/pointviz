@@ -1,8 +1,13 @@
-// server/api/customize.post.ts
+// server/api/v1/ai/customize.post.ts
 import Anthropic from "@anthropic-ai/sdk";
 import * as z from "zod";
 import { ChartSpecSchema, type ChartSpec } from "~/lib/schema";
 import { THEME_NAMES, PALETTE_NAMES } from "~/lib/theme";
+import { requireUser } from "~~/server/utils/auth";
+import { prisma } from "~~/server/utils/prisma";
+
+const FREE_LIMIT = 2;
+const WINDOW_MS = 1000 * 60 * 60 * 24; // per day
 
 const HEX = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
 
@@ -119,6 +124,38 @@ function stripFences(text: string): string {
 }
 
 export default defineEventHandler(async (event) => {
+	// ── Gate: only authenticated users can spend AI calls ──
+	const authUser = await requireUser(event);
+
+	// ── Load plan + usage ──
+	const me = await prisma.user.findUnique({
+		where: { id: authUser.id },
+		select: { plan: true, customizeCount: true, customizeResetAt: true },
+	});
+	if (!me) {
+		throw createError({ statusCode: 404, statusMessage: "Account not found." });
+	}
+
+	// ── Reset the window if it's elapsed ──
+	const now = Date.now();
+	let count = me.customizeCount;
+	if (now - me.customizeResetAt.getTime() > WINDOW_MS) {
+		count = 0;
+		await prisma.user.update({
+			where: { id: authUser.id },
+			data: { customizeCount: 0, customizeResetAt: new Date() },
+		});
+	}
+
+	// ── Enforce the free-tier limit (PRO is unlimited) ──
+	if (me.plan === "FREE" && count >= FREE_LIMIT) {
+		throw createError({
+			statusCode: 429,
+			statusMessage: "You've hit your free customization limit. Upgrade for unlimited.",
+		});
+	}
+
+	// ── Validate input ──
 	const { currentSpec, instruction } = await readBody<{
 		currentSpec?: unknown;
 		instruction?: string;
@@ -172,6 +209,11 @@ export default defineEventHandler(async (event) => {
 			const merged = applyPatch(base.data, patch);
 			const final = ChartSpecSchema.safeParse(merged);
 			if (final.success) {
+				// ── Charge one customize — only on success, atomic increment ──
+				await prisma.user.update({
+					where: { id: authUser.id },
+					data: { customizeCount: { increment: 1 } },
+				});
 				return { spec: final.data, raw: JSON.stringify(final.data, null, 2) };
 			}
 			parseError = `Applying that patch produced an invalid chart:\n${z.prettifyError(final.error)}`;

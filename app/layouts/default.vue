@@ -1,11 +1,15 @@
 <!-- layouts/default.vue -->
 <script setup lang="ts">
-import { Button, Field, FieldContent, FieldLabel } from "@dlbcodes/ui";
-import { Popover, PopoverTrigger, PopoverContent } from "@dlbcodes/ui";
-import { PhDownloadSimple, PhImage } from "@phosphor-icons/vue";
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@dlbcodes/ui";
+import { Button } from "@dlbcodes/ui";
 
 const { title, isValid } = useChartSpec();
+const user = useSupabaseUser();
+
+const authModalOpen = useState("auth-modal-open", () => false);
+const feedbackModalOpen = useState("feedback-modal-open", () => false);
+const helpModalOpen = useState("help-modal-open", () => false);
+const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
+const upgradeModalOpen = useState("upgrade-modal-open", () => false);
 </script>
 
 <template>
@@ -30,9 +34,32 @@ const { title, isValid } = useChartSpec();
             </div>
 
             <!-- Actions -->
-            <ExportMenu />
+            <div class="flex items-center gap-3">
+                <ExportMenu />
+                <UserMenu
+                    v-if="user"
+                    @open-feedback="feedbackModalOpen = true"
+                    @open-help="helpModalOpen = true"
+                    @open-shortcuts="shortcutsModalOpen = true"
+                />
+                <Button
+                    v-else
+                    variant="primary"
+                    size="sm"
+                    @click="authModalOpen = true"
+                >
+                    Log in
+                </Button>
+            </div>
         </header>
 
         <slot />
+
+        <!-- Global modals -->
+        <AuthModal v-model:open="authModalOpen" />
+        <FeedbackModal v-model:open="feedbackModalOpen" />
+        <HelpModal v-model:open="helpModalOpen" />
+        <ShortcutsModal v-model:open="shortcutsModalOpen" />
+        <UpgradeModal v-model:open="upgradeModalOpen" />
     </div>
 </template>

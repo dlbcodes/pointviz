@@ -36,6 +36,27 @@ export const useAuth = () => {
 		}
 	};
 
+	// add to useAuth, and to the returned object
+	const loginWithGoogle = async (redirectPath = "/"): Promise<boolean> => {
+		error.value = null;
+		try {
+			const { error: authError } = await supabase.auth.signInWithOAuth({
+				provider: "google",
+				options: {
+					redirectTo: `${origin}/confirm?redirect=${encodeURIComponent(redirectPath)}`,
+				},
+			});
+			if (authError) {
+				error.value = authError.message;
+				return false;
+			}
+			return true; // browser is redirecting to Google now
+		} catch {
+			error.value = "Couldn't start Google sign-in.";
+			return false;
+		}
+	};
+
 	const register = async (params: RegisterSchemaType): Promise<boolean> => {
 		loading.value = true;
 		error.value = null;
@@ -121,5 +142,5 @@ export const useAuth = () => {
 		}
 	};
 
-	return { user, error, loading, login, register, forgot, recover, signOut };
+	return { user, error, loading, login, loginWithGoogle, register, forgot, recover, signOut };
 };

@@ -1,0 +1,3 @@
+export default defineEventHandler(async (event) => {
+	// the future "describe a chart from scratch in natural language" (not customize an existing one, but create one). This is the natural sibling to customize: customize edits, generate creates. If you ever let users type "a bar chart of these five countries' GDP" and get a spec, that's generate. Distinct from customize because it has no base spec.
+})
