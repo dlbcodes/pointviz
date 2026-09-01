@@ -34,16 +34,9 @@ export function useChartSpec() {
 	const canUndo = computed(() => past.value.length > 0);
 	const canRedo = computed(() => future.value.length > 0);
 
-	// The core change primitive: push current state to history, then set the new value.
-	// Every source of change (customize, examples, CSV, import, share) calls loadSpec,
-	// so instrumenting it here makes undo cover all of them.
-	function loadSpec(json: string) {
-		if (json === rawInput.value) return; // no-op, don't pollute history
-		past.value.push(rawInput.value);
-		if (past.value.length > MAX_HISTORY) past.value.shift();
-		future.value = []; // a new change invalidates the redo branch
-		rawInput.value = json;
-	}
+	const currentChartId = useState<string | null>("chart:currentId", () => null);
+
+
 
 	function undo() {
 		if (!canUndo.value) return;
@@ -57,6 +50,17 @@ export function useChartSpec() {
 		rawInput.value = future.value.pop()!;
 	}
 
+
+	function loadSpec(json: string, opts?: { keepIdentity?: boolean }) {
+		if (json === rawInput.value) return;
+		past.value.push(rawInput.value);
+		if (past.value.length > MAX_HISTORY) past.value.shift();
+		future.value = [];
+		if (!opts?.keepIdentity) currentChartId.value = null; // detach unless told to keep
+		rawInput.value = json;
+	}
+
+
 	return {
 		rawInput,
 		spec,
@@ -69,5 +73,6 @@ export function useChartSpec() {
 		redo,
 		canUndo,
 		canRedo,
+		currentChartId
 	};
 }

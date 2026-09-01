@@ -3,6 +3,7 @@
 import { Button } from "@dlbcodes/ui";
 
 const user = useSupabaseUser();
+const chartStore = useChartStore();
 const authModalOpen = useState("auth-modal-open", () => false);
 const upgradeModalOpen = useState("upgrade-modal-open", () => false);
 const feedbackModalOpen = useState("feedback-modal-open", () => false);
@@ -29,6 +30,19 @@ const feedbackModalOpen = useState("feedback-modal-open", () => false);
             </NuxtLink>
 
             <div class="flex items-center gap-3">
+                <span
+                    v-if="chartStore.currentChartId"
+                    class="text-xs text-text-tertiary"
+                >
+                    {{
+                        chartStore.saving
+                            ? "Saving…"
+                            : chartStore.lastSavedAt
+                              ? "Saved"
+                              : ""
+                    }}
+                </span>
+                <SaveButton />
                 <ExportMenu />
                 <UserMenu
                     v-if="user"

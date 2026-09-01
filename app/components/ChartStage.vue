@@ -1,16 +1,21 @@
 <!-- app/components/ChartStage.vue -->
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { Button } from "@dlbcodes/ui";
+import { PhArrowCounterClockwise, PhArrowClockwise } from "@phosphor-icons/vue";
 import { compileToECharts } from "~/lib/compile";
-import { resolveTheme, type ChartTheme } from "~/lib/theme";
-import { THEMES, type ThemeName } from "~/lib/theme";
+import {
+    resolveTheme,
+    THEMES,
+    type ChartTheme,
+    type ThemeName,
+} from "~/lib/theme";
 
-const { undo, redo, canUndo, canRedo } = useChartSpec();
-
-const { spec, error, isEmpty, isValid } = useChartSpec();
+const { spec, error, isEmpty, isValid, undo, redo, canUndo, canRedo } =
+    useChartSpec();
 const { registerChart } = useChartExport();
-const chartRef = ref();
 
+const chartRef = ref();
 watch(chartRef, (v) => {
     if (v) registerChart(v);
 });
@@ -26,7 +31,7 @@ const option = computed(() =>
         : null,
 );
 
-// The chart's effective background: explicit override → theme background → none (let card default show).
+// Effective background: explicit override → theme background → none (card default shows).
 const chartBackground = computed(() => {
     if (!spec.value) return undefined;
     const override = spec.value.style?.backgroundColor;
@@ -36,33 +41,36 @@ const chartBackground = computed(() => {
     return bg === "transparent" ? undefined : bg;
 });
 
-onMounted(() => {
-    const handler = (e: KeyboardEvent) => {
-        // Don't hijack undo while typing in an input/textarea (let native undo work there)
-        const t = e.target as HTMLElement;
-        if (t.tagName === "TEXTAREA" || t.tagName === "INPUT") return;
+// Undo/redo keyboard shortcuts (skip when typing in inputs — native undo wins there).
+function onKeydown(e: KeyboardEvent) {
+    const t = e.target as HTMLElement;
+    if (t.tagName === "TEXTAREA" || t.tagName === "INPUT") return;
 
-        if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
-            e.preventDefault();
-            undo();
-        } else if (
-            (e.metaKey || e.ctrlKey) &&
-            (e.key === "y" || (e.key === "z" && e.shiftKey))
-        ) {
-            e.preventDefault();
-            redo();
-        }
-    };
-    window.addEventListener("keydown", handler);
-    onUnmounted(() => window.removeEventListener("keydown", handler));
-});
+    if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+    } else if (
+        (e.metaKey || e.ctrlKey) &&
+        (e.key === "y" || (e.key === "z" && e.shiftKey))
+    ) {
+        e.preventDefault();
+        redo();
+    }
+}
+
+onMounted(() => window.addEventListener("keydown", onKeydown));
+onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 </script>
 
 <template>
     <main
-        class="flex flex-1 flex-col overflow-hidden bg-bg-surface/20 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)]"
+        class="relative flex flex-1 flex-col overflow-hidden bg-bg-surface/20 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)]"
     >
-        <div>
+        <!-- Undo/redo toolbar — top-right overlay, only when there's a chart -->
+        <div
+            v-if="isValid"
+            class="absolute right-4 top-3 z-10 flex items-center gap-0.5 rounded-lg border border-border-default bg-bg-base p-0.5 shadow-sm"
+        >
             <Button
                 variant="ghost"
                 size="icon"
@@ -82,35 +90,35 @@ onMounted(() => {
                 <PhArrowClockwise class="size-4" />
             </Button>
         </div>
+
         <!-- Chart region: grows, scrolls, chart sits toward the top -->
         <div
-            class="flex-1 flex flex-col items-center justify-center gap-2 overflow-auto"
+            class="flex flex-1 flex-col items-center justify-center gap-2 overflow-auto"
         >
             <div
-                class="w-full max-w-6xl aspect-video flex flex-col border border-border-default rounded-xl overflow-hidden"
+                class="flex aspect-video w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-border-default"
                 :class="chartBackground ? '' : 'bg-bg-base'"
                 :style="
                     chartBackground ? { backgroundColor: chartBackground } : {}
                 "
             >
                 <ClientOnly>
-                    <!-- Chart fills the growing space -->
                     <VChart
                         v-if="isValid && option"
                         ref="chartRef"
                         :option="option"
                         autoresize
-                        class="min-h-0 flex-1 w-full p-4"
+                        class="min-h-0 w-full flex-1 p-4"
                     />
                     <div v-else class="flex flex-1 items-center justify-center">
-                        <div class="text-center space-y-2">
-                            <div class="text-text-tertiary text-sm font-medium">
+                        <div class="space-y-2 text-center">
+                            <div class="text-sm font-medium text-text-tertiary">
                                 Chart Canvas
                             </div>
-                            <div class="text-text-tertiary/60 text-xs">
+                            <div class="text-xs text-text-tertiary/60">
                                 {{
                                     isEmpty
-                                        ? "Waiting for JSON data..."
+                                        ? "Waiting for data…"
                                         : error
                                           ? "Fix spec to render"
                                           : "Ready to render"
@@ -120,7 +128,6 @@ onMounted(() => {
                     </div>
                 </ClientOnly>
 
-                <!-- Source caption: inside the card, below the chart, not in the chart's padding -->
                 <p
                     v-if="isValid && spec?.source"
                     class="shrink-0 px-4 pb-3 text-left text-xs font-mono text-text-tertiary"
@@ -130,7 +137,7 @@ onMounted(() => {
             </div>
         </div>
 
-        <!-- Customize dock: pinned to the bottom, wider than the chart -->
+        <!-- Customize dock -->
         <div v-if="isValid" class="shrink-0 px-8 pb-6 pt-2">
             <CustomizeBar />
         </div>

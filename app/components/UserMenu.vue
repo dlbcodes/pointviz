@@ -90,7 +90,7 @@ const logout = async (): Promise<void> => {
             <Separator class="my-1" />
 
             <!-- primary actions -->
-            <DropdownItem @click="go('/me')">
+            <DropdownItem @click="go('/charts')">
                 <PhSquaresFour
                     class="size-4 text-text-tertiary"
                     aria-hidden="true"

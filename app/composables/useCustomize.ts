@@ -29,7 +29,7 @@ export function useCustomize() {
 		customizeError.value = null;
 		try {
 			const { raw } = await aiApiService.customize(spec.value, instruction.value);
-			loadSpec(raw); // becomes the new current spec → next edit builds on it
+			loadSpec(raw, { keepIdentity: true }); // editing the current chart — stay attached
 			instruction.value = "";
 		} catch (e) {
 			if (e instanceof AiApiError) {
