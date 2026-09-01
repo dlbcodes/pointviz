@@ -1,6 +1,7 @@
 <!-- app/layouts/default.vue — header section -->
 <script setup lang="ts">
 import { Button } from "@dlbcodes/ui";
+import { PhDownloadSimple } from "@phosphor-icons/vue";
 
 const user = useSupabaseUser();
 const authModalOpen = useState("auth-modal-open", () => false);
@@ -51,15 +52,7 @@ const marketingLinks = [
 
             <!-- Right: tool actions + auth -->
             <div class="flex items-center gap-3">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    @click="exportPanelOpen = !exportPanelOpen"
-                >
-                    <PhExport class="size-4" />
-                    Share
-                </Button>
-                <ExportMenu />
+                <!-- <ExportMenu /> -->
                 <SaveButton />
 
                 <template v-if="user">
@@ -81,6 +74,13 @@ const marketingLinks = [
                         Sign up
                     </Button>
                 </template>
+                <Button
+                    variant="icon"
+                    size="icon"
+                    @click="exportPanelOpen = !exportPanelOpen"
+                >
+                    <PhDownloadSimple class="size-4" />
+                </Button>
             </div>
         </header>
 

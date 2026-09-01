@@ -42,8 +42,11 @@
     --color-border-default: oklch(0.9219 0 0);
     --color-border-strong: oklch(0.7155 0 0);
 
-    --color-brand-100: oklch(0.1448 0 0);
-    --color-brand-200: oklch(0.2046 0 0);
+    /* --color-brand-100: oklch(0.1448 0 0);
+    --color-brand-200: oklch(0.2046 0 0); */
+
+    --color-brand-100: oklch(0.66 0.22 37.3);
+    --color-brand-200: oklch(0.66 0.22 37.3);
 
     --color-accent-pro-200: oklch(0.66 0.22 37.3);
     --color-accent-pro-200: oklch(0.66 0.22 37.3);
