@@ -1,15 +1,13 @@
-<!-- app/layouts/default.vue — header section -->
+<!-- app/layouts/default.vue -->
 <script setup lang="ts">
 import { Button } from "@dlbcodes/ui";
 import { PhDownloadSimple } from "@phosphor-icons/vue";
 
 const user = useSupabaseUser();
+
+// Only the flags THIS layout's header triggers.
 const authModalOpen = useState("auth-modal-open", () => false);
-const upgradeModalOpen = useState("upgrade-modal-open", () => false);
-const feedbackModalOpen = useState("feedback-modal-open", () => false);
-const helpModalOpen = useState("help-modal-open", () => false);
-const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
-const exportPanelOpen = useState("export-panel-open", () => true);
+const exportPanelOpen = useState("export-panel-open", () => false);
 
 const marketingLinks = [
     { label: "How it works", to: "/how-it-works" },
@@ -37,13 +35,12 @@ const marketingLinks = [
                     >
                 </NuxtLink>
 
-                <!-- Marketing nav — only for logged-out visitors -->
                 <nav v-if="!user" class="hidden items-center gap-4 md:flex">
                     <NuxtLink
                         v-for="link in marketingLinks"
                         :key="link.to"
                         :to="link.to"
-                        class="font-mono tracking-tight text-xs text-text-primary transition-colors hover:text-text-primary"
+                        class="font-mono text-xs tracking-tight text-text-secondary transition-colors hover:text-text-primary"
                     >
                         {{ link.label }}
                     </NuxtLink>
@@ -52,17 +49,20 @@ const marketingLinks = [
 
             <!-- Right: tool actions + auth -->
             <div class="flex items-center gap-3">
-                <!-- <ExportMenu /> -->
-                <SaveButton />
+                <SaveIndicator />
 
-                <template v-if="user">
-                    <UserMenu
-                        @open-feedback="feedbackModalOpen = true"
-                        @open-help="helpModalOpen = true"
-                        @open-shortcuts="shortcutsModalOpen = true"
-                    />
-                </template>
-                <template v-else>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Export & share"
+                    @click="exportPanelOpen = !exportPanelOpen"
+                >
+                    <PhDownloadSimple class="size-4" />
+                </Button>
+
+                <template v-if="!user">
+                    <SaveButton />
+
                     <NuxtLink to="/login">
                         <Button variant="ghost" size="sm">Log in</Button>
                     </NuxtLink>
@@ -70,26 +70,15 @@ const marketingLinks = [
                         variant="primary"
                         size="sm"
                         @click="authModalOpen = true"
+                        >Sign up</Button
                     >
-                        Sign up
-                    </Button>
                 </template>
-                <Button
-                    variant="icon"
-                    size="icon"
-                    @click="exportPanelOpen = !exportPanelOpen"
-                >
-                    <PhDownloadSimple class="size-4" />
-                </Button>
             </div>
         </header>
 
         <slot />
 
-        <AuthModal v-model:open="authModalOpen" />
-        <UpgradeModal v-model:open="upgradeModalOpen" />
-        <FeedbackModal v-model:open="feedbackModalOpen" />
-        <HelpModal v-model:open="helpModalOpen" />
-        <ShortcutsModal v-model:open="shortcutsModalOpen" />
+        <!-- All global modals, mounted once -->
+        <AppModals />
     </div>
 </template>

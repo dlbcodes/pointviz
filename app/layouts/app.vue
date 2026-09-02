@@ -17,7 +17,11 @@ const feedbackModalOpen = useState("feedback-modal-open", () => false);
                 </div>
                 <h1 class="text-base font-semibold tracking-tight">PointViz</h1>
             </NuxtLink>
-            <UserMenu v-if="user" @open-feedback="feedbackModalOpen = true" />
+            <UserMenu
+                v-if="user"
+                @open-feedback="feedbackModalOpen = true"
+                variant="avatar"
+            />
         </header>
 
         <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-8">

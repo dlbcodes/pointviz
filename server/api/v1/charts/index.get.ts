@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
 	const charts = await prisma.chart.findMany({
 		where: { userId: authUser.id },
-		select: { id: true, slug: true, title: true, isPublic: true, updatedAt: true },
+		select: { id: true, slug: true, title: true, spec: true, isPublic: true, updatedAt: true },
 		orderBy: { updatedAt: "desc" },
 		take: 100,
 	});

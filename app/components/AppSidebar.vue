@@ -25,6 +25,11 @@ const tabs = [
     { id: "csv" as const, label: "CSV", icon: PhTable },
     { id: "json" as const, label: "JSON", icon: PhBracketsCurly },
 ];
+
+const user = useSupabaseUser();
+const feedbackModalOpen = useState("feedback-modal-open", () => false);
+const helpModalOpen = useState("help-modal-open", () => false);
+const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
 </script>
 
 <template>
@@ -61,16 +66,12 @@ const tabs = [
             <JsonPanel v-else-if="activeTab === 'json'" />
         </div>
 
-        <footer
-            class="shrink-0 flex items-center justify-between border-t border-border-default px-6 py-2 text-xs text-text-tertiary"
-        >
-            <span
-                >Status:
-                {{
-                    error ? "Invalid spec" : isValid ? "Data loaded" : "Ready"
-                }}</span
-            >
-            <span>PointViz Engine v0.1 </span>
+        <footer v-if="user" class="shrink-0 border-t border-border-default p-2">
+            <UserMenu
+                @open-feedback="feedbackModalOpen = true"
+                @open-help="helpModalOpen = true"
+                @open-shortcuts="shortcutsModalOpen = true"
+            />
         </footer>
 
         <!-- Resize handle with grip affordance -->
