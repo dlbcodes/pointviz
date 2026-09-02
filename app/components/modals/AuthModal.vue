@@ -2,11 +2,7 @@
 import { ref, watch, nextTick } from "vue";
 import {
     Modal,
-    ModalHeader,
-    ModalTitle,
-    ModalDescription,
     ModalContent,
-    ModalFooter,
     ModalClose,
     Field,
     FieldLabel,
@@ -19,7 +15,6 @@ import { loginSchema, registerSchema } from "~~/shared/types/auth";
 
 const open = defineModel<boolean>("open", { required: true });
 
-// Single destructure — includes loginWithGoogle
 const {
     login,
     register,
@@ -27,7 +22,7 @@ const {
     loading,
     error: authError,
 } = useAuth();
-const { rawInput } = useChartSpec(); // to stash the in-progress chart before the OAuth redirect
+const { rawInput } = useChartSpec();
 
 type Mode = "login" | "register";
 const mode = ref<Mode>("register");
@@ -55,15 +50,14 @@ watch(open, async (isOpen) => {
 });
 
 async function onGoogle() {
-    // Stash the chart so it survives the redirect to Google and back.
     if (import.meta.client) {
         sessionStorage.setItem("pointviz:pending-spec", rawInput.value);
     }
     googleLoading.value = true;
     const ok = await loginWithGoogle("/");
     if (!ok) {
-        googleLoading.value = false; // stayed on page (error); else the browser is redirecting
-        sessionStorage.removeItem("pointviz:pending-spec"); // no redirect happening, clean up
+        googleLoading.value = false;
+        sessionStorage.removeItem("pointviz:pending-spec");
     }
 }
 
@@ -102,28 +96,41 @@ async function submit() {
 
 <template>
     <Modal v-model="open" size="md">
-        <ModalHeader>
-            <ModalTitle>
-                {{
-                    mode === "register"
-                        ? "Create an account to customize"
-                        : "Welcome back"
-                }}
-            </ModalTitle>
-            <ModalDescription>
-                Sign up to customize charts with natural language. Your chart
-                stays right here.
-            </ModalDescription>
-            <ModalClose />
-        </ModalHeader>
+        <ModalContent class="p-8">
+            <ModalClose class="absolute right-4 top-4" />
 
-        <ModalContent>
+            <!-- Centered header -->
+            <div class="mb-6 flex flex-col items-center text-center">
+                <div
+                    class="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-brand-200 text-sm font-bold text-text-inverse"
+                >
+                    P
+                </div>
+                <h2 class="text-lg font-semibold tracking-tight">
+                    {{
+                        mode === "register"
+                            ? "Create your account"
+                            : "Welcome back"
+                    }}
+                </h2>
+                <p class="mt-1 max-w-xs text-sm text-text-secondary">
+                    {{
+                        mode === "register"
+                            ? "Sign up to customize charts with AI. Your chart stays right here."
+                            : "Sign in to keep customizing."
+                    }}
+                </p>
+            </div>
+
             <div class="flex flex-col gap-4">
-                <p v-if="authError" class="text-sm text-danger-text">
+                <p
+                    v-if="authError"
+                    class="text-center text-sm text-danger-text"
+                >
                     {{ authError }}
                 </p>
 
-                <!-- Google (the smooth path) -->
+                <!-- Google -->
                 <Button
                     variant="secondary"
                     class="w-full justify-center gap-2"
@@ -131,28 +138,19 @@ async function submit() {
                     @click="onGoogle"
                 >
                     <GoogleLogo />
-                    <!-- your Google logo component/svg here -->
                     {{
                         googleLoading ? "Redirecting…" : "Continue with Google"
                     }}
                 </Button>
 
                 <!-- divider -->
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center">
-                        <span
-                            class="w-full border-t border-border-subtle"
-                        ></span>
-                    </div>
-                    <div class="relative flex justify-center">
-                        <span
-                            class="bg-bg-surface px-3 font-mono text-xs text-text-tertiary"
-                            >or</span
-                        >
-                    </div>
+                <div class="flex items-center gap-3">
+                    <span class="h-px flex-1 bg-border-default" />
+                    <span class="font-mono text-xs text-text-tertiary">or</span>
+                    <span class="h-px flex-1 bg-border-default" />
                 </div>
 
-                <!-- email/password (the inclusive fallback, preserves chart inline) -->
+                <!-- email/password -->
                 <Field v-if="mode === 'register'" :invalid="!!errors.name">
                     <FieldLabel>Name</FieldLabel>
                     <FieldContent>
@@ -197,9 +195,21 @@ async function submit() {
                     </FieldContent>
                 </Field>
 
+                <!-- Primary action inline (no footer) -->
+                <Button class="w-full" :disabled="loading" @click="submit">
+                    {{
+                        loading
+                            ? "Please wait…"
+                            : mode === "register"
+                              ? "Create account"
+                              : "Sign in"
+                    }}
+                </Button>
+
+                <!-- Mode toggle, centered -->
                 <button
                     type="button"
-                    class="text-left text-sm text-text-secondary hover:text-text-primary"
+                    class="text-center text-sm text-text-secondary hover:text-text-primary"
                     @click="mode = mode === 'register' ? 'login' : 'register'"
                 >
                     {{
@@ -210,18 +220,5 @@ async function submit() {
                 </button>
             </div>
         </ModalContent>
-
-        <ModalFooter>
-            <Button variant="secondary" @click="open = false">Cancel</Button>
-            <Button :disabled="loading" @click="submit">
-                {{
-                    loading
-                        ? "Please wait…"
-                        : mode === "register"
-                          ? "Create account"
-                          : "Sign in"
-                }}
-            </Button>
-        </ModalFooter>
     </Modal>
 </template>

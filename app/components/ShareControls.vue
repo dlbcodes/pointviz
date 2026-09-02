@@ -81,31 +81,41 @@ async function togglePublic(next: boolean) {
 
         <div v-if="isPublic && slug" class="space-y-4">
             <div class="space-y-1.5">
-                <label class="text-xs font-medium text-text-secondary"
-                    >Public link</label
-                >
-                <div class="flex items-center gap-2">
-                    <Input
-                        :model-value="publicUrl"
-                        readonly
-                        size="sm"
-                        class="flex-1 font-mono text-xs"
-                    />
-                    <CopyButton :text="publicUrl" :icon="PhLink" />
-                </div>
+                <Field>
+                    <FieldLabel>Public link</FieldLabel>
+                    <div class="flex items-center gap-2">
+                        <Input
+                            :model-value="publicUrl"
+                            readonly
+                            size="sm"
+                            class="flex-1 font-mono text-xs"
+                        />
+                        <CopyButton
+                            :text="publicUrl"
+                            :icon="PhLink"
+                            class="h-9"
+                        />
+                    </div>
+                </Field>
             </div>
 
             <div class="space-y-1.5">
-                <label class="text-xs font-medium text-text-secondary"
-                    >Embed code</label
-                >
-                <Textarea
-                    :model-value="embedCode"
-                    readonly
-                    disabled
-                    :rows="3"
-                    class="font-mono text-xs"
-                />
+                <Field>
+                    <FieldLabel>Embed code</FieldLabel>
+                    <FieldDescription>
+                        Generates an embed code to add this PointViz chart to
+                        your own website.
+                    </FieldDescription>
+                    <FieldContent
+                        ><Textarea
+                            :model-value="embedCode"
+                            readonly
+                            disabled
+                            :rows="3"
+                            class="font-mono text-xs"
+                        />
+                    </FieldContent>
+                </Field>
                 <CopyButton
                     :text="embedCode"
                     :icon="PhCode"

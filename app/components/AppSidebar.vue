@@ -12,7 +12,7 @@ import { useResizable } from "~/composables/useResizable";
 const { width, dragging, startResize } = useResizable({
     min: 280,
     max: 560,
-    initial: 360,
+    initial: 340,
     key: "pointviz:sidebar-width",
 });
 

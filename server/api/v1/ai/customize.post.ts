@@ -5,9 +5,7 @@ import { ChartSpecSchema, type ChartSpec } from "~/lib/schema";
 import { THEME_NAMES, PALETTE_NAMES } from "~/lib/theme";
 import { requireUser } from "~~/server/utils/auth";
 import { prisma } from "~~/server/utils/prisma";
-
-const FREE_LIMIT = 25;
-const WINDOW_MS = 1000 * 60 * 60 * 24; // per day
+import { PLANS } from "~~/shared/plans";
 
 const HEX = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
 
@@ -136,10 +134,12 @@ export default defineEventHandler(async (event) => {
 		throw createError({ statusCode: 404, statusMessage: "Account not found." });
 	}
 
+	const plan = PLANS[me.plan];
+
 	// ── Reset the window if it's elapsed ──
 	const now = Date.now();
 	let count = me.customizeCount;
-	if (now - me.customizeResetAt.getTime() > WINDOW_MS) {
+	if (now - me.customizeResetAt.getTime() > plan.windowMs) {
 		count = 0;
 		await prisma.user.update({
 			where: { id: authUser.id },
@@ -148,10 +148,10 @@ export default defineEventHandler(async (event) => {
 	}
 
 	// ── Enforce the free-tier limit (PRO is unlimited) ──
-	if (me.plan === "FREE" && count >= FREE_LIMIT) {
+	if (count >= plan.customizeLimit) {
 		throw createError({
 			statusCode: 429,
-			statusMessage: "You've hit your free customization limit. Upgrade for unlimited.",
+			statusMessage: "You've hit your free limit. Upgrade for unlimited.",
 		});
 	}
 

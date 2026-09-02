@@ -1,6 +1,6 @@
 <!-- app/pages/(app)/account.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import {
     Button,
     Input,
@@ -8,7 +8,9 @@ import {
     FieldLabel,
     FieldContent,
     FieldError,
+    Progress,
 } from "@dlbcodes/ui";
+import { PLANS } from "~~/shared/plans";
 
 definePageMeta({ layout: "app", middleware: "auth" });
 
@@ -16,7 +18,6 @@ const userStore = useUserStore();
 const { signOut } = useAuth();
 const upgradeModalOpen = useState("upgrade-modal-open", () => false);
 
-// Ensure the profile is loaded (fetchProfile hydrates plan/usage/name).
 onMounted(() => {
     if (!userStore.profile) userStore.fetchProfile();
 });
@@ -29,7 +30,6 @@ const saving = ref(false);
 const saveError = ref<string | null>(null);
 const savedOk = ref(false);
 
-// seed the name field once profile loads
 watch(
     profile,
     (p) => {
@@ -54,14 +54,10 @@ async function saveProfile() {
     }
 }
 
-// ── Plan / usage ──
-const FREE_LIMIT = 25;
-const usagePct = computed(() =>
-    profile.value
-        ? Math.min(100, (profile.value.customizeCount / FREE_LIMIT) * 100)
-        : 0,
-);
+// ── Plan / usage — the limit comes from the shared plan config ──
 const isPro = computed(() => profile.value?.plan === "PRO");
+const freeLimit = PLANS.FREE.customizeLimit;
+const used = computed(() => profile.value?.customizeCount ?? 0);
 </script>
 
 <template>
@@ -121,20 +117,11 @@ const isPro = computed(() => profile.value?.plan === "PRO");
                 <div
                     class="flex items-center justify-between text-xs text-text-secondary"
                 >
-                    <span>AI customizations today</span>
-                    <span
-                        >{{ profile?.customizeCount ?? 0 }} /
-                        {{ FREE_LIMIT }}</span
-                    >
+                    <span>AI customizations this month</span>
+                    <span>{{ used }} / {{ freeLimit }}</span>
                 </div>
-                <div
-                    class="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle"
-                >
-                    <div
-                        class="h-full rounded-full bg-chart-teal transition-all"
-                        :style="{ width: `${usagePct}%` }"
-                    />
-                </div>
+                <Progress :value="used" :max="freeLimit" />
+
                 <Button
                     variant="primary"
                     size="sm"
