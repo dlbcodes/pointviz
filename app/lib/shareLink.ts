@@ -1,7 +1,8 @@
 // app/lib/shareLink.ts
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
+import pkg from "lz-string";
 import { ChartSpecSchema, type ChartSpec } from "~/lib/schema";
 
+const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } = pkg;
 // Bump this when the payload shape changes in a breaking way.
 const CURRENT_VERSION = 1;
 
