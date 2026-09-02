@@ -18,6 +18,9 @@ const { spec, error, isEmpty, isValid, undo, redo, canUndo, canRedo } =
     useChartSpec();
 const { registerChart } = useChartExport();
 
+const userStore = useUserStore();
+const isPro = computed(() => userStore.profile?.plan === "PRO");
+
 const chartRef = ref();
 watch(chartRef, (v) => {
     if (v) registerChart(v);
@@ -31,7 +34,7 @@ onMounted(() => {
 
 const option = computed(() =>
     spec.value && theme.value
-        ? compileToECharts(spec.value, theme.value)
+        ? compileToECharts(spec.value, theme.value, { brandmark: !isPro.value })
         : null,
 );
 

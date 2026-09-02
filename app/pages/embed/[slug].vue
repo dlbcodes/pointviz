@@ -29,7 +29,9 @@ onMounted(() => {
 
 const option = computed(() =>
     spec.value && theme.value
-        ? compileToECharts(spec.value, theme.value)
+        ? compileToECharts(spec.value, theme.value, {
+              brandmark: !data.value?.ownerIsPro,
+          })
         : null,
 );
 

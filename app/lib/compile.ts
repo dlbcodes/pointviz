@@ -103,13 +103,15 @@ function applyAxisStyle(
 	};
 }
 
-export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
+export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: { brandmark?: boolean } = {},) {
 	const { type, orientation, stack, categories, series, title, subtitle, style, goals } = spec;
 	const s = resolveStyle(spec, tokenTheme);
 	const horizontal = orientation === "horizontal";
 
 	const categoryAxis = { type: "category" as const, data: categories };
 	const valueAxis = { type: "value" as const };
+
+	const showBrandmark = opts.brandmark ?? true;
 
 	const physicalX = applyAxisStyle(
 		horizontal ? { ...valueAxis } : { ...categoryAxis },
@@ -203,6 +205,23 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
 			bottom: 32 + (legendVisible && legendPos === "bottom" ? 28 : 0),
 			containLabel: true,
 		},
+		graphic: showBrandmark
+			? [
+				{
+					type: "text",
+					right: 12,
+					bottom: 10,
+					z: 100,
+					style: {
+						text: "PointViz",
+						fontSize: 11,
+						fontWeight: 600,
+						fill: s.subtitleColor, // muted, uses the theme's secondary color
+						opacity: 0.7,
+					},
+				},
+			]
+			: undefined,
 		xAxis: physicalX,
 		yAxis: physicalY,
 		series: series.map((ser, i) => ({
@@ -222,6 +241,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme) {
 			label,
 			...(i === 0 && markLine ? { markLine } : {}), // goal lines on first series only
 			data: ser.values,
+
 		})),
 	};
 }

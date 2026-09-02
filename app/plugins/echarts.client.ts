@@ -9,6 +9,7 @@ import {
 	TitleComponent,
 	DatasetComponent,
 	MarkLineComponent,
+	GraphicComponent
 } from "echarts/components";
 import VChart from "vue-echarts";
 
@@ -22,6 +23,7 @@ use([
 	TitleComponent,
 	DatasetComponent,
 	MarkLineComponent,
+	GraphicComponent
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {
