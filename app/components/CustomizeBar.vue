@@ -56,12 +56,13 @@ const onKeydown = (e: KeyboardEvent): void => {
             <PanelHeader
                 class="flex flex-nowrap gap-1.5 overflow-x-auto pb-2 no-scrollbar"
             >
+                <span class="text-sm text-text-secondary">Hints:</span>
                 <button
                     v-for="s in suggestions"
                     :key="s"
                     type="button"
                     :disabled="pending"
-                    class="shrink-0 rounded-lg bg-bg-base border border-border-default px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary disabled:opacity-50"
+                    class="cursor-pointer shrink-0 rounded-lg bg-bg-base border border-border-default px-2.5 py-1 text-xs text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary disabled:opacity-50"
                     @click="useSuggestion(s)"
                 >
                     {{ s }}

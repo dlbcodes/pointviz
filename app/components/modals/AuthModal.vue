@@ -101,11 +101,7 @@ async function submit() {
 
             <!-- Centered header -->
             <div class="mb-6 flex flex-col items-center text-center">
-                <div
-                    class="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-brand-200 text-sm font-bold text-text-inverse"
-                >
-                    P
-                </div>
+                <BrandMark class="mb-3" />
                 <h2 class="text-lg font-semibold tracking-tight">
                     {{
                         mode === "register"
@@ -113,7 +109,9 @@ async function submit() {
                             : "Welcome back"
                     }}
                 </h2>
-                <p class="mt-1 max-w-xs text-sm text-text-secondary">
+                <p
+                    class="mt-1 max-w-xs text-sm text-text-secondary text-balance"
+                >
                     {{
                         mode === "register"
                             ? "Sign up to customize charts with AI. Your chart stays right here."

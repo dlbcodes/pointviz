@@ -11,6 +11,9 @@ import {
     type ThemeName,
 } from "~/lib/theme";
 
+const { setTarget } = useFullscreen();
+const stageEl = ref<HTMLElement>();
+
 const { spec, error, isEmpty, isValid, undo, redo, canUndo, canRedo } =
     useChartSpec();
 const { registerChart } = useChartExport();
@@ -23,6 +26,7 @@ watch(chartRef, (v) => {
 const theme = ref<ChartTheme | null>(null);
 onMounted(() => {
     theme.value = resolveTheme();
+    if (stageEl.value) setTarget(stageEl.value);
 });
 
 const option = computed(() =>
@@ -96,6 +100,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
             class="flex flex-1 flex-col items-center justify-center gap-2 overflow-auto"
         >
             <div
+                ref="stageEl"
                 class="flex aspect-video w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-border-default"
                 :class="chartBackground ? '' : 'bg-bg-base'"
                 :style="

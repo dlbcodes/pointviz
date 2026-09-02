@@ -9,13 +9,8 @@ const feedbackModalOpen = useState("feedback-modal-open", () => false);
         <header
             class="flex h-14 shrink-0 items-center justify-between border-b border-border-default px-6"
         >
-            <NuxtLink to="/" class="flex items-center gap-3">
-                <div
-                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-200 text-sm font-bold text-text-inverse"
-                >
-                    P
-                </div>
-                <h1 class="text-base font-semibold tracking-tight">PointViz</h1>
+            <NuxtLink to="/">
+                <BrandMark />
             </NuxtLink>
             <UserMenu
                 v-if="user"

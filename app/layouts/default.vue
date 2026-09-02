@@ -1,9 +1,10 @@
 <!-- app/layouts/default.vue -->
 <script setup lang="ts">
 import { Button } from "@dlbcodes/ui";
-import { PhDownloadSimple } from "@phosphor-icons/vue";
+import { PhDownloadSimple, PhCornersOut, PhList } from "@phosphor-icons/vue";
 
 const user = useSupabaseUser();
+const { toggle } = useFullscreen();
 
 // Only the flags THIS layout's header triggers.
 const authModalOpen = useState("auth-modal-open", () => false);
@@ -24,15 +25,8 @@ const marketingLinks = [
         >
             <!-- Left: brand + (logged-out only) marketing nav -->
             <div class="flex items-center gap-6">
-                <NuxtLink to="/" class="flex items-center gap-2">
-                    <div
-                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-200 text-sm font-bold text-text-inverse"
-                    >
-                        P
-                    </div>
-                    <span class="text-base font-semibold tracking-tight"
-                        >PointViz</span
-                    >
+                <NuxtLink to="/">
+                    <BrandMark />
                 </NuxtLink>
 
                 <nav v-if="!user" class="hidden items-center gap-4 md:flex">
@@ -54,10 +48,19 @@ const marketingLinks = [
                 <Button
                     variant="ghost"
                     size="icon"
+                    aria-label="Fullscreen"
+                    @click="toggle"
+                >
+                    <PhCornersOut class="size-4" />
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    size="icon"
                     aria-label="Export & share"
                     @click="exportPanelOpen = !exportPanelOpen"
                 >
-                    <PhDownloadSimple class="size-4" />
+                    <PhList class="size-4" />
                 </Button>
 
                 <template v-if="!user">
