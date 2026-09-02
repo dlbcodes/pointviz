@@ -12,14 +12,16 @@ const feedbackModalOpen = useState("feedback-modal-open", () => false);
             <NuxtLink to="/">
                 <BrandMark />
             </NuxtLink>
-            <UserMenu
-                v-if="user"
-                @open-feedback="feedbackModalOpen = true"
-                variant="avatar"
-            />
+            <div>
+                <UserMenu
+                    v-if="user"
+                    @open-feedback="feedbackModalOpen = true"
+                    variant="avatar"
+                />
+            </div>
         </header>
 
-        <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
+        <main class="mx-auto w-full max-w-8xl flex-1 px-6 py-8">
             <slot />
         </main>
 

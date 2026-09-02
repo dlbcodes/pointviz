@@ -103,7 +103,7 @@ function applyAxisStyle(
 	};
 }
 
-export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: { brandmark?: boolean } = {},) {
+export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: { brandmark?: boolean; preview?: boolean } = {}) {
 	const { type, orientation, stack, categories, series, title, subtitle, style, goals } = spec;
 	const s = resolveStyle(spec, tokenTheme);
 	const horizontal = orientation === "horizontal";
@@ -111,7 +111,8 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 	const categoryAxis = { type: "category" as const, data: categories };
 	const valueAxis = { type: "value" as const };
 
-	const showBrandmark = opts.brandmark ?? true;
+	const preview = opts.preview ?? false;
+	const showBrandmark = !preview && (opts.brandmark ?? true);
 
 	const physicalX = applyAxisStyle(
 		horizontal ? { ...valueAxis } : { ...categoryAxis },
@@ -122,38 +123,30 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		s.axisLabelColor, s.gridColor, style?.yAxis,
 	);
 
-	// --- Vertical stack math for the top region: title block → legend → gap → plot ---
-	const hasTitle = !!title;
-	// title + subtitle block height (fixed estimate at default sizes)
+	// --- Vertical stack math for the top region ---
+	const hasTitle = !preview && !!spec.title; // title/subtitle suppressed in preview
 	const titleBlockHeight = hasTitle ? 64 : 0;
 
+	// Legend follows the spec, NOT preview — it stays visible in previews.
 	const legendPos = style?.legend?.position ?? "bottom";
-	const legendVisible = style?.legend?.visible !== false;
-	const legendOnTop = legendVisible && legendPos === "top";
-	// legend-on-top sits BELOW the title block, not over it
+	const showLegend = !preview && style?.legend?.visible !== false;
+	const legendOnTop = showLegend && legendPos === "top";
 	const legendTop = titleBlockHeight + (hasTitle ? 8 : 0);
 
-	const legend = legendConfig(style, s.subtitleColor, legendTop);
+	const legend = showLegend
+		? legendConfig(style, s.subtitleColor, legendTop)
+		: { show: false };
 
-	// Normalize value-label config once, applied to every series below.
 	const label = resolveLabel(style?.showValues, horizontal, s.axisLabelColor);
 
-	// Goal/target lines — horizontal reference lines at a value on the value axis.
-	// Attached to the first series only, so they render once across the plot.
 	const markLine =
 		goals?.length
 			? {
 				silent: true,
 				symbol: "none" as const,
 				data: goals.map((g) => ({
-					// vertical chart → horizontal line at yAxis value;
-					// horizontal chart → vertical line at xAxis value.
 					...(horizontal ? { xAxis: g.value } : { yAxis: g.value }),
-					lineStyle: {
-						color: g.color ?? s.subtitleColor,
-						type: "dashed" as const,
-						width: 1.5,
-					},
+					lineStyle: { color: g.color ?? s.subtitleColor, type: "dashed" as const, width: 1.5 },
 					label: {
 						show: !!g.label,
 						formatter: g.label ?? "",
@@ -175,7 +168,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 				subtext: subtitle,
 				left: 0,
 				top: 4,
-				itemGap: 6, // space between title and subtitle
+				itemGap: 6,
 				textStyle: {
 					fontSize: TITLE_SIZES[style?.title?.size ?? "md"],
 					color: style?.title?.color ?? s.titleColor,
@@ -197,14 +190,15 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 			extraCssText: "border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.16);",
 		},
 		legend,
-		grid: {
-			left: legendVisible && legendPos === "left" ? 120 : 32,
-			right: legendVisible && legendPos === "right" ? 120 : 32,
-			// top = title block + legend band (if on top) + breathing gap before plot
-			top: titleBlockHeight + (legendOnTop ? 32 : 0) + 24,
-			bottom: 32 + (legendVisible && legendPos === "bottom" ? 28 : 0),
-			containLabel: true,
-		},
+		grid: preview
+			? { left: 8, right: 8, top: 8, bottom: 8, containLabel: true }
+			: {
+				left: showLegend && legendPos === "left" ? 120 : 32,
+				right: showLegend && legendPos === "right" ? 120 : 32,
+				top: titleBlockHeight + (legendOnTop ? 32 : 0) + 24,
+				bottom: 32 + (showLegend && legendPos === "bottom" ? 28 : 0),
+				containLabel: true,
+			},
 		graphic: showBrandmark
 			? [
 				{
@@ -212,11 +206,12 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 					right: 12,
 					bottom: 10,
 					z: 100,
+					silent: true,
 					style: {
 						text: "PointViz",
 						fontSize: 11,
 						fontWeight: 600,
-						fill: s.subtitleColor, // muted, uses the theme's secondary color
+						fill: s.subtitleColor,
 						opacity: 0.7,
 					},
 				},
@@ -230,7 +225,6 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 			stack: stack ? "total" : undefined,
 			areaStyle: type === "area" ? { opacity: 0.15 } : undefined,
 			barCategoryGap: "40%",
-			// Disable the fade-others-on-hover behavior that vanishes bars on transparent bg
 			emphasis: { disabled: true },
 			itemStyle:
 				type === "bar"
@@ -239,9 +233,9 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 			smooth: type !== "bar" ? 0.35 : undefined,
 			lineStyle: type !== "bar" ? { width: 2.5 } : undefined,
 			label,
-			...(i === 0 && markLine ? { markLine } : {}), // goal lines on first series only
+			...(i === 0 && markLine ? { markLine } : {}),
 			data: ser.values,
-
 		})),
 	};
+
 }

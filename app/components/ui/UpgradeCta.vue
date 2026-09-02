@@ -15,7 +15,7 @@ const bars = [
 <template>
     <button
         type="button"
-        class="group flex w-full items-center justify-between outline-none"
+        class="group flex w-full items-center justify-between outline-none cursor-pointer"
         @click="upgradeModalOpen = true"
     >
         <div class="flex min-w-0 items-center gap-1.5 font-mono text-sm">

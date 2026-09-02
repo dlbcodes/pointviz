@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from "vue";
 import { compileToECharts } from "~/lib/compile";
 import { resolveTheme, type ChartTheme } from "~/lib/theme";
 import type { ChartSpec } from "~/lib/schema";
+import { useTimeAgo } from "@vueuse/core";
 
 const props = defineProps<{
     id: string;
@@ -13,12 +14,16 @@ const props = defineProps<{
 }>();
 
 const theme = ref<ChartTheme | null>(null);
+const timeAgo = useTimeAgo(() => new Date(props.updatedAt));
+
 onMounted(() => {
     theme.value = resolveTheme();
 });
 
 const option = computed(() =>
-    theme.value ? compileToECharts(props.spec, theme.value) : null,
+    theme.value
+        ? compileToECharts(props.spec, theme.value, { preview: true })
+        : null,
 );
 </script>
 
@@ -49,12 +54,7 @@ const option = computed(() =>
                 {{ title || "Untitled chart" }}
             </p>
             <p class="mt-0.5 text-xs text-text-tertiary">
-                {{
-                    new Date(updatedAt).toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                    })
-                }}
+                Last edited {{ timeAgo }}
             </p>
         </div>
     </NuxtLink>

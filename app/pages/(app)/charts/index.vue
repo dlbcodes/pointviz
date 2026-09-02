@@ -72,7 +72,10 @@ async function createChart() {
         </div>
 
         <!-- Grid of thumbnails -->
-        <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+            v-else
+            class="px-2 md:px-12 grid content-start gap-x-(--column-gap) gap-y-8 pb-20 [--column-gap:20px] [--max-column-count:4] [--min-column-width:300px] [--total-gap-width:calc((var(--max-column-count)-1)*var(--column-gap))] [--max-column-width:calc((100%-var(--total-gap-width))/var(--max-column-count))] grid-cols-[repeat(auto-fill,minmax(max(var(--min-column-width),var(--max-column-width)),1fr))] 720:gap-y-10 720:[--column-gap:24px] 840:[--min-column-width:360px] 1280:[--min-column-width:394px]"
+        >
             <ChartCard
                 v-for="chart in chartStore.savedCharts"
                 :key="chart.id"
