@@ -13,6 +13,17 @@ export const examples: ChartExample[] = [
   "type": "area",
   "title": "Strong revenue growth drove a 5× increase in MRR this year",
   "subtitle": "Monthly recurring revenue ($)",
+  "style": {
+    "yAxis": {
+      "visible": true,
+      "position": "right"
+    },
+    "legend": {
+      "visible": false,
+      "position": "top"
+    },
+    "showValues": true
+  },
   "categories": ["Jul", "Aug", "Sept", "Oct", "Nov", "Dec"],
   "series": [
     { "name": "MRR", "values": [14200, 18900, 27400, 34800, 51600, 71000] }

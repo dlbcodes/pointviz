@@ -1,14 +1,9 @@
 <!-- app/layouts/default.vue -->
 <script setup lang="ts">
 import { Button } from "@dlbcodes/ui";
-import { PhDownloadSimple, PhCornersOut, PhList } from "@phosphor-icons/vue";
 
 const user = useSupabaseUser();
-const { toggle } = useFullscreen();
-
-// Only the flags THIS layout's header triggers.
 const authModalOpen = useState("auth-modal-open", () => false);
-const exportPanelOpen = useState("export-panel-open", () => false);
 
 const marketingLinks = [
     { label: "How it works", to: "/how-it-works" },
@@ -21,51 +16,38 @@ const marketingLinks = [
         class="flex h-screen w-screen flex-col overflow-hidden bg-bg-base text-text-primary font-sans"
     >
         <header
-            class="flex h-14 shrink-0 items-center justify-between border-b border-border-default px-6"
+            class="grid h-14 shrink-0 grid-cols-3 items-center border-b border-border-default px-6"
         >
-            <!-- Left: brand + (logged-out only) marketing nav -->
-            <div class="flex items-center gap-6">
+            <!-- Center: logo -->
+            <div class="flex">
                 <NuxtLink to="/">
                     <BrandMark />
                 </NuxtLink>
+            </div>
 
-                <nav v-if="!user" class="hidden items-center gap-4 md:flex">
+            <!-- Left: marketing nav -->
+            <nav class="flex items-center justify-center gap-8">
+                <template v-if="!user">
                     <NuxtLink
                         v-for="link in marketingLinks"
                         :key="link.to"
                         :to="link.to"
-                        class="font-mono text-xs tracking-tight text-text-secondary transition-colors hover:text-text-primary"
+                        class="hidden font-mono text-xs tracking-tight text-text-primary transition-colors hover:text-text-primary md:inline"
                     >
                         {{ link.label }}
                     </NuxtLink>
-                </nav>
-            </div>
+                </template>
+                <NuxtLink v-else to="/charts">
+                    <Button variant="ghost" size="sm">My charts</Button>
+                </NuxtLink>
+            </nav>
 
-            <!-- Right: tool actions + auth -->
-            <div class="flex items-center gap-3">
-                <SaveIndicator />
-
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Fullscreen"
-                    @click="toggle"
-                >
-                    <PhCornersOut class="size-4" />
-                </Button>
-
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Export & share"
-                    @click="exportPanelOpen = !exportPanelOpen"
-                >
-                    <PhList class="size-4" />
-                </Button>
-
-                <template v-if="!user">
-                    <SaveButton />
-
+            <!-- Right: auth -->
+            <div class="flex items-center justify-end gap-3">
+                <template v-if="user">
+                    <UserMenu variant="avatar" />
+                </template>
+                <template v-else>
                     <NuxtLink to="/login">
                         <Button variant="ghost" size="sm">Log in</Button>
                     </NuxtLink>
@@ -79,9 +61,11 @@ const marketingLinks = [
             </div>
         </header>
 
-        <slot />
+        <!-- default.vue -->
+        <div class="flex-1 min-h-0">
+            <slot />
+        </div>
 
-        <!-- All global modals, mounted once -->
         <AppModals />
     </div>
 </template>
