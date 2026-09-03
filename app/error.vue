@@ -2,9 +2,10 @@
 import { computed } from "vue";
 import { Button } from "@dlbcodes/ui";
 import SpaceCatIcon from "~/assets/images/space-cat.png";
+import type { NuxtError } from "#app";
 
 const props = defineProps<{
-    error: { statusCode: number; statusMessage?: string };
+    error: NuxtError;
 }>();
 
 const is404 = computed(() => props.error?.statusCode === 404);
@@ -64,6 +65,12 @@ const goHome = () => clearError({ redirect: "/" });
                     {{ content.subtitle }}
                 </p>
             </div>
+
+            <pre
+                class="mt-6 max-w-full overflow-x-auto whitespace-pre-wrap rounded-lg bg-bg-subtle p-3 text-left text-xs font-mono text-danger-500"
+                >{{ error?.statusCode }} — {{ error?.statusMessage }}
+{{ error?.message }}</pre
+            >
 
             <Button class="mt-8 w-fit" @click="goHome">Back home</Button>
         </main>
