@@ -4,9 +4,9 @@
     How it works
 
     <iframe
-        src="https://www.pointviz.co/embed/kyjavld5"
+        src="http://localhost:3000/embed/gk8zqhdq"
         width="640"
-        height="360"
+        height="640"
         frameborder="0"
     ></iframe>
 

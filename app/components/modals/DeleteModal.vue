@@ -31,7 +31,7 @@ watch(open, (isOpen) => {
 </script>
 
 <template>
-    <Modal v-model="open" size="md">
+    <Modal v-model="open" size="lg">
         <ModalHeader>
             <ModalTitle>Delete this chart?</ModalTitle>
             <ModalDescription>This can't be undone.</ModalDescription>

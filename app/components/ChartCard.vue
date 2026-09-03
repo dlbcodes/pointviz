@@ -8,7 +8,12 @@ import {
     DropdownContent,
     DropdownItem,
 } from "@dlbcodes/ui";
-import { PhDotsThree, PhCopy, PhTrash } from "@phosphor-icons/vue";
+import {
+    PhDotsThree,
+    PhDotsThreeVertical,
+    PhCopy,
+    PhTrash,
+} from "@phosphor-icons/vue";
 import { compileToECharts } from "~/lib/compile";
 import { resolveTheme, type ChartTheme } from "~/lib/theme";
 import type { ChartSpec } from "~/lib/schema";
@@ -52,43 +57,47 @@ async function confirmDelete() {
 <template>
     <NuxtLink
         :to="`/charts/${id}`"
-        class="group flex flex-col overflow-hidden rounded-xl border border-border-default transition-colors hover:border-border-strong"
+        class="group relative flex flex-col bg-bg-base"
     >
-        <!-- Thumbnail -->
+        <!-- Thumbnail with a subtle inner frame -->
         <div
-            class="aspect-16/10 w-full overflow-hidden border-b border-border-default bg-bg-base pointer-events-none"
+            class="relative aspect-16/10 w-full overflow-hidden rounded-3xl border border-border-subtle bg-bg-surface p-3"
         >
-            <ClientOnly>
-                <VChart
-                    v-if="option"
-                    :option="option"
-                    autoresize
-                    class="h-full w-full p-2"
-                />
-            </ClientOnly>
+            <!-- transparent chart on top -->
+            <div class="pointer-events-none absolute inset-3">
+                <ClientOnly>
+                    <VChart
+                        v-if="option"
+                        :option="option"
+                        autoresize
+                        class="h-full w-full"
+                    />
+                </ClientOnly>
+            </div>
         </div>
 
+        <!-- Meta -->
         <!-- Meta row: title/date left, menu right -->
-        <div class="flex items-center justify-between gap-2 p-3">
+        <div class="flex items-center justify-between gap-2 px-4 py-3">
             <div class="min-w-0">
                 <p
-                    class="truncate text-sm font-medium text-text-primary group-hover:text-chart-teal transition-colors"
+                    class="truncate text-sm font-medium tracking-tight text-text-primary underline decoration-transparent decoration-1 underline-offset-[3px] transition-colors duration-200 group-hover:decoration-text-primary"
                 >
                     {{ title || "Untitled chart" }}
                 </p>
                 <p class="mt-0.5 text-xs text-text-tertiary">
-                    Last edited {{ timeAgo }}
+                    Edited {{ timeAgo }}
                 </p>
             </div>
 
-            <!-- Menu — stop clicks from navigating the card -->
+            <!-- Menu — fades in on hover, stays for focus/open -->
             <div class="shrink-0" @click.prevent.stop>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger
-                        class="flex size-7 items-center justify-center rounded-md text-text-tertiary outline-none transition-colors hover:bg-bg-subtle hover:text-text-primary"
+                        class="flex size-7 items-center justify-center rounded-lg text-text-tertiary opacity-0 outline-none transition-all duration-200 hover:bg-bg-subtle hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100 data-[state=open]:opacity-100 data-[state=open]:bg-bg-subtle"
                         aria-label="Chart options"
                     >
-                        <PhDotsThree class="size-4" weight="bold" />
+                        <PhDotsThreeVertical class="size-4" weight="bold" />
                     </DropdownTrigger>
 
                     <DropdownContent size="fit" class="p-1">
@@ -111,7 +120,6 @@ async function confirmDelete() {
             </div>
         </div>
 
-        <!-- Delete confirmation -->
         <DeleteModal
             v-model:open="deleteModalOpen"
             :chart-name="title"

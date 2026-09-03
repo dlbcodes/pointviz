@@ -195,8 +195,8 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		grid: preview
 			? { left: 8, right: 8, top: 8, bottom: 8, containLabel: true }
 			: {
-				left: showLegend && legendPos === "left" ? 120 : 32,
-				right: showLegend && legendPos === "right" ? 120 : 32,
+				left: showLegend && legendPos === "left" ? 120 : 12,
+				right: showLegend && legendPos === "right" ? 120 : 16,
 				top: titleBlockHeight + (legendOnTop ? 32 : 0) + 24,
 				bottom: 32 + (showLegend && legendPos === "bottom" ? 28 : 0),
 				containLabel: true,
