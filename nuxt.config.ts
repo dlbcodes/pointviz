@@ -38,7 +38,11 @@ export default defineNuxtConfig({
       },
     },
   },
-  nitro: { preset: "vercel" },
+  nitro: {
+    preset: "vercel", esbuild: {
+      options: { target: 'es2022' },
+    },
+  },
   app: {
     head: {
       titleTemplate: "%s · PointViz",
