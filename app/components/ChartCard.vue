@@ -1,10 +1,17 @@
 <!-- app/components/ChartCard.vue -->
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
+import { useTimeAgo } from "@vueuse/core";
+import {
+    Dropdown,
+    DropdownTrigger,
+    DropdownContent,
+    DropdownItem,
+} from "@dlbcodes/ui";
+import { PhDotsThree, PhCopy, PhTrash } from "@phosphor-icons/vue";
 import { compileToECharts } from "~/lib/compile";
 import { resolveTheme, type ChartTheme } from "~/lib/theme";
 import type { ChartSpec } from "~/lib/schema";
-import { useTimeAgo } from "@vueuse/core";
 
 const props = defineProps<{
     id: string;
@@ -13,6 +20,7 @@ const props = defineProps<{
     updatedAt: string;
 }>();
 
+const chartStore = useChartStore();
 const theme = ref<ChartTheme | null>(null);
 const timeAgo = useTimeAgo(() => new Date(props.updatedAt));
 
@@ -25,14 +33,63 @@ const option = computed(() =>
         ? compileToECharts(props.spec, theme.value, { preview: true })
         : null,
 );
+
+const deleting = ref(false);
+
+async function duplicate() {
+    await chartStore.duplicateChart(props.id);
+}
+
+async function remove() {
+    if (deleting.value) return;
+    deleting.value = true;
+    try {
+        await chartStore.deleteChart(props.id);
+    } finally {
+        deleting.value = false;
+    }
+}
 </script>
 
 <template>
     <NuxtLink
         :to="`/charts/${id}`"
-        class="group flex flex-col overflow-hidden rounded-xl border border-border-default transition-colors hover:border-border-strong"
+        class="group relative flex flex-col overflow-hidden rounded-xl border border-border-default transition-colors hover:border-border-strong"
     >
-        <!-- Thumbnail: a live mini-chart, non-interactive -->
+        <!-- Menu — stop clicks from triggering the card's navigation -->
+        <div
+            class="absolute right-2 top-2 z-10 opacity-0 transition-opacity group-hover:opacity-100"
+            @click.prevent.stop
+        >
+            <Dropdown placement="bottom-end">
+                <DropdownTrigger
+                    class="flex size-7 items-center justify-center rounded-md bg-bg-base/80 text-text-tertiary backdrop-blur outline-none transition-colors hover:text-text-primary"
+                    aria-label="Chart options"
+                >
+                    <PhDotsThree class="size-4" weight="bold" />
+                </DropdownTrigger>
+
+                <DropdownContent size="fit" class="p-1">
+                    <DropdownItem @click="duplicate">
+                        <PhCopy
+                            class="size-4 text-text-tertiary"
+                            aria-hidden="true"
+                        />
+                        Duplicate
+                    </DropdownItem>
+                    <DropdownItem
+                        class="text-danger-text hover:text-danger-text"
+                        :disabled="deleting"
+                        @click="remove"
+                    >
+                        <PhTrash class="size-4" aria-hidden="true" />
+                        {{ deleting ? "Deleting…" : "Delete" }}
+                    </DropdownItem>
+                </DropdownContent>
+            </Dropdown>
+        </div>
+
+        <!-- Thumbnail -->
         <div
             class="aspect-16/10 w-full overflow-hidden border-b border-border-default bg-bg-base pointer-events-none"
         >

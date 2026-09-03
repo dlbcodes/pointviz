@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     customizeModel: process.env.CUSTOMIZE_MODEL || "claude-haiku-4-5", // cheap; bump to sonnet if fuzzy asks underperform
   },
   devtools: { enabled: true },
-  modules: ['@nuxtjs/supabase', '@pinia/nuxt'],
+  modules: ['@nuxtjs/supabase', '@pinia/nuxt', '@vercel/analytics'],
   css: ['~/assets/styles/main.css'],
   components: [{ path: '~/components', pathPrefix: false }],
   vite: {

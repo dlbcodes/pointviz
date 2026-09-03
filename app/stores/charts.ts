@@ -59,6 +59,16 @@ export const useChartStore = defineStore("charts", () => {
 		setTimeout(() => (suppressAutosave.value = false), 1600);
 	}
 
+	async function duplicateChart(id: string) {
+		const source = await chartApiService.get(id); // need the full spec
+		const created = await chartApiService.create(
+			source.spec,
+			source.title ? `${source.title} (copy)` : "Untitled chart",
+		);
+		savedCharts.value.unshift(created);
+		return created;
+	}
+
 	async function deleteChart(id: string) {
 		await chartApiService.remove(id);
 		savedCharts.value = savedCharts.value.filter((c) => c.id !== id);
@@ -109,6 +119,7 @@ export const useChartStore = defineStore("charts", () => {
 		fetchCharts,
 		saveCurrent,
 		openChart,
+		duplicateChart,
 		deleteChart,
 		createFromStarter,
 		setPublic
