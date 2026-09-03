@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { PhCube } from "@phosphor-icons/vue";
 
 const props = withDefaults(
     defineProps<{
@@ -32,9 +33,9 @@ const viewBox = computed(() => (props.showName ? "0 0 114 32" : "0 0 32 32"));
 <template>
     <div class="flex items-center gap-2">
         <div
-            class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-200 text-sm font-bold text-text-inverse"
+            class="flex size-8 items-center justify-center rounded-lg bg-[#0a0a0a] text-sm font-bold text-text-inverse"
         >
-            P
+            <PhCube class="size-6" />
         </div>
         <span class="text-base font-semibold tracking-tight">PointViz</span>
     </div>

@@ -70,11 +70,13 @@ function applyAxisStyle(
 	axis: Record<string, unknown>,
 	labelColor: string,
 	gridColor: string,
-	style?: { visible: boolean; label?: string; position?: "left" | "right" },
+	style?: { visible: boolean; label?: string; position?: "left" | "right"; min?: number; max?: number },
 ) {
 	const isValue = axis.type === "value";
 	return {
 		...axis,
+		...(isValue && style?.min !== undefined ? { min: style.min } : {}),
+		...(isValue && style?.max !== undefined ? { max: style.max } : {}),
 		show: style?.visible !== false,
 		axisTick: { show: false }, // no tick marks — cleaner
 		axisLine: { show: false, lineStyle: { color: gridColor } }, // no axis frame on either axis

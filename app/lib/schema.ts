@@ -9,7 +9,9 @@ const HEX = z
 const AxisStyle = z.strictObject({
 	visible: z.boolean().default(true),
 	label: z.string().optional(),
-	position: z.enum(["left", "right"]).optional(), // which side the axis sits on
+	position: z.enum(["left", "right"]).optional(),
+	min: z.number().optional(), // value-axis start (ignored on category axis)
+	max: z.number().optional(), // value-axis end
 });
 
 const ValueLabels = z.union([

@@ -1,4 +1,6 @@
+<!-- app/components/DeleteChartModal.vue -->
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import {
     Modal,
     ModalHeader,
@@ -12,21 +14,15 @@ import {
 
 const open = defineModel<boolean>("open", { required: true });
 
-const props = defineProps<{
-    templateName?: string;
-}>();
-
-const emit = defineEmits<{
-    confirm: [];
-}>();
+const props = defineProps<{ chartName?: string | null }>();
+const emit = defineEmits<{ confirm: [] }>();
 
 const deleting = ref(false);
 
-async function onConfirm() {
+function onConfirm() {
     deleting.value = true;
     emit("confirm");
-    // parent closes the modal after the delete resolves;
-    // we reset the local flag when the modal closes
+    // parent closes the modal once the delete resolves
 }
 
 watch(open, (isOpen) => {
@@ -37,17 +33,17 @@ watch(open, (isOpen) => {
 <template>
     <Modal v-model="open" size="md">
         <ModalHeader>
-            <ModalTitle>Delete this template?</ModalTitle>
-            <ModalDescription>This action can't be undone.</ModalDescription>
+            <ModalTitle>Delete this chart?</ModalTitle>
+            <ModalDescription>This can't be undone.</ModalDescription>
             <ModalClose />
         </ModalHeader>
 
         <ModalContent>
             <p class="text-sm leading-relaxed text-text-secondary">
-                <span v-if="templateName" class="font-medium text-text-primary"
-                    >"{{ templateName }}"</span
-                ><span v-else>This template</span> will be permanently removed,
-                and anyone connected to it via MCP will lose access.
+                <span v-if="chartName" class="font-medium text-text-primary"
+                    >"{{ chartName }}"</span
+                ><span v-else>This chart</span> will be permanently deleted. Any
+                public links or embeds pointing to it will stop working.
             </p>
         </ModalContent>
 
@@ -56,15 +52,14 @@ watch(open, (isOpen) => {
                 variant="secondary"
                 :disabled="deleting"
                 @click="open = false"
+                >Cancel</Button
             >
-                Cancel
-            </Button>
             <Button
                 variant="destructive"
                 :disabled="deleting"
                 @click="onConfirm"
             >
-                {{ deleting ? "Deleting…" : "Delete template" }}
+                {{ deleting ? "Deleting…" : "Delete chart" }}
             </Button>
         </ModalFooter>
     </Modal>

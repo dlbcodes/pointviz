@@ -34,19 +34,17 @@ const option = computed(() =>
         : null,
 );
 
-const deleting = ref(false);
+const deleteModalOpen = ref(false);
 
 async function duplicate() {
     await chartStore.duplicateChart(props.id);
 }
 
-async function remove() {
-    if (deleting.value) return;
-    deleting.value = true;
+async function confirmDelete() {
     try {
         await chartStore.deleteChart(props.id);
     } finally {
-        deleting.value = false;
+        deleteModalOpen.value = false;
     }
 }
 </script>
@@ -54,41 +52,8 @@ async function remove() {
 <template>
     <NuxtLink
         :to="`/charts/${id}`"
-        class="group relative flex flex-col overflow-hidden rounded-xl border border-border-default transition-colors hover:border-border-strong"
+        class="group flex flex-col overflow-hidden rounded-xl border border-border-default transition-colors hover:border-border-strong"
     >
-        <!-- Menu — stop clicks from triggering the card's navigation -->
-        <div
-            class="absolute right-2 top-2 z-10 opacity-0 transition-opacity group-hover:opacity-100"
-            @click.prevent.stop
-        >
-            <Dropdown placement="bottom-end">
-                <DropdownTrigger
-                    class="flex size-7 items-center justify-center rounded-md bg-bg-base/80 text-text-tertiary backdrop-blur outline-none transition-colors hover:text-text-primary"
-                    aria-label="Chart options"
-                >
-                    <PhDotsThree class="size-4" weight="bold" />
-                </DropdownTrigger>
-
-                <DropdownContent size="fit" class="p-1">
-                    <DropdownItem @click="duplicate">
-                        <PhCopy
-                            class="size-4 text-text-tertiary"
-                            aria-hidden="true"
-                        />
-                        Duplicate
-                    </DropdownItem>
-                    <DropdownItem
-                        class="text-danger-text hover:text-danger-text"
-                        :disabled="deleting"
-                        @click="remove"
-                    >
-                        <PhTrash class="size-4" aria-hidden="true" />
-                        {{ deleting ? "Deleting…" : "Delete" }}
-                    </DropdownItem>
-                </DropdownContent>
-            </Dropdown>
-        </div>
-
         <!-- Thumbnail -->
         <div
             class="aspect-16/10 w-full overflow-hidden border-b border-border-default bg-bg-base pointer-events-none"
@@ -103,16 +68,54 @@ async function remove() {
             </ClientOnly>
         </div>
 
-        <!-- Meta -->
-        <div class="p-3">
-            <p
-                class="truncate text-sm font-medium text-text-primary group-hover:text-chart-teal transition-colors"
-            >
-                {{ title || "Untitled chart" }}
-            </p>
-            <p class="mt-0.5 text-xs text-text-tertiary">
-                Last edited {{ timeAgo }}
-            </p>
+        <!-- Meta row: title/date left, menu right -->
+        <div class="flex items-center justify-between gap-2 p-3">
+            <div class="min-w-0">
+                <p
+                    class="truncate text-sm font-medium text-text-primary group-hover:text-chart-teal transition-colors"
+                >
+                    {{ title || "Untitled chart" }}
+                </p>
+                <p class="mt-0.5 text-xs text-text-tertiary">
+                    Last edited {{ timeAgo }}
+                </p>
+            </div>
+
+            <!-- Menu — stop clicks from navigating the card -->
+            <div class="shrink-0" @click.prevent.stop>
+                <Dropdown placement="bottom-end">
+                    <DropdownTrigger
+                        class="flex size-7 items-center justify-center rounded-md text-text-tertiary outline-none transition-colors hover:bg-bg-subtle hover:text-text-primary"
+                        aria-label="Chart options"
+                    >
+                        <PhDotsThree class="size-4" weight="bold" />
+                    </DropdownTrigger>
+
+                    <DropdownContent size="fit" class="p-1">
+                        <DropdownItem @click="duplicate">
+                            <PhCopy
+                                class="size-4 text-text-tertiary"
+                                aria-hidden="true"
+                            />
+                            Duplicate
+                        </DropdownItem>
+                        <DropdownItem
+                            class="text-danger-text hover:text-danger-text"
+                            @click="deleteModalOpen = true"
+                        >
+                            <PhTrash class="size-4" aria-hidden="true" />
+                            Delete
+                        </DropdownItem>
+                    </DropdownContent>
+                </Dropdown>
+            </div>
         </div>
+
+        <!-- Delete confirmation -->
+        <DeleteModal
+            v-model:open="deleteModalOpen"
+            :chart-name="title"
+            @confirm="confirmDelete"
+        />
     </NuxtLink>
 </template>

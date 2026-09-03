@@ -55,11 +55,15 @@ const PatchSchema = z.object({
 				visible: z.boolean().optional(),
 				label: z.string().optional(),
 				position: z.enum(["left", "right"]).optional(),
+				min: z.number().optional(),
+				max: z.number().optional(),
 			}).optional(),
 			yAxis: z.object({
 				visible: z.boolean().optional(),
 				label: z.string().optional(),
 				position: z.enum(["left", "right"]).optional(),
+				min: z.number().optional(),
+				max: z.number().optional(),
 			}).optional(),
 		})
 		.optional(),
@@ -81,6 +85,8 @@ Examples:
 - "add a goal line at 50000 labeled Target" → { "goals": [{ "value": 50000, "label": "Target" }] }
 - "move the y-axis to the right" → { "style": { "yAxis": { "position": "right" } } }
 - "remove the goal line" → { "goals": [] }
+- "start the y-axis at zero" → { "style": { "yAxis": { "min": 0 } } }
+- "start the y-axis at zero" → { "style": { "yAxis": { "min": 0 } } }
 
 Fields you may patch:
 - type (bar/line/area), orientation (vertical/horizontal), stack, title, subtitle, source
@@ -96,6 +102,7 @@ Fields you may patch:
 - style.showValues: true/false, OR { show, position (inside/top/right/left/bottom), color (hex) } for label placement and color
 - goals: array of { value (number), label (optional), color (optional hex) } — horizontal target/reference lines at a value. Replaces existing goals.
 - style.yAxis.position / style.xAxis.position: "left" or "right" — which side the axis sits on.
+- style.yAxis.min / style.yAxis.max (and xAxis.min/max): the value axis start and end. "start the y-axis at 0" → yAxis.min 0. Note: the VALUE axis is yAxis on vertical charts, xAxis on horizontal charts — apply min/max to whichever holds the numbers.
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.
