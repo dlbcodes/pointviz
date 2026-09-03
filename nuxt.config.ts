@@ -25,9 +25,9 @@ export default defineNuxtConfig({
   },
   supabase: {
     redirectOptions: {
-      login: '/login',
-      callback: '/confirm',
-      include: ["/account(/*)?"],
+      login: "/login",
+      callback: "/confirm",
+      include: ["/account(/*)?", "/charts(/*)?"],
     },
   },
   routeRules: {

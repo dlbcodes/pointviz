@@ -12,7 +12,7 @@ import {
 } from "@dlbcodes/ui";
 import { PLANS } from "~~/shared/plans";
 
-definePageMeta({ layout: "app", middleware: "auth" });
+definePageMeta({ layout: "app" });
 
 const userStore = useUserStore();
 const { signOut } = useAuth();

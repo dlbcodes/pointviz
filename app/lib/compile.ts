@@ -59,6 +59,9 @@ function resolveLabel(
 	if (!cfg) return undefined;
 	return {
 		show: cfg.show !== false,
+		formatter: function (cfg) {
+			return Number(cfg.value).toFixed(2); // Keeps 2 decimal places
+		},
 		position: cfg.position ?? (horizontal ? "right" : "top"),
 		color: cfg.color ?? defaultColor,
 		fontWeight: 500,
@@ -210,7 +213,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 					z: 100,
 					silent: true,
 					style: {
-						text: "PointViz",
+						text: "PointViz.co",
 						fontSize: 11,
 						fontWeight: 600,
 						fill: s.subtitleColor,

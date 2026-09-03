@@ -1,6 +1,6 @@
 <!-- app/pages/(app)/charts/[id].vue -->
 <script setup lang="ts">
-definePageMeta({ layout: "builder", middleware: "auth" });
+definePageMeta({ layout: "builder" });
 
 const route = useRoute();
 const chartStore = useChartStore();

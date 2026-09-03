@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { Button } from "@dlbcodes/ui";
 import { PhPlus, PhChartBar } from "@phosphor-icons/vue";
 
-definePageMeta({ layout: "app", middleware: "auth" });
+definePageMeta({ layout: "app" });
 
 const chartStore = useChartStore();
 await chartStore.fetchCharts();
