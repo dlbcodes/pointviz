@@ -2,7 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: '2025-01-01',
   // nuxt.config.ts — add to defineNuxtConfig({ ... })
   runtimeConfig: {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
@@ -26,6 +26,15 @@ export default defineNuxtConfig({
         "lz-string"
       ],
     },
+    build: {
+      // ensure module preload polyfill is included (helps Safari)
+      modulePreload: { polyfill: true },
+    },
+  },
+  experimental: {
+    // Nuxt emits an app manifest that uses import-map-style resolution;
+    // this is often what leaks '#entry'. Try disabling it.
+    appManifest: false,
   },
   supabase: {
     redirectOptions: {
