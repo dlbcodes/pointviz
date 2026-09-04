@@ -7,7 +7,12 @@ const chartStore = useChartStore();
 
 // Load the owned chart into the builder before render.
 onMounted(async () => {
-    await chartStore.openChart(route.params.id as string);
+    try {
+        await chartStore.openChart(route.params.id as string);
+    } catch {
+        // chart not found / not yours — send them to their library
+        await navigateTo("/charts");
+    }
 });
 </script>
 

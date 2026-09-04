@@ -20,6 +20,10 @@ export default defineNuxtConfig({
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@phosphor-icons/vue',
+        "zod",
+        "echarts",
+        "vue-echarts",
+        "lz-string"
       ],
     },
   },
