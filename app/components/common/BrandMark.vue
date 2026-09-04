@@ -1,42 +1,46 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { PhCube } from "@phosphor-icons/vue";
 
 const props = withDefaults(
     defineProps<{
         size?: "2xs" | "xs" | "sm" | "base" | "lg";
         showName?: boolean;
     }>(),
-    {
-        size: "base",
-        showName: true,
-    },
+    { size: "base", showName: true },
 );
 
-const sizeMap = {
-    "2xs": 14,
-    xs: 18,
-    sm: 24,
-    base: 32,
-    lg: 40,
-} as const;
+const sizeMap = { "2xs": 14, xs: 18, sm: 24, base: 32, lg: 40 } as const;
+const height = computed(() => sizeMap[props.size]);
 
-const size = computed(() => sizeMap[props.size]);
-
+// The icon occupies ~29 units wide; the full logo ~107. Scale width to match height.
+const ICON_W = 29;
+const FULL_W = 107;
 const width = computed(() =>
-    props.showName ? Math.round(size.value * (114 / 32)) : size.value,
+    Math.round(height.value * ((props.showName ? FULL_W : ICON_W) / 32)),
 );
-
-const viewBox = computed(() => (props.showName ? "0 0 114 32" : "0 0 32 32"));
+const viewBox = computed(() => (props.showName ? "0 0 107 32" : "0 0 29 32"));
 </script>
 
 <template>
-    <div class="flex items-center gap-2">
-        <div
-            class="flex size-8 items-center justify-center rounded-lg bg-[#0a0a0a] text-sm font-bold text-text-inverse"
-        >
-            <PhCube class="size-6" />
-        </div>
-        <span class="text-base font-semibold tracking-tight">PointViz</span>
-    </div>
+    <svg
+        :width="width"
+        :height="height"
+        :viewBox="viewBox"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        fill-rule="nonzero"
+        aria-label="PointViz"
+    >
+        <!-- Icon (cube) — always visible -->
+        <path
+            d="M27.84 7.94 15.57 1.274a2.23 2.23 0 0 0-2.14 0L1.16 7.942A2.21 2.21 0 0 0 0 9.88v13.24c.002.807.446 1.55 1.16 1.938l12.27 6.668a2.23 2.23 0 0 0 2.14 0l12.27-6.668A2.21 2.21 0 0 0 29 23.12V9.882c0-.81-.445-1.554-1.16-1.942M14.5 3.212l11.201 6.091L14.5 15.394 3.299 9.304zm-12.27 8.03 11.155 6.06v11.875L2.23 23.121z"
+        />
+        <path d="M16 29V17.088L27 11v11.917z" />
+
+        <!-- Wordmark — only when showName -->
+        <path
+            v-if="showName"
+            d="M40.17 22v-4.015h1.618q1.166 0 2.089-.461a3.46 3.46 0 0 0 1.44-1.312q.519-.85.519-1.95t-.518-1.96a3.5 3.5 0 0 0-1.441-1.327q-.923-.47-2.089-.47H38V22zm1.343-5.99H40.17v-3.562h1.344q.972 0 1.506.47t.534 1.311-.534 1.311-1.506.47m8.815 6.184q1.197 0 2.129-.558a3.8 3.8 0 0 0 1.449-1.587q.518-1.028.518-2.404t-.518-2.404a3.8 3.8 0 0 0-1.45-1.587q-.93-.558-2.128-.558-1.215 0-2.137.558-.924.56-1.441 1.587-.519 1.028-.518 2.404 0 1.376.518 2.404.517 1.028 1.44 1.587t2.138.558m0-1.894q-.89 0-1.385-.704-.493-.705-.493-1.95 0-1.248.493-1.952.495-.705 1.385-.704.89 0 1.384.704.494.705.494 1.951 0 1.247-.494 1.95-.494.705-1.384.705m10.287-8.03v-1.845h-2.169v1.845zm-5.277 1.02v1.797l3.172.001v5.115h-3.334V22h8.289v-1.797h-2.85V13.29h-5.277M66.37 22v-4.97q0-1.02.445-1.579a1.4 1.4 0 0 1 1.142-.558q.712 0 1.02.486.307.485.307 1.521V22h2.105v-5.65q0-1.49-.696-2.372t-1.991-.882q-1.053 0-1.773.64a2.7 2.7 0 0 0-.687.991l-.042.11-.04-1.547h-1.894V22zm13.785 0v-1.797h-2.218q-.6 0-.89-.291-.292-.293-.292-.89v-3.934h3.4V13.29l-3.4.001v-2.105h-2.12l-.001 2.105h-2.477v1.796l2.477.001v4.079q0 1.32.592 2.016l.113.12q.705.697 2.16.697zm5.981 0 3.465-11.494h-2.364l-2.234 7.923-2.234-7.923h-2.364L83.87 22zm9.155-9.73v-1.845h-2.17v1.845zm-5.278 1.02v1.797l3.173.001v5.115h-3.335V22h8.29v-1.797h-2.85V13.29h-5.278M106.097 22v-1.797h-4.84l4.694-4.954V13.29h-7.204v1.797h4.517l-4.679 4.954V22z"
+        />
+    </svg>
 </template>

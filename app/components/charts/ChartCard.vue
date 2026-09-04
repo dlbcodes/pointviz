@@ -78,7 +78,7 @@ async function confirmDelete() {
 
         <!-- Meta -->
         <!-- Meta row: title/date left, menu right -->
-        <div class="flex items-center justify-between gap-2 px-4 py-3">
+        <div class="flex items-center justify-between gap-2 px-4 py-2">
             <div class="min-w-0">
                 <p
                     class="truncate text-sm font-medium tracking-tight text-text-primary underline decoration-transparent decoration-1 underline-offset-[3px] transition-colors duration-200 group-hover:decoration-text-primary"

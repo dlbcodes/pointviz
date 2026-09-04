@@ -1,7 +1,13 @@
 <!-- app/pages/(app)/charts/index.vue -->
 <script setup lang="ts">
 import { ref } from "vue";
-import { Button } from "@dlbcodes/ui";
+import {
+    Button,
+    Select,
+    SelectTrigger,
+    SelectContent,
+    SelectItem,
+} from "@dlbcodes/ui";
 import { PhPlus, PhChartBar } from "@phosphor-icons/vue";
 
 definePageMeta({ layout: "app" });
@@ -23,6 +29,8 @@ async function createChart() {
         creating.value = false;
     }
 }
+
+const value = ref("edited");
 </script>
 
 <template>
@@ -37,15 +45,30 @@ async function createChart() {
                     }}
                 </p>
             </div>
-            <Button
-                variant="primary"
-                size="sm"
-                :disabled="creating"
-                @click="createChart"
-            >
-                <PhPlus class="size-4" />
-                {{ creating ? "Creating…" : "Create chart" }}
-            </Button>
+            <div class="flex items-center gap-x-2">
+                <Select v-model="value" class="w-40">
+                    <SelectTrigger placeholder="Pick a framework" size="sm" />
+                    <SelectContent>
+                        <SelectItem value="created" label="Created at"
+                            >Created at</SelectItem
+                        >
+                        <SelectItem value="edited" label="Edit at">
+                            Edit at
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+
+                <Button
+                    variant="primary"
+                    size="sm"
+                    class="whitespace-nowrap"
+                    :disabled="creating"
+                    @click="createChart"
+                >
+                    <PhPlus class="size-4" />
+                    {{ creating ? "Creating…" : "Create chart" }}
+                </Button>
+            </div>
         </div>
 
         <!-- Empty state -->

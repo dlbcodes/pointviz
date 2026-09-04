@@ -3,7 +3,7 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "build": "prisma generate && prisma migrate deploy && (npx tsx prisma/seeds/seedTriggers.ts || true) && nuxt build",
+        "build": "prisma generate && prisma migrate deploy && (npx tsx prisma/seeds/seedTriggers.ts || true) && (npx tsx prisma/seeds/setupRLS.ts || true) && nuxt build",
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
@@ -12,6 +12,7 @@
         "db:migrate": "prisma migrate dev",
         "db:deploy": "prisma migrate deploy",
         "db:triggers": "tsx prisma/seeds/seedTriggers.ts",
+        "db:rls": "tsx prisma/seeds/setupRLS.ts",
         "db:studio": "prisma studio"
     },
     "dependencies": {
