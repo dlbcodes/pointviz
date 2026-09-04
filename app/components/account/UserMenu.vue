@@ -22,8 +22,6 @@ import {
 
 const props = withDefaults(
     defineProps<{
-        // "full" → avatar + name + email + chevron (sidebar footer)
-        // "avatar" → just the avatar (header)
         variant?: "full" | "avatar";
     }>(),
     { variant: "full" },

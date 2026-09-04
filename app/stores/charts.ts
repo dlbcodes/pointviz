@@ -22,6 +22,7 @@ export const useChartStore = defineStore("charts", () => {
 	const lastSavedAt = ref<Date | null>(null);
 	const suppressAutosave = ref(false);
 
+
 	async function fetchCharts() {
 		loading.value = true;
 		try {
@@ -50,13 +51,14 @@ export const useChartStore = defineStore("charts", () => {
 	}
 
 	async function openChart(id: string) {
-		const chart = await chartApiService.get(id);
-		// Don't autosave the spec we're about to load (it's already what's in the DB).
+		// Clear the current chart immediately so the previous one doesn't flash.
+		loadSpec("");           // or a "loading" state
+		currentChartId.value = null;
 		suppressAutosave.value = true;
-		loadSpec(JSON.stringify(chart.spec, null, 2)); // loadSpec clears currentChartId…
-		currentChartId.value = chart.id; // …so we re-attach it here, after loading.
-		// Re-enable after the debounced watch has had its chance to fire-and-skip.
-		setTimeout(() => (suppressAutosave.value = false), 1600);
+		const chart = await chartApiService.get(id);
+		loadSpec(JSON.stringify(chart.spec, null, 2));
+		currentChartId.value = chart.id;
+		setTimeout(() => (suppressAutosave.value = false), 100);
 	}
 
 	async function duplicateChart(id: string) {

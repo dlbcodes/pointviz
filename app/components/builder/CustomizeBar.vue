@@ -8,7 +8,7 @@ import {
     Textarea,
     Button,
 } from "@dlbcodes/ui";
-import { PhArrowUp } from "@phosphor-icons/vue";
+import { PhArrowElbowDownLeft } from "@phosphor-icons/vue";
 
 const { instruction, pending, customizeError, customize, canCustomize } =
     useCustomize();
@@ -51,7 +51,7 @@ const onKeydown = (e: KeyboardEvent): void => {
 </script>
 
 <template>
-    <div v-if="canCustomize" class="mx-auto w-full max-w-3xl space-y-1.5">
+    <div v-if="canCustomize" class="mx-auto w-full max-w-4xl space-y-1.5">
         <Panel class="overflow-visible">
             <PanelHeader
                 class="flex flex-nowrap gap-1.5 overflow-x-auto pb-2 no-scrollbar"
@@ -70,27 +70,31 @@ const onKeydown = (e: KeyboardEvent): void => {
             </PanelHeader>
 
             <PanelContent
-                class="flex cursor-text flex-col gap-2 p-3 border border-border-subtle"
+                class="cursor-text p-3 border border-border-subtle"
                 @click="focusInput"
             >
-                <Textarea
-                    ref="inputRef"
-                    v-model="instruction"
-                    autosize
-                    :rows="1"
-                    :disabled="pending"
-                    placeholder="Describe a change — e.g. make it horizontal with a colorblind palette"
-                    class="border-0 bg-transparent shadow-none focus-within:ring-0"
-                    @keydown="onKeydown"
-                />
-                <div class="flex items-center justify-end">
+                <div class="flex items-end gap-2">
+                    <Textarea
+                        ref="inputRef"
+                        v-model="instruction"
+                        autosize
+                        :rows="1"
+                        :disabled="pending"
+                        placeholder="Describe a change — e.g. make it horizontal with a colorblind palette"
+                        class="flex-1 border-0 bg-transparent shadow-none focus-within:ring-0"
+                        @keydown="onKeydown"
+                    />
                     <Button
                         size="icon"
+                        class="shrink-0"
                         aria-label="Apply change"
                         :disabled="!instruction.trim() || pending"
                         @click="submit"
                     >
-                        <PhArrowUp class="size-5" aria-hidden="true" />
+                        <PhArrowElbowDownLeft
+                            class="size-5"
+                            aria-hidden="true"
+                        />
                     </Button>
                 </div>
             </PanelContent>

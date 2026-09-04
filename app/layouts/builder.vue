@@ -17,7 +17,7 @@ const exportPanelOpen = useState("export-panel-open", () => false);
         >
             <!-- Left: brand + back to library -->
             <div class="flex items-center gap-4">
-                <NuxtLink to="/">
+                <NuxtLink to="/charts">
                     <BrandMark />
                 </NuxtLink>
             </div>
