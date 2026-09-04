@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     customizeModel: process.env.CUSTOMIZE_MODEL || "claude-haiku-4-5", // cheap; bump to sonnet if fuzzy asks underperform
   },
   devtools: { enabled: true },
-  modules: ['@vueuse/nuxt', '@nuxtjs/supabase', '@pinia/nuxt'],
+  modules: ['@vueuse/nuxt', '@nuxtjs/supabase', '@pinia/nuxt', '@vercel/analytics', '@nuxtjs/sitemap'],
   css: ['~/assets/styles/main.css'],
   components: [{ path: '~/components', pathPrefix: false }],
   vite: {
@@ -26,15 +26,6 @@ export default defineNuxtConfig({
         "lz-string"
       ],
     },
-    build: {
-      // ensure module preload polyfill is included (helps Safari)
-      modulePreload: { polyfill: true },
-    },
-  },
-  experimental: {
-    // Nuxt emits an app manifest that uses import-map-style resolution;
-    // this is often what leaks '#entry'. Try disabling it.
-    appManifest: false,
   },
   supabase: {
     redirectOptions: {
@@ -43,18 +34,25 @@ export default defineNuxtConfig({
       include: ["/account(/*)?", "/charts(/*)?"],
     },
   },
-  routeRules: {
-    "/embed/**": {
-      headers: {
-        "X-Frame-Options": "", // clear any deny
-        "Content-Security-Policy": "frame-ancestors *;", // allow embedding anywhere
+  nitro: {
+    preset: "vercel",
+    esbuild: {
+      options: { target: "es2022" },
+    },
+    routeRules: {
+      "/embed/**": {
+        headers: {
+          "X-Frame-Options": "",
+          "Content-Security-Policy": "frame-ancestors *;",
+        },
       },
     },
   },
-  nitro: {
-    preset: "vercel", esbuild: {
-      options: { target: 'es2022' },
-    },
+  site: {
+    url: 'https://www.pointviz.co',
+  },
+  sitemap: {
+    exclude: ['/charts/**', '/account', '/login', '/signup', '/confirm', '/recover', '/embed/**', '/c/**'],
   },
   app: {
     head: {
