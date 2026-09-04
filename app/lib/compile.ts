@@ -209,15 +209,15 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 				{
 					type: "text",
 					right: 12,
-					bottom: 10,
+					bottom: 6,
 					z: 100,
 					silent: true,
 					style: {
-						text: "PointViz.co",
+						text: "Made with PointViz.co",
 						fontSize: 11,
 						fontWeight: 600,
-						fill: s.subtitleColor,
-						opacity: 0.7,
+						fill: s.titleColor,
+						opacity: 1,
 					},
 				},
 			]

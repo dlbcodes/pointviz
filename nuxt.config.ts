@@ -3,10 +3,9 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
-  // nuxt.config.ts — add to defineNuxtConfig({ ... })
   runtimeConfig: {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
-    customizeModel: process.env.CUSTOMIZE_MODEL || "claude-haiku-4-5", // cheap; bump to sonnet if fuzzy asks underperform
+    customizeModel: process.env.CUSTOMIZE_MODEL || "claude-haiku-4-5",
   },
   devtools: { enabled: true },
   modules: ['@vueuse/nuxt', '@nuxtjs/supabase', '@pinia/nuxt', '@vercel/analytics', '@nuxtjs/sitemap'],
@@ -63,7 +62,7 @@ export default defineNuxtConfig({
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           name: "description",
-          content: "Turn any Figma design into a template your AI rebuilds directly in your stack. Paste a link, connect to Claude, remix.",
+          content: "Charts you describe, not draw",
         },
         { property: "og:site_name", content: "PointViz" },
         { property: "og:type", content: "website" },
