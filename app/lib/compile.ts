@@ -233,7 +233,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 			emphasis: { disabled: true },
 			itemStyle:
 				type === "bar"
-					? { borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0] }
+					? { borderRadius: horizontal ? [0, 0, 0, 0] : [4, 4, 0, 0] }
 					: undefined,
 			smooth: type !== "bar" ? 0.35 : undefined,
 			lineStyle: type !== "bar" ? { width: 2.5 } : undefined,

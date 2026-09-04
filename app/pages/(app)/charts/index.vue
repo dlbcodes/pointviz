@@ -7,7 +7,10 @@ import { PhPlus, PhChartBar } from "@phosphor-icons/vue";
 definePageMeta({ layout: "app" });
 
 const chartStore = useChartStore();
-await chartStore.fetchCharts();
+
+onMounted(async () => {
+    await chartStore.fetchCharts();
+});
 
 const creating = ref(false);
 async function createChart() {
