@@ -22,7 +22,6 @@
         "@prisma/adapter-pg": "^7.10.0",
         "@prisma/client": "^7.10.0",
         "@tailwindcss/vite": "^4.3.3",
-        "@vercel/analytics": "^2.0.1",
         "echarts": "^6.1.0",
         "lz-string": "^1.5.0",
         "nuxt": "^4.4.8",
@@ -40,6 +39,8 @@
         }
     },
     "devDependencies": {
+        "@vueuse/core": "^14.4.0",
+        "@vueuse/nuxt": "^14.4.0",
         "dotenv": "^17.4.2",
         "postgres": "^3.4.9",
         "prisma": "^7.10.0",
