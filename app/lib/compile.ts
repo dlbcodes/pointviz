@@ -1,6 +1,9 @@
 // app/lib/compile.ts
 import type { ChartSpec } from "~/lib/schema";
 import { THEMES, NAMED_PALETTES, type ThemeName, type ChartTheme } from "~/lib/theme";
+// app/lib/compile.ts — near the top, module scope
+const BRANDMARK_DATA_URI =
+	"data:image/svg+xml,%3Csvg width='29px' height='32px' viewBox='0 0 29 32' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg id='Logo-Black' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Group' transform='translate(0.000000, 1.000000)' fill='%23000000' fill-rule='nonzero'%3E%3Cpath d='M27.84,6.93954222 L15.5707692,0.274179322 L15.5707692,0.274179322 C14.9044015,-0.0913931073 14.0955985,-0.0913931073 13.4292308,0.274179322 L1.16,6.94231081 C0.446359129,7.32999513 0.0018465146,8.07264079 0,8.88031871 L0,22.1196813 C0.0018465146,22.9273592 0.446359129,23.6700049 1.16,24.0576892 L13.4292308,30.7258207 C14.0955985,31.0913931 14.9044015,31.0913931 15.5707692,30.7258207 L27.84,24.0576892 C28.5536409,23.6700049 28.9981535,22.9273592 29,22.1196813 L29,8.881703 C28.9996793,8.0725362 28.5549535,7.32794226 27.84,6.93954222 Z M14.5,2.21218723 L14.5,2.21218723 L25.70125,8.30306921 L14.5,14.3939512 L3.29875,8.30306921 L14.5,2.21218723 Z M2.23076923,10.2410771 L13.3846154,16.3015047 L13.3846154,28.1773403 L2.23076923,22.1210656 L2.23076923,10.2410771 Z' id='Shape'%3E%3C/path%3E%3Cpolygon id='Path' points='16 28 16 16.0875203 27 10 27 21.9166474'%3E%3C/polygon%3E%3C/g%3E%3C/g%3E%3C/svg%3E";
 
 // Semantic type scale the compiler owns — the agent picks sm/md/lg/xl, we map to px.
 const TITLE_SIZES = { sm: 16, md: 18, lg: 22, xl: 26 } as const;
@@ -207,18 +210,42 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		graphic: showBrandmark
 			? [
 				{
-					type: "text",
-					right: 12,
-					bottom: 6,
+					type: "group",
+					right: 20,      // was 12 — more room on the right
+					bottom: 0,     // was 10 — more room below, so shadow isn't clipped
 					z: 100,
 					silent: true,
-					style: {
-						text: "Made with PointViz.co",
-						fontSize: 11,
-						fontWeight: 600,
-						fill: s.titleColor,
-						opacity: 1,
-					},
+					children: [
+						// rounded background box with subtle shadow
+						{
+							type: "rect",
+							shape: { width: 162, height: 28, r: 8 },
+							style: {
+								fill: "#ffffff",
+								stroke: "#e0e0e0",   // border color
+								lineWidth: 1,         // border width
+							},
+						},
+						// logo image (needs a raster/data-URI of your brandmark)
+						{
+							type: "image",
+							left: 8,
+							top: 6,
+							style: { image: BRANDMARK_DATA_URI, width: 16, height: 16 },
+						},
+						// text
+						{
+							type: "text",
+							left: 30,
+							top: 8,
+							style: {
+								text: "Made with PointViz.co",
+								fontSize: 12,
+								fontWeight: 600,
+								fill: "#141414",
+							},
+						},
+					],
 				},
 			]
 			: undefined,
