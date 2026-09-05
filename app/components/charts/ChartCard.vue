@@ -57,11 +57,12 @@ async function confirmDelete() {
 <template>
     <NuxtLink
         :to="`/charts/${id}`"
-        class="group relative flex flex-col bg-bg-base"
+        class="group relative flex flex-col bg-bg-base rounded-2xl overflow-hidden border border-border-subtle"
     >
         <!-- Thumbnail with a subtle inner frame -->
         <div
-            class="relative aspect-16/10 w-full overflow-hidden rounded-3xl border border-border-subtle bg-bg-surface p-3"
+            class="relative aspect-16/10 w-full overflow-hidden bg-bg-surface p-3"
+            :style="{ backgroundColor: option?.backgroundColor }"
         >
             <!-- transparent chart on top -->
             <div class="pointer-events-none absolute inset-3">
@@ -78,7 +79,9 @@ async function confirmDelete() {
 
         <!-- Meta -->
         <!-- Meta row: title/date left, menu right -->
-        <div class="flex items-center justify-between gap-2 px-4 py-2">
+        <div
+            class="flex items-center justify-between gap-2 px-4 py-2 border-t border-border-subtle"
+        >
             <div class="min-w-0">
                 <p
                     class="truncate text-sm font-medium tracking-tight text-text-primary underline decoration-transparent decoration-1 underline-offset-[3px] transition-colors duration-200 group-hover:decoration-text-primary"

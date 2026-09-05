@@ -10,9 +10,10 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
 
 <template>
     <div
-        class="h-screen pt-4 pb-8 px-8 bg-bg-surface/40 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)]"
+        class="flex h-screen flex-col overflow-hidden pt-4 pb-8 px-8 bg-bg-surface/40 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)]"
     >
-        <div class="flex justify-between items-center px-4 pb-4">
+        <!-- Header: fixed, doesn't grow -->
+        <div class="flex shrink-0 items-center justify-between px-4 pb-4">
             <NuxtLink to="/charts">
                 <BrandMark />
             </NuxtLink>
@@ -26,8 +27,10 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
                 />
             </div>
         </div>
+
+        <!-- Main: fills remaining space, scrolls internally -->
         <main
-            class="bg-bg-base rounded-3xl h-full overflow-y-auto p-8 border border-border-default"
+            class="min-h-0 flex-1 overflow-y-auto rounded-3xl border border-border-default bg-bg-base p-8"
         >
             <slot />
         </main>
