@@ -15,9 +15,9 @@ const open = defineModel<boolean>("open", { required: true });
             <!-- Centered offer header -->
             <div class="mb-8 flex flex-col items-center text-center">
                 <div
-                    class="mb-3 flex size-11 items-center justify-center rounded-full bg-bg-subtle"
+                    class="mb-3 flex size-14 items-center justify-center rounded-full bg-linear-to-r from-gray-700 via-gray-900 to-black"
                 >
-                    <PhSparkle class="size-5 text-brand-200" weight="fill" />
+                    <PhSparkle class="size-8 text-amber-400" weight="fill" />
                 </div>
                 <h2 class="text-xl font-semibold tracking-tight">
                     Unlock unlimited AI
