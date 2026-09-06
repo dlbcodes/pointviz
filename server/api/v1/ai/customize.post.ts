@@ -77,6 +77,7 @@ const PatchSchema = z.object({
 				min: z.number().optional(),
 				max: z.number().optional(),
 			}).optional(),
+			showSymbol: z.boolean().optional(),
 		})
 		.optional(),
 });
@@ -122,6 +123,8 @@ Fields you may patch:
 - style.yAxis.min / style.yAxis.max (and xAxis.min/max): the value axis start and end. "start the y-axis at 0" → yAxis.min 0. Note: the VALUE axis is yAxis on vertical charts, xAxis on horizontal charts — apply min/max to whichever holds the numbers.
 - style/showLabels on scatter: set showLabels: true to label points with their names next to the dots. Useful for identifying points (e.g. country names). On dense scatters, overlapping labels are auto-hidden.
 - "label the points" / "show country names" → { "showLabels": true }
+- On scatter charts, style.xAxis.min/max and style.yAxis.min/max set the axis ranges (e.g. start the gini axis at 0.2). xAxis = the xLabel measure, yAxis = the yLabel measure.
+- style.showSymbol: on line/area charts, false removes the point markers (dots) for a clean line. "remove the dots" / "hide point markers" → { "style": { "showSymbol": false } }
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.

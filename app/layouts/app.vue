@@ -7,6 +7,7 @@ const user = useSupabaseUser();
 const feedbackModalOpen = useState("feedback-modal-open", () => false);
 const helpModalOpen = useState("help-modal-open", () => false);
 const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
+const upgradeModalOpen = useState("upgrade-modal-open", () => false);
 </script>
 
 <template>
@@ -19,7 +20,7 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
                 <BrandMark />
             </NuxtLink>
             <div class="flex items-center gap-x-4">
-                <Button size="sm">
+                <Button size="sm" @click="upgradeModalOpen = true">
                     <PhLightning class="text-amber-400" weight="fill" />
                     Upgrade
                 </Button>

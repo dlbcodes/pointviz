@@ -43,6 +43,7 @@ const StyleSchema = z.strictObject({
 	subtitle: TextStyle.optional(),
 	backgroundColor: HEX.optional(),
 	showValues: ValueLabels.optional(),
+	showSymbol: z.boolean().optional(),
 	legend: z
 		.strictObject({
 			visible: z.boolean().default(true),
