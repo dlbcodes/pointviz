@@ -112,14 +112,12 @@ function applyAxisStyle(
 }
 
 export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: { brandmark?: boolean; preview?: boolean } = {}) {
-	const { type, orientation, stack, categories, series, title, subtitle, style, goals } = spec;
 	const s = resolveStyle(spec, tokenTheme);
-	const horizontal = orientation === "horizontal";
-
 	const preview = opts.preview ?? false;
 	const showBrandmark = !preview && (opts.brandmark ?? true);
+	const style = spec.style;
 
-	// Shared brandmark badge (used by both pie and cartesian branches)
+	// Shared brandmark badge
 	const brandmarkGraphic = showBrandmark
 		? [
 			{
@@ -129,27 +127,105 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 				z: 100,
 				silent: true,
 				children: [
-					{
-						type: "rect" as const,
-						shape: { width: 162, height: 28, r: 8 },
-						style: { fill: "#ffffff", stroke: "#e0e0e0", lineWidth: 1 },
-					},
-					{
-						type: "image" as const,
-						left: 8,
-						top: 6,
-						style: { image: BRANDMARK_DATA_URI, width: 16, height: 16 },
-					},
-					{
-						type: "text" as const,
-						left: 30,
-						top: 8,
-						style: { text: "Made with PointViz.co", fontSize: 12, fontWeight: 600, fill: "#141414" },
-					},
+					{ type: "rect" as const, shape: { width: 162, height: 28, r: 8 }, style: { fill: "#ffffff", stroke: "#e0e0e0", lineWidth: 1 } },
+					{ type: "image" as const, left: 8, top: 6, style: { image: BRANDMARK_DATA_URI, width: 16, height: 16 } },
+					{ type: "text" as const, left: 30, top: 8, style: { text: "Made with PointViz.co", fontSize: 12, fontWeight: 600, fill: "#141414" } },
 				],
 			},
 		]
 		: undefined;
+
+	// ─── SCATTER: two value axes, point-based series (spec narrowed to ScatterShape) ───
+	if (spec.type === "scatter") {
+		const hasTitleScatter = !preview && !!spec.title;
+		const showLegend = !preview && style?.legend?.visible !== false && spec.series.length > 1;
+
+		return {
+			backgroundColor: s.background,
+			color: s.palette,
+			title: hasTitleScatter
+				? {
+					text: spec.title,
+					subtext: spec.subtitle,
+					left: 0,
+					top: 4,
+					itemGap: 6,
+					textStyle: { fontSize: TITLE_SIZES[style?.title?.size ?? "md"], color: style?.title?.color ?? s.titleColor, fontWeight: 600 },
+					subtextStyle: { fontSize: SUBTITLE_SIZES[style?.subtitle?.size ?? "md"], color: style?.subtitle?.color ?? s.subtitleColor },
+				}
+				: undefined,
+			tooltip: {
+				trigger: "item",
+				backgroundColor: "#333333",
+				borderWidth: 0,
+				padding: [8, 12],
+				textStyle: { color: "#ffffff", fontSize: 13 },
+				extraCssText: "border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.16);",
+				// data is [x, y, label]; show label + both axis values
+				formatter: (p: { data: [number, number, string?] }) => {
+					const [x, y, label] = p.data;
+					const xl = spec.xLabel ?? "x";
+					const yl = spec.yLabel ?? "y";
+					return `${label ? `<b>${label}</b><br/>` : ""}${xl}: ${x}<br/>${yl}: ${y}`;
+				},
+			},
+			legend: showLegend ? { bottom: 0, textStyle: { color: s.subtitleColor } } : { show: false },
+			grid: preview
+				? { left: 8, right: 8, top: 8, bottom: 8, containLabel: true }
+				: {
+					left: 12,
+					right: 16,
+					top: (hasTitleScatter ? 64 : 24),
+					bottom: 32 + (showLegend ? 28 : 0),
+					containLabel: true,
+				},
+			xAxis: {
+				type: "value",
+				name: preview ? undefined : spec.xLabel,
+				nameLocation: "middle",
+				nameGap: 28,
+				axisTick: { show: false },
+				axisLine: { show: false },
+				axisLabel: { color: s.axisLabelColor, fontWeight: 500, fontSize: 11 },
+				nameTextStyle: { color: s.axisLabelColor, fontWeight: 500 },
+				splitLine: { lineStyle: { color: s.gridColor, type: "dashed" as const, opacity: 0.6 } },
+			},
+			yAxis: {
+				type: "value",
+				name: preview ? undefined : spec.yLabel,
+				nameLocation: "middle",
+				nameGap: 40,
+				axisTick: { show: false },
+				axisLine: { show: false },
+				axisLabel: { color: s.axisLabelColor, fontWeight: 500, fontSize: 11 },
+				nameTextStyle: { color: s.axisLabelColor, fontWeight: 500 },
+				splitLine: { lineStyle: { color: s.gridColor, type: "dashed" as const, opacity: 0.6 } },
+			},
+			series: spec.series.map((ser) => ({
+				name: ser.name,
+				type: "scatter" as const,
+				symbolSize: 10,
+				data: ser.points.map((pt) => [pt.x, pt.y, pt.label]),
+				emphasis: { disabled: true },
+				label: spec.showLabels && !preview
+					? {
+						show: true,
+						position: "right",
+						formatter: (p: { data: [number, number, string?] }) => p.data[2] ?? "",
+						fontSize: 10,
+						color: s.axisLabelColor,
+					}
+					: { show: false },
+				labelLayout: { hideOverlap: true }, // drop labels that would collide — keeps dense scatters readable
+			})),
+			graphic: brandmarkGraphic,
+		};
+	}
+
+	// From here down, spec is narrowed to the cartesian variant —
+	// so categories / orientation / stack / value-series are all valid.
+	const { type, orientation, stack, categories, series, title, subtitle, goals } = spec;
+	const horizontal = orientation === "horizontal";
 
 	// ─── PIE / DONUT: no axes, first series → slices ───
 	if (type === "pie" || type === "donut") {
@@ -197,7 +273,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		};
 	}
 
-	// ─── CARTESIAN: bar / line / area (unchanged) ───
+	// ─── BAR / LINE / AREA ───
 	const categoryAxis = { type: "category" as const, data: categories };
 	const valueAxis = { type: "value" as const };
 
@@ -210,7 +286,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		s.axisLabelColor, s.gridColor, style?.yAxis,
 	);
 
-	const hasTitle = !preview && !!spec.title;
+	const hasTitle = !preview && !!title;
 	const titleBlockHeight = hasTitle ? 64 : 0;
 
 	const legendPos = style?.legend?.position ?? "bottom";
@@ -219,7 +295,6 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 	const legendTop = titleBlockHeight + (hasTitle ? 8 : 0);
 
 	const legend = showLegend ? legendConfig(style, s.subtitleColor, legendTop) : { show: false };
-
 	const label = resolveLabel(style?.showValues, horizontal, s.axisLabelColor);
 
 	const markLine = goals?.length

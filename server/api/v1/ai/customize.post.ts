@@ -11,12 +11,24 @@ const HEX = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
 
 // The model returns ONLY the fields that change — never the whole spec.
 const PatchSchema = z.object({
-	type: z.enum(["bar", "line", "area", "pie", "donut"]).optional(),
+	type: z.enum(["bar", "line", "area", "pie", "donut", "scatter"]).optional(),
 	orientation: z.enum(["vertical", "horizontal"]).optional(),
 	stack: z.boolean().optional(),
 	title: z.string().optional(),
 	subtitle: z.string().optional(),
 	source: z.string().optional(),
+	// Scatter axis labels (what x and y represent)
+	xLabel: z.string().optional(),
+	yLabel: z.string().optional(),
+	showLabels: z.boolean().optional(),
+	points: z.array(z.object({
+		x: z.number(), y: z.number(), label: z.string().optional(),
+	})).optional(),
+	series: z.array(z.object({
+		name: z.string().optional(),
+		values: z.array(z.number()).optional(),
+		points: z.array(z.object({ x: z.number(), y: z.number(), label: z.string().optional() })).optional(),
+	})).optional(),
 	goals: z.array(z.object({
 		value: z.number(),
 		label: z.string().optional(),
@@ -92,6 +104,9 @@ Examples:
 
 Fields you may patch:
 - type: bar/line/area/pie/donut. Pie and donut show ONE series as slices (categories become slice labels, the first series' values become slice sizes). Use pie/donut for parts-of-a-whole (proportions, shares), not for comparisons over categories.
+- Scatter charts plot two numeric measures as (x, y) points, with xLabel/yLabel naming the axes. You can tweak an existing scatter's labels, colors, and styling.
+- To convert an existing chart to scatter, the chart MUST have exactly two value-series across the same categories (two measures per category). Pair them: each category i becomes a point { x: series[0].values[i], y: series[1].values[i], label: categories[i] }. Set xLabel to series[0].name, yLabel to series[1].name. Return the full scatter spec (type: "scatter", series: [{ name, points: [...] }], xLabel, yLabel).
+- If the chart has only ONE series (one measure), you CANNOT make a scatter — there's no second axis. Explain that scatter needs two measures.
 - style.theme: ${THEME_NAMES.join(", ")}
 - style.palette: ${PALETTE_NAMES.join(", ")} (series colors only)
 - style.colors: array of hex (specific colors)
@@ -105,6 +120,8 @@ Fields you may patch:
 - goals: array of { value (number), label (optional), color (optional hex) } — horizontal target/reference lines at a value. Replaces existing goals.
 - style.yAxis.position / style.xAxis.position: "left" or "right" — which side the axis sits on.
 - style.yAxis.min / style.yAxis.max (and xAxis.min/max): the value axis start and end. "start the y-axis at 0" → yAxis.min 0. Note: the VALUE axis is yAxis on vertical charts, xAxis on horizontal charts — apply min/max to whichever holds the numbers.
+- style/showLabels on scatter: set showLabels: true to label points with their names next to the dots. Useful for identifying points (e.g. country names). On dense scatters, overlapping labels are auto-hidden.
+- "label the points" / "show country names" → { "showLabels": true }
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.
@@ -112,11 +129,24 @@ Respond with ONLY the JSON patch object — no prose, no markdown fences, nothin
 `;
 
 // Shallow-merge, merging `style` one level deep so a color change doesn't erase a theme.
-function applyPatch(base: ChartSpec, patch: z.infer<typeof PatchSchema>): ChartSpec {
-	const { style: patchStyle, ...topLevel } = patch;
-	const merged: ChartSpec = { ...base, ...topLevel };
-	if (patchStyle) {
-		merged.style = { ...base.style, ...patchStyle };
+function applyPatch(base, patch) {
+	const merged = { ...base, ...patch };
+	if (patch.style) merged.style = { ...base.style, ...patch.style };
+
+	// Type change between scatter and cartesian = shape change → drop incompatible fields
+	const becomingScatter = patch.type === "scatter" && base.type !== "scatter";
+	const leavingScatter = patch.type && patch.type !== "scatter" && base.type === "scatter";
+
+	if (becomingScatter) {
+		delete merged.categories;
+		delete merged.orientation;
+		delete merged.stack;
+		delete merged.goals;
+		// series must be the point-series the patch provided
+	}
+	if (leavingScatter) {
+		delete merged.xLabel;
+		delete merged.yLabel;
 	}
 	return merged;
 }
