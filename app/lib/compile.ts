@@ -116,11 +116,90 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 	const s = resolveStyle(spec, tokenTheme);
 	const horizontal = orientation === "horizontal";
 
-	const categoryAxis = { type: "category" as const, data: categories };
-	const valueAxis = { type: "value" as const };
-
 	const preview = opts.preview ?? false;
 	const showBrandmark = !preview && (opts.brandmark ?? true);
+
+	// Shared brandmark badge (used by both pie and cartesian branches)
+	const brandmarkGraphic = showBrandmark
+		? [
+			{
+				type: "group" as const,
+				right: 20,
+				bottom: 0,
+				z: 100,
+				silent: true,
+				children: [
+					{
+						type: "rect" as const,
+						shape: { width: 162, height: 28, r: 8 },
+						style: { fill: "#ffffff", stroke: "#e0e0e0", lineWidth: 1 },
+					},
+					{
+						type: "image" as const,
+						left: 8,
+						top: 6,
+						style: { image: BRANDMARK_DATA_URI, width: 16, height: 16 },
+					},
+					{
+						type: "text" as const,
+						left: 30,
+						top: 8,
+						style: { text: "Made with PointViz.co", fontSize: 12, fontWeight: 600, fill: "#141414" },
+					},
+				],
+			},
+		]
+		: undefined;
+
+	// ─── PIE / DONUT: no axes, first series → slices ───
+	if (type === "pie" || type === "donut") {
+		const first = series[0];
+		const pieData = categories.map((cat, i) => ({ name: cat, value: first?.values[i] ?? 0 }));
+		const hasTitlePie = !preview && !!title;
+
+		return {
+			backgroundColor: s.background,
+			color: s.palette,
+			title: hasTitlePie
+				? {
+					text: title,
+					subtext: subtitle,
+					left: "center",
+					top: 8,
+					textStyle: { fontSize: TITLE_SIZES[style?.title?.size ?? "md"], color: style?.title?.color ?? s.titleColor, fontWeight: 600 },
+					subtextStyle: { fontSize: SUBTITLE_SIZES[style?.subtitle?.size ?? "md"], color: style?.subtitle?.color ?? s.subtitleColor },
+				}
+				: undefined,
+			tooltip: {
+				trigger: "item",
+				backgroundColor: "#333333",
+				borderWidth: 0,
+				padding: [8, 12],
+				textStyle: { color: "#ffffff", fontSize: 13 },
+				extraCssText: "border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.16);",
+				formatter: "{b}: {c} ({d}%)",
+			},
+			legend: !preview && style?.legend?.visible !== false
+				? { bottom: 0, textStyle: { color: s.subtitleColor } }
+				: { show: false },
+			series: [
+				{
+					type: "pie",
+					radius: type === "donut" ? ["45%", "70%"] : "70%",
+					center: ["50%", hasTitlePie ? "54%" : "50%"],
+					data: pieData,
+					label: { show: !preview, color: s.axisLabelColor, formatter: "{b}" },
+					labelLine: { show: !preview },
+					emphasis: { disabled: true },
+				},
+			],
+			graphic: brandmarkGraphic,
+		};
+	}
+
+	// ─── CARTESIAN: bar / line / area (unchanged) ───
+	const categoryAxis = { type: "category" as const, data: categories };
+	const valueAxis = { type: "value" as const };
 
 	const physicalX = applyAxisStyle(
 		horizontal ? { ...valueAxis } : { ...categoryAxis },
@@ -131,41 +210,36 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		s.axisLabelColor, s.gridColor, style?.yAxis,
 	);
 
-	// --- Vertical stack math for the top region ---
-	const hasTitle = !preview && !!spec.title; // title/subtitle suppressed in preview
+	const hasTitle = !preview && !!spec.title;
 	const titleBlockHeight = hasTitle ? 64 : 0;
 
-	// Legend follows the spec, NOT preview — it stays visible in previews.
 	const legendPos = style?.legend?.position ?? "bottom";
 	const showLegend = !preview && style?.legend?.visible !== false;
 	const legendOnTop = showLegend && legendPos === "top";
 	const legendTop = titleBlockHeight + (hasTitle ? 8 : 0);
 
-	const legend = showLegend
-		? legendConfig(style, s.subtitleColor, legendTop)
-		: { show: false };
+	const legend = showLegend ? legendConfig(style, s.subtitleColor, legendTop) : { show: false };
 
 	const label = resolveLabel(style?.showValues, horizontal, s.axisLabelColor);
 
-	const markLine =
-		goals?.length
-			? {
-				silent: true,
-				symbol: "none" as const,
-				data: goals.map((g) => ({
-					...(horizontal ? { xAxis: g.value } : { yAxis: g.value }),
-					lineStyle: { color: g.color ?? s.subtitleColor, type: "dashed" as const, width: 1.5 },
-					label: {
-						show: !!g.label,
-						formatter: g.label ?? "",
-						position: "end" as const,
-						color: g.color ?? s.subtitleColor,
-						fontSize: 11,
-						fontWeight: 500,
-					},
-				})),
-			}
-			: undefined;
+	const markLine = goals?.length
+		? {
+			silent: true,
+			symbol: "none" as const,
+			data: goals.map((g) => ({
+				...(horizontal ? { xAxis: g.value } : { yAxis: g.value }),
+				lineStyle: { color: g.color ?? s.subtitleColor, type: "dashed" as const, width: 1.5 },
+				label: {
+					show: !!g.label,
+					formatter: g.label ?? "",
+					position: "end" as const,
+					color: g.color ?? s.subtitleColor,
+					fontSize: 11,
+					fontWeight: 500,
+				},
+			})),
+		}
+		: undefined;
 
 	return {
 		backgroundColor: s.background,
@@ -177,15 +251,8 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 				left: 0,
 				top: 4,
 				itemGap: 6,
-				textStyle: {
-					fontSize: TITLE_SIZES[style?.title?.size ?? "md"],
-					color: style?.title?.color ?? s.titleColor,
-					fontWeight: 600,
-				},
-				subtextStyle: {
-					fontSize: SUBTITLE_SIZES[style?.subtitle?.size ?? "md"],
-					color: style?.subtitle?.color ?? s.subtitleColor,
-				},
+				textStyle: { fontSize: TITLE_SIZES[style?.title?.size ?? "md"], color: style?.title?.color ?? s.titleColor, fontWeight: 600 },
+				subtextStyle: { fontSize: SUBTITLE_SIZES[style?.subtitle?.size ?? "md"], color: style?.subtitle?.color ?? s.subtitleColor },
 			}
 			: undefined,
 		tooltip: {
@@ -207,48 +274,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 				bottom: 32 + (showLegend && legendPos === "bottom" ? 28 : 0),
 				containLabel: true,
 			},
-		graphic: showBrandmark
-			? [
-				{
-					type: "group",
-					right: 20,      // was 12 — more room on the right
-					bottom: 0,     // was 10 — more room below, so shadow isn't clipped
-					z: 100,
-					silent: true,
-					children: [
-						// rounded background box with subtle shadow
-						{
-							type: "rect",
-							shape: { width: 162, height: 28, r: 8 },
-							style: {
-								fill: "#ffffff",
-								stroke: "#e0e0e0",   // border color
-								lineWidth: 1,         // border width
-							},
-						},
-						// logo image (needs a raster/data-URI of your brandmark)
-						{
-							type: "image",
-							left: 8,
-							top: 6,
-							style: { image: BRANDMARK_DATA_URI, width: 16, height: 16 },
-						},
-						// text
-						{
-							type: "text",
-							left: 30,
-							top: 8,
-							style: {
-								text: "Made with PointViz.co",
-								fontSize: 12,
-								fontWeight: 600,
-								fill: "#141414",
-							},
-						},
-					],
-				},
-			]
-			: undefined,
+		graphic: brandmarkGraphic,
 		xAxis: physicalX,
 		yAxis: physicalY,
 		series: series.map((ser, i) => ({
@@ -258,10 +284,7 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 			areaStyle: type === "area" ? { opacity: 0.15 } : undefined,
 			barCategoryGap: "40%",
 			emphasis: { disabled: true },
-			itemStyle:
-				type === "bar"
-					? { borderRadius: horizontal ? [0, 0, 0, 0] : [4, 4, 0, 0] }
-					: undefined,
+			itemStyle: type === "bar" ? { borderRadius: horizontal ? [0, 0, 0, 0] : [4, 4, 0, 0] } : undefined,
 			smooth: type !== "bar" ? 0.35 : undefined,
 			lineStyle: type !== "bar" ? { width: 2.5 } : undefined,
 			label,
@@ -269,5 +292,4 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 			data: ser.values,
 		})),
 	};
-
 }

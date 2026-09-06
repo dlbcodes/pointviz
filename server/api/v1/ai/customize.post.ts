@@ -11,7 +11,7 @@ const HEX = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
 
 // The model returns ONLY the fields that change — never the whole spec.
 const PatchSchema = z.object({
-	type: z.enum(["bar", "line", "area"]).optional(),
+	type: z.enum(["bar", "line", "area", "pie", "donut"]).optional(),
 	orientation: z.enum(["vertical", "horizontal"]).optional(),
 	stack: z.boolean().optional(),
 	title: z.string().optional(),
@@ -74,6 +74,8 @@ object containing ONLY the fields that should change. Do NOT return the whole ch
 include fields the instruction doesn't touch.
 
 Examples:
+- "make it a donut chart" → { "type": "donut" }
+- "show as a pie" → { "type": "pie" }
 - "make the bars #e11d48 and #0ea5e9" → { "style": { "colors": ["#e11d48", "#0ea5e9"] } }
 - "use the datapoint theme" → { "style": { "theme": "datapoint" } }
 - "colorblind friendly" → { "style": { "palette": "colorblind-safe" } }
@@ -89,7 +91,7 @@ Examples:
 - "start the y-axis at zero" → { "style": { "yAxis": { "min": 0 } } }
 
 Fields you may patch:
-- type (bar/line/area), orientation (vertical/horizontal), stack, title, subtitle, source
+- type: bar/line/area/pie/donut. Pie and donut show ONE series as slices (categories become slice labels, the first series' values become slice sizes). Use pie/donut for parts-of-a-whole (proportions, shares), not for comparisons over categories.
 - style.theme: ${THEME_NAMES.join(", ")}
 - style.palette: ${PALETTE_NAMES.join(", ")} (series colors only)
 - style.colors: array of hex (specific colors)

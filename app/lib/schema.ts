@@ -60,7 +60,7 @@ const SeriesSchema = z.strictObject({
 });
 
 export const ChartShapeSchema = z.strictObject({
-	type: z.enum(["bar", "line", "area"]),
+	type: z.enum(["bar", "line", "area", "pie", "donut"]),
 	orientation: z.enum(["vertical", "horizontal"]).default("vertical"),
 	stack: z.boolean().default(false),
 	title: z.string().optional(),
