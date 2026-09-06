@@ -1,6 +1,7 @@
 <!-- app/layouts/app.vue -->
 <script setup lang="ts">
 import { Button } from "@dlbcodes/ui";
+import { PhLightning } from "@phosphor-icons/vue";
 
 const user = useSupabaseUser();
 const feedbackModalOpen = useState("feedback-modal-open", () => false);
@@ -10,7 +11,7 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
 
 <template>
     <div
-        class="flex h-screen flex-col overflow-hidden pt-4 pb-8 px-8 bg-bg-surface/40 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)]"
+        class="flex h-screen flex-col overflow-hidden pt-4 pb-8 px-8 bg-bg-surface/40 bg-size-[20px_20px] bg-[radial-gradient(circle,rgba(0,0,0,0.1)_1px,transparent_1px)]"
     >
         <!-- Header: fixed, doesn't grow -->
         <div class="flex shrink-0 items-center justify-between px-4 pb-4">
@@ -18,7 +19,10 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
                 <BrandMark />
             </NuxtLink>
             <div class="flex items-center gap-x-4">
-                <Button size="sm">Upgrade</Button>
+                <Button size="sm">
+                    <PhLightning class="text-amber-400" weight="fill" />
+                    Upgrade
+                </Button>
                 <UserMenu
                     variant="avatar"
                     @open-feedback="feedbackModalOpen = true"

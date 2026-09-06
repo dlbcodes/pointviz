@@ -80,7 +80,7 @@ async function confirmDelete() {
         <!-- Meta -->
         <!-- Meta row: title/date left, menu right -->
         <div
-            class="flex items-center justify-between gap-2 px-4 py-2 border-t border-border-subtle"
+            class="flex items-center justify-between gap-2 px-4 py-2 border-t border-border-subtle bg-bg-surface"
         >
             <div class="min-w-0">
                 <p
@@ -97,7 +97,7 @@ async function confirmDelete() {
             <div class="shrink-0" @click.prevent.stop>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger
-                        class="flex size-7 items-center justify-center rounded-lg text-text-tertiary opacity-0 outline-none transition-all duration-200 hover:bg-bg-subtle hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100 data-[state=open]:opacity-100 data-[state=open]:bg-bg-subtle"
+                        class="flex size-7 items-center justify-center rounded-lg text-text-tertiary outline-none transition-all duration-200 hover:bg-bg-subtle hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100 data-[state=open]:opacity-100 data-[state=open]:bg-bg-subtle"
                         aria-label="Chart options"
                     >
                         <PhDotsThreeVertical class="size-4" weight="bold" />

@@ -48,71 +48,94 @@ const sortedCharts = computed(() => {
 </script>
 
 <template>
-	<div>
-		<div class="mb-8 flex items-center justify-between">
-			<div>
-				<h1 class="text-xl font-semibold">My charts</h1>
-				<p class="mt-0.5 text-sm text-text-tertiary">
-					{{ chartStore.savedCharts.length }}
-					{{ chartStore.savedCharts.length === 1 ? "chart" : "charts" }}
-				</p>
-			</div>
-			<div class="flex items-center gap-x-2">
-				<Select v-model="sortBy" class="w-40">
-					<SelectTrigger placeholder="Sort by" size="sm" />
-					<SelectContent>
-						<SelectItem value="created" label="Created">Newest first</SelectItem>
-						<SelectItem value="edited" label="Edited">Recently edited</SelectItem>
-					</SelectContent>
-				</Select>
+    <div>
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-semibold">My charts</h1>
+                <p class="mt-0.5 text-sm text-text-tertiary">
+                    {{ chartStore.savedCharts.length }}
+                    {{
+                        chartStore.savedCharts.length === 1 ? "chart" : "charts"
+                    }}
+                </p>
+            </div>
+            <div class="flex items-center gap-x-2">
+                <Select v-model="sortBy" class="w-40">
+                    <SelectTrigger placeholder="Sort by" size="sm" />
+                    <SelectContent>
+                        <SelectItem value="created" label="Created"
+                            >Newest first</SelectItem
+                        >
+                        <SelectItem value="edited" label="Edited"
+                            >Recently edited</SelectItem
+                        >
+                    </SelectContent>
+                </Select>
 
-				<Button variant="primary" size="sm" class="whitespace-nowrap" :disabled="creating" @click="createChart">
-					<PhPlus class="size-4" />
-					{{ creating ? "Creating…" : "Create chart" }}
-				</Button>
-			</div>
-		</div>
+                <Button
+                    variant="primary"
+                    size="sm"
+                    class="whitespace-nowrap h-9"
+                    :disabled="creating"
+                    @click="createChart"
+                >
+                    <PhPlus class="size-4" />
+                    {{ creating ? "Creating…" : "Create chart" }}
+                </Button>
+            </div>
+        </div>
 
-		<!-- Loading -->
-		<div v-if="loading" class="grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			<div v-for="n in 8" :key="n" class="animate-pulse">
-				<div class="aspect-16/10 w-full rounded-3xl bg-bg-subtle" />
-				<div class="mt-3 h-4 w-2/3 rounded bg-bg-subtle" />
-				<div class="mt-2 h-3 w-1/3 rounded bg-bg-subtle" />
-			</div>
-		</div>
+        <!-- Loading -->
+        <div
+            v-if="loading"
+            class="grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
+            <div v-for="n in 8" :key="n" class="animate-pulse">
+                <div class="aspect-16/10 w-full rounded-3xl bg-bg-subtle" />
+                <div class="mt-3 h-4 w-2/3 rounded bg-bg-subtle" />
+                <div class="mt-2 h-3 w-1/3 rounded bg-bg-subtle" />
+            </div>
+        </div>
 
-		<!-- Empty -->
-		<div
-			v-else-if="chartStore.savedCharts.length === 0"
-			class="flex flex-col items-center rounded-2xl border border-dashed border-border-default py-20 text-center"
-		>
-			<div class="mb-4 flex size-12 items-center justify-center rounded-full bg-bg-subtle">
-				<PhChartBar class="size-6 text-text-tertiary" />
-			</div>
-			<p class="font-medium text-text-primary">No charts yet</p>
-			<p class="mt-1 max-w-xs text-sm text-text-tertiary">
-				Create your first chart and it'll show up here.
-			</p>
-			<Button variant="primary" size="sm" class="mt-4" :disabled="creating" @click="createChart">
-				<PhPlus class="size-4" />
-				{{ creating ? "Creating…" : "Create your first chart" }}
-			</Button>
-		</div>
+        <!-- Empty -->
+        <div
+            v-else-if="chartStore.savedCharts.length === 0"
+            class="flex flex-col items-center rounded-2xl border border-dashed border-border-default py-20 text-center"
+        >
+            <div
+                class="mb-4 flex size-12 items-center justify-center rounded-full bg-bg-subtle"
+            >
+                <PhChartBar class="size-6 text-text-tertiary" />
+            </div>
+            <p class="font-medium text-text-primary">No charts yet</p>
+            <p class="mt-1 max-w-xs text-sm text-text-tertiary">
+                Create your first chart and it'll show up here.
+            </p>
+            <Button
+                variant="primary"
+                size="sm"
+                class="mt-4"
+                :disabled="creating"
+                @click="createChart"
+            >
+                <PhPlus class="size-4" />
+                {{ creating ? "Creating…" : "Create your first chart" }}
+            </Button>
+        </div>
 
-		<!-- Grid (sorted) -->
-		<div
-			v-else
-			class="px-2 md:px-12 grid content-start gap-x-(--column-gap) gap-y-8 pb-20 [--column-gap:20px] [--max-column-count:4] [--min-column-width:300px] [--total-gap-width:calc((var(--max-column-count)-1)*var(--column-gap))] [--max-column-width:calc((100%-var(--total-gap-width))/var(--max-column-count))] grid-cols-[repeat(auto-fill,minmax(max(var(--min-column-width),var(--max-column-width)),1fr))] 720:gap-y-10 720:[--column-gap:24px] 840:[--min-column-width:360px] 1280:[--min-column-width:394px]"
-		>
-			<ChartCard
-				v-for="chart in sortedCharts"
-				:key="chart.id"
-				:id="chart.id"
-				:title="chart.title"
-				:spec="chart.spec"
-				:updated-at="chart.updatedAt"
-			/>
-		</div>
-	</div>
+        <!-- Grid (sorted) -->
+        <div
+            v-else
+            class="px-2 md:px-12 grid content-start gap-x-(--column-gap) gap-y-8 pb-20 [--column-gap:20px] [--max-column-count:4] [--min-column-width:300px] [--total-gap-width:calc((var(--max-column-count)-1)*var(--column-gap))] [--max-column-width:calc((100%-var(--total-gap-width))/var(--max-column-count))] grid-cols-[repeat(auto-fill,minmax(max(var(--min-column-width),var(--max-column-width)),1fr))] 720:gap-y-10 720:[--column-gap:24px] 840:[--min-column-width:360px] 1280:[--min-column-width:394px]"
+        >
+            <ChartCard
+                v-for="chart in sortedCharts"
+                :key="chart.id"
+                :id="chart.id"
+                :title="chart.title"
+                :spec="chart.spec"
+                :updated-at="chart.updatedAt"
+            />
+        </div>
+    </div>
 </template>
