@@ -1,10 +1,10 @@
-<!-- components/AppSidebar.vue -->
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import {
     PhBracketsCurly,
     PhFile,
     PhTable,
+    PhSparkle,
     PhDotsSixVertical,
 } from "@phosphor-icons/vue";
 import { useResizable } from "~/composables/useResizable";
@@ -16,17 +16,33 @@ const { width, dragging, startResize } = useResizable({
     key: "pointviz:sidebar-width",
 });
 
-type Tab = "examples" | "csv" | "json";
-const activeTab = ref<Tab>("examples");
-const { error, isValid } = useChartSpec();
-
-const tabs = [
-    { id: "examples" as const, label: "Examples", icon: PhFile },
-    { id: "csv" as const, label: "CSV", icon: PhTable },
-    { id: "json" as const, label: "JSON", icon: PhBracketsCurly },
-];
-
 const user = useSupabaseUser();
+
+type Tab = "examples" | "ai" | "csv" | "json";
+
+// Tabs available depend on auth: examples only for logged-out (onboarding).
+const tabs = computed(() => {
+    const base = [
+        { id: "ai" as const, label: "AI", icon: PhSparkle },
+        { id: "csv" as const, label: "CSV", icon: PhTable },
+        { id: "json" as const, label: "JSON", icon: PhBracketsCurly },
+    ];
+    return user.value
+        ? base
+        : [
+              { id: "examples" as const, label: "Examples", icon: PhFile },
+              ...base,
+          ];
+});
+
+// Default tab: examples for logged-out (onboarding), AI for logged-in.
+const activeTab = ref<Tab>(user.value ? "ai" : "examples");
+
+// If auth state changes and the active tab disappears, fall back.
+watch(user, (u) => {
+    if (u && activeTab.value === "examples") activeTab.value = "ai";
+});
+
 const feedbackModalOpen = useState("feedback-modal-open", () => false);
 const helpModalOpen = useState("help-modal-open", () => false);
 const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
@@ -35,16 +51,15 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
 <template>
     <aside
         class="relative hidden md:flex shrink-0 flex-col border-r border-border-default"
-        :class="dragging ? 'border-brand-100 ' : ''"
+        :class="dragging ? 'border-brand-100' : ''"
         :style="{ width: `${width}px` }"
     >
-        <!-- Tabs (data entry only) -->
         <div class="flex border-b border-border-default">
             <button
                 v-for="tab in tabs"
                 :key="tab.id"
                 @click="activeTab = tab.id"
-                class="flex flex-1 items-center justify-center gap-x-1 px-4 py-4 text-[13px] transition-colors border-b-2 font-mono tracking-tight"
+                class="flex flex-1 items-center justify-center gap-x-1 border-b-2 px-4 py-4 font-mono text-[13px] tracking-tight transition-colors"
                 :class="
                     activeTab === tab.id
                         ? 'border-chart-teal text-chart-teal'
@@ -56,10 +71,13 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
             </button>
         </div>
 
-        <!-- Panels -->
         <div class="flex-1 overflow-y-auto p-5">
             <ExamplesPanel
                 v-if="activeTab === 'examples'"
+                @loaded="activeTab = 'json'"
+            />
+            <AiPanel
+                v-else-if="activeTab === 'ai'"
                 @loaded="activeTab = 'json'"
             />
             <CsvPanel v-else-if="activeTab === 'csv'" />
@@ -74,7 +92,7 @@ const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
             />
         </footer>
 
-        <!-- Resize handle with grip affordance -->
+        <!-- resize handle unchanged -->
         <div
             class="group absolute top-0 -right-1.5 z-10 flex h-full w-3 cursor-col-resize items-center justify-center select-none"
             @pointerdown.prevent="startResize"

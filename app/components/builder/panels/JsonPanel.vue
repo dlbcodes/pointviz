@@ -10,16 +10,9 @@ import {
     Textarea,
     Button,
 } from "@dlbcodes/ui";
-import {
-    PhBracketsCurly,
-    PhSparkle,
-    PhCopy,
-    PhCheck,
-} from "@phosphor-icons/vue";
+import { PhBracketsCurly } from "@phosphor-icons/vue";
 
 const { rawInput, error } = useChartSpec();
-const { rawData, pending, importError, copied, copyPrompt, aiImport } =
-    useDataImport();
 
 const canFormat = computed(
     () => rawInput.value.trim().length > 0 && !error.value,
@@ -36,92 +29,32 @@ function format() {
 </script>
 
 <template>
-    <div class="flex flex-col gap-5">
-        <!-- ── AI import (metered) + copy-prompt (free) ── -->
-        <div class="flex flex-col gap-2">
-            <Field>
-                <FieldLabel class="flex items-center gap-1.5">
-                    <PhSparkle class="size-4 text-chart-teal" weight="fill" />
-                    Import with AI
-                </FieldLabel>
-                <FieldContent>
-                    <Textarea
-                        v-model="rawData"
-                        :rows="5"
-                        autosize
-                        :disabled="pending"
-                        class="font-mono text-xs"
-                        placeholder="Paste raw data — CSV, a spreadsheet range, or messy numbers. AI turns it into a chart."
-                    />
-                </FieldContent>
-            </Field>
-
-            <div class="flex items-center gap-2">
-                <Button
-                    class="flex-1"
-                    size="sm"
-                    :disabled="!rawData.trim() || pending"
-                    @click="aiImport"
-                >
-                    {{ pending ? "Converting…" : "Convert with AI" }}
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    aria-label="Copy prompt for your own Claude"
-                    @click="copyPrompt"
-                >
-                    <component :is="copied ? PhCheck : PhCopy" class="size-4" />
-                    {{ copied ? "Copied" : "Copy prompt" }}
-                </Button>
-            </div>
-
-            <p v-if="importError" class="text-xs font-mono text-danger-500">
-                {{ importError }}
-            </p>
-            <p v-else class="text-xs text-text-tertiary leading-relaxed">
-                No account? Copy the prompt, paste it into your own Claude or
-                ChatGPT with your data, and paste the JSON it returns below.
-            </p>
-        </div>
-
-        <!-- divider -->
-        <div class="flex items-center gap-3">
-            <span class="h-px flex-1 bg-border-default" />
-            <span class="font-mono text-xs text-text-tertiary"
-                >or paste a spec</span
+    <Field :invalid="!!error">
+        <div class="flex items-center justify-between">
+            <FieldLabel>Data Source (JSON)</FieldLabel>
+            <Button
+                variant="ghost"
+                size="sm"
+                :disabled="!canFormat"
+                aria-label="Format JSON"
+                @click="format"
             >
-            <span class="h-px flex-1 bg-border-default" />
+                <PhBracketsCurly class="size-4" />
+                Format
+            </Button>
         </div>
-
-        <!-- ── Manual JSON ── -->
-        <Field :invalid="!!error">
-            <div class="flex items-center justify-between">
-                <FieldLabel>Data Source (JSON)</FieldLabel>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    :disabled="!canFormat"
-                    aria-label="Format JSON"
-                    @click="format"
-                >
-                    <PhBracketsCurly class="size-4" />
-                    Format
-                </Button>
-            </div>
-            <FieldContent>
-                <Textarea
-                    v-model="rawInput"
-                    :rows="14"
-                    autosize
-                    class="font-mono text-xs"
-                    placeholder="Paste your PointViz JSON here…"
-                />
-                <FieldDescription>
-                    Columnar spec: categories plus one or more series.
-                </FieldDescription>
-                <FieldError v-if="error">{{ error }}</FieldError>
-            </FieldContent>
-        </Field>
-    </div>
+        <FieldContent>
+            <Textarea
+                v-model="rawInput"
+                :rows="16"
+                autosize
+                class="font-mono text-xs"
+                placeholder="Paste your PointViz JSON here…"
+            />
+            <FieldDescription>
+                Columnar spec: categories plus one or more series.
+            </FieldDescription>
+            <FieldError v-if="error">{{ error }}</FieldError>
+        </FieldContent>
+    </Field>
 </template>
