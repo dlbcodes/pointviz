@@ -20,6 +20,7 @@ const ValueLabels = z.union([
 		show: z.boolean().default(true),
 		position: z.enum(["inside", "top", "right", "left", "bottom"]).optional(),
 		color: HEX.optional(),
+		total: z.boolean().optional(), // stacked charts: show the stack TOTAL instead of per-segment
 	}),
 ]);
 

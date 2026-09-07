@@ -55,6 +55,7 @@ const PatchSchema = z.object({
 					show: z.boolean().optional(),
 					position: z.enum(["inside", "top", "right", "left", "bottom"]).optional(),
 					color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
+					total: z.boolean().optional(),
 				}),
 			]).optional(),
 			legend: z
@@ -125,6 +126,7 @@ Fields you may patch:
 - "label the points" / "show country names" → { "showLabels": true }
 - On scatter charts, style.xAxis.min/max and style.yAxis.min/max set the axis ranges (e.g. start the gini axis at 0.2). xAxis = the xLabel measure, yAxis = the yLabel measure.
 - style.showSymbol: on line/area charts, false removes the point markers (dots) for a clean line. "remove the dots" / "hide point markers" → { "style": { "showSymbol": false } }
+- On stacked bar charts, style.showValues: { total: true } shows the TOTAL of each bar at its top (instead of labeling each segment). "show the totals" / "show the sum on each bar" → { "style": { "showValues": { "total": true } } }
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.

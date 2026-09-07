@@ -298,7 +298,9 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 	const legendOnTop = showLegend && legendPos === "top";
 	const legendTop = titleBlockHeight + (hasTitle ? 8 : 0);
 
-	const legend = showLegend ? legendConfig(style, s.subtitleColor, legendTop) : { show: false };
+	const legend = showLegend
+		? { ...legendConfig(style, s.subtitleColor, legendTop), data: series.map((ser) => ser.name) }
+		: { show: false };
 	const label = resolveLabel(style?.showValues, horizontal, s.axisLabelColor);
 
 	const markLine = goals?.length
@@ -317,6 +319,36 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 					fontWeight: 500,
 				},
 			})),
+		}
+		: undefined;
+
+	const showValues = style?.showValues;
+	const wantsTotal =
+		typeof showValues === "object" && showValues !== null && "total" in showValues && showValues.total === true;
+	const showStackTotal = wantsTotal && stack && type === "bar";
+
+	const totals = categories.map((_, i) =>
+		series.reduce((sum, ser) => sum + (ser.values[i] ?? 0), 0),
+	);
+
+	const totalSeries = showStackTotal
+		? {
+			name: "__total__",
+			type: "bar" as const,
+			stack: "total", // same stack group as the real bars
+			data: totals.map(() => 0), // zero height — adds nothing to the bar
+			itemStyle: { color: "transparent" },
+			emphasis: { disabled: true },
+			tooltip: { show: false },
+			silent: true,
+			label: {
+				show: true,
+				position: horizontal ? "right" : "top",
+				formatter: (p: { dataIndex: number }) => String(Number(totals[p.dataIndex].toFixed(2))),
+				color: s.axisLabelColor,
+				fontWeight: 500,
+				fontSize: 11,
+			},
 		}
 		: undefined;
 
@@ -356,20 +388,23 @@ export function compileToECharts(spec: ChartSpec, tokenTheme: ChartTheme, opts: 
 		graphic: brandmarkGraphic,
 		xAxis: physicalX,
 		yAxis: physicalY,
-		series: series.map((ser, i) => ({
-			name: ser.name,
-			type: type === "area" ? "line" : type,
-			stack: stack ? "total" : undefined,
-			areaStyle: type === "area" ? { opacity: 0.15 } : undefined,
-			barCategoryGap: "40%",
-			emphasis: { disabled: true },
-			itemStyle: type === "bar" ? { borderRadius: horizontal ? [0, 0, 0, 0] : [4, 4, 0, 0] } : undefined,
-			smooth: type !== "bar" ? 0.35 : undefined,
-			lineStyle: type !== "bar" ? { width: 2.5 } : undefined,
-			showSymbol: type !== "bar" ? (style?.showSymbol ?? true) : undefined,
-			label,
-			...(i === 0 && markLine ? { markLine } : {}),
-			data: ser.values,
-		})),
+		series: [
+			...series.map((ser, i) => ({
+				name: ser.name,
+				type: type === "area" ? "line" : type,
+				stack: stack ? "total" : undefined,
+				areaStyle: type === "area" ? { opacity: 0.15 } : undefined,
+				barCategoryGap: "40%",
+				emphasis: { disabled: true },
+				itemStyle: type === "bar" ? { borderRadius: horizontal ? [0, 0, 0, 0] : [4, 4, 0, 0] } : undefined,
+				smooth: type !== "bar" ? 0.35 : undefined,
+				lineStyle: type !== "bar" ? { width: 2.5 } : undefined,
+				showSymbol: type !== "bar" ? (style?.showSymbol ?? true) : undefined,
+				label,
+				...(i === 0 && markLine ? { markLine } : {}),
+				data: ser.values,
+			})),
+			...(totalSeries ? [totalSeries] : []),  // ← append the phantom total series
+		],
 	};
 }
