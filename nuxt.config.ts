@@ -90,6 +90,13 @@ export default defineNuxtConfig({
         { rel: "icon", href: "/favicon.ico" },
         { rel: "canonical", href: "https://www.pointviz.co" },
       ],
+      script: [
+        {
+          src: "https://cloud.umami.is/script.js",
+          defer: true,
+          "data-website-id": "be172542-c8d4-4807-8bb9-61732e206cff",
+        },
+      ],
     },
   },
 })
