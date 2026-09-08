@@ -51,7 +51,7 @@ const sortedCharts = computed(() => {
     <div>
         <div class="mb-8 flex items-center justify-between">
             <div>
-                <h1 class="text-xl font-semibold">My charts</h1>
+                <h1 class="text-base md:text-xl font-semibold">My charts</h1>
                 <p class="mt-0.5 text-sm text-text-tertiary">
                     {{ chartStore.savedCharts.length }}
                     {{
@@ -60,7 +60,7 @@ const sortedCharts = computed(() => {
                 </p>
             </div>
             <div class="flex items-center gap-x-2">
-                <Select v-model="sortBy" class="w-40">
+                <Select v-model="sortBy" class="w-40 hidden md:flex">
                     <SelectTrigger placeholder="Sort by" size="sm" />
                     <SelectContent>
                         <SelectItem value="created" label="Created"

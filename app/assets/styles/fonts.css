@@ -15,9 +15,23 @@
 }
 
 @font-face {
-    font-family: "Instrument Serif";
-    src: url("../fonts/InstrumentSerif-Italic.woff2") format("woff2");
-    font-weight: 400;
+    font-family: "Clash Display";
+    src: url("~/assets/fonts/ClashDisplay-Medium.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Clash Display";
+    src: url("~/assets/fonts/ClashDisplay-Semibold.otf") format("opentype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Clash Display";
+    src: url("~/assets/fonts/ClashDisplay-Bold.otf") format("opentype");
+    font-weight: 700;
     font-style: normal;
     font-display: swap;
 }

@@ -9,6 +9,7 @@
     /* --font-sans: "Geist Mono", ui-monospace, monospace; */
     --font-serif: "Instrument Serif", system-ui, sans-serif;
     --font-mono: "Geist Mono", ui-monospace, monospace;
+    --font-display: "Clash Display", ui-sans-serif, sans-serif;
 
     --breakpoint-720: 720px;
     --breakpoint-840: 840px;
@@ -21,7 +22,7 @@
     }
 
     body {
-        @apply min-h-dvh bg-bg-base font-sans text-text-primary antialiased;
+        @apply min-h-dvh bg-bg-base font-sans text-text-primary antialiased selection:bg-amber-400;
     }
 }
 

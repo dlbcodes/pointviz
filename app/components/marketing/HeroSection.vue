@@ -56,7 +56,7 @@ onUnmounted(() => clearInterval(timer));
                 />
 
                 <h1
-                    class="text-3xl font-semibold tracking-tight text-text-primary sm:text-5xl sm:text-nowrap"
+                    class="font-display text-3xl font-bold tracking-tight text-text-primary sm:text-5xl sm:text-nowrap"
                 >
                     Charts you describe, not draw
                 </h1>
