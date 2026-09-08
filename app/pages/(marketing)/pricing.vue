@@ -24,25 +24,13 @@ function onCta(tier: PricingTier) {
 <template>
     <div class="mx-auto max-w-3xl px-6 py-16 sm:py-24">
         <div class="mb-14 text-center">
-            <div class="relative inline-block px-6 py-2 sm:px-8">
-                <span
-                    class="pointer-events-none absolute -top-px left-1/2 h-px w-[110%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-subtle)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] sm:w-[140%]"
-                />
-                <span
-                    class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[110%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-subtle)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] sm:w-[140%]"
-                />
-                <span
-                    class="pointer-events-none absolute -left-px top-1/2 h-[130%] w-px -translate-y-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-border-subtle)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] sm:h-[160%]"
-                />
-                <span
-                    class="pointer-events-none absolute -right-px top-1/2 h-[130%] w-px -translate-y-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-border-subtle)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] sm:h-[160%]"
-                />
+            <GuideFrame>
                 <h1
                     class="font-display text-4xl font-semibold tracking-tight sm:text-5xl"
                 >
                     Simple pricing
                 </h1>
-            </div>
+            </GuideFrame>
             <p class="mt-3 text-lg text-text-secondary">
                 Start free. Upgrade when you need unlimited AI.
             </p>

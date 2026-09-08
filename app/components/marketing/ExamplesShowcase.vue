@@ -54,7 +54,7 @@ import { FEATURED_EXAMPLES } from "~/lib/examples-showcase";
                         :src="example.imageUrl"
                         :alt="example.title"
                         loading="lazy"
-                        class="h-full w-full object-cover object-left-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                        class="h-full w-full object-cover object-top-left transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                     />
                 </div>
                 <div class="flex flex-col pt-4">

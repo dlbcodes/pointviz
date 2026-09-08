@@ -1,4 +1,3 @@
-<!-- app/components/PricingCard.vue -->
 <script setup lang="ts">
 import { Button, Badge } from "@dlbcodes/ui";
 import { PhCheck, PhLightning } from "@phosphor-icons/vue";
@@ -15,7 +14,7 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
     >
         <!-- outer guide frame — amber on the highlighted card, border-strong otherwise -->
         <span
-            class="pointer-events-none absolute -top-px left-1/2 h-px w-[120%] -translate-x-1/2 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+            class="pointer-events-none absolute -top-px left-1/2 h-px w-[120%] -translate-x-1/2 mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             :class="
                 tier.highlight
                     ? 'bg-[repeating-linear-gradient(to_right,var(--color-amber-500)_0_4px,transparent_4px_8px)]'
@@ -23,7 +22,7 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
             "
         />
         <span
-            class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+            class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             :class="
                 tier.highlight
                     ? 'bg-[repeating-linear-gradient(to_right,var(--color-amber-500)_0_4px,transparent_4px_8px)]'
@@ -31,7 +30,7 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
             "
         />
         <span
-            class="pointer-events-none absolute -left-px top-1/2 h-[120%] w-px -translate-y-1/2 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+            class="pointer-events-none absolute -left-px top-1/2 h-[120%] w-px -translate-y-1/2 mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             :class="
                 tier.highlight
                     ? 'bg-[repeating-linear-gradient(to_bottom,var(--color-amber-500)_0_4px,transparent_4px_8px)]'
@@ -39,7 +38,7 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
             "
         />
         <span
-            class="pointer-events-none absolute -right-px top-1/2 h-[120%] w-px -translate-y-1/2 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+            class="pointer-events-none absolute -right-px top-1/2 h-[120%] w-px -translate-y-1/2 mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             :class="
                 tier.highlight
                     ? 'bg-[repeating-linear-gradient(to_bottom,var(--color-amber-500)_0_4px,transparent_4px_8px)]'
@@ -50,10 +49,10 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
         <!-- header block (inner guides stay border-strong) -->
         <div class="relative mb-4">
             <span
-                class="pointer-events-none absolute -top-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+                class="pointer-events-none absolute -top-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             />
             <span
-                class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+                class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             />
             <div class="relative flex flex-col gap-y-2 p-6">
                 <Badge
@@ -91,17 +90,17 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
                 {{ f }}
             </li>
             <span
-                class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+                class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             />
         </ul>
 
         <!-- CTA (inner guides stay border-strong) -->
         <div class="relative p-4">
             <span
-                class="pointer-events-none absolute -top-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+                class="pointer-events-none absolute -top-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             />
             <span
-                class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
+                class="pointer-events-none absolute -bottom-px left-1/2 h-px w-[120%] -translate-x-1/2 bg-[repeating-linear-gradient(to_right,var(--color-border-strong)_0_4px,transparent_4px_8px)] mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
             />
             <Button
                 :variant="tier.highlight ? 'primary' : 'outline'"

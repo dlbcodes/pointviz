@@ -57,7 +57,7 @@ const steps = [
                 <!-- dashed divider between cells (right edge, not on last) -->
                 <span
                     v-if="i < steps.length - 1"
-                    class="pointer-events-none absolute inset-y-6 -right-px hidden w-px bg-[repeating-linear-gradient(to_bottom,var(--color-border-strong)_0_4px,transparent_4px_8px)] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] md:block"
+                    class="pointer-events-none absolute inset-y-6 -right-px hidden w-px bg-[repeating-linear-gradient(to_bottom,var(--color-border-strong)_0_4px,transparent_4px_8px)] mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] md:block"
                 />
 
                 <div class="flex items-center gap-3">
