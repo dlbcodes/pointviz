@@ -132,7 +132,7 @@ const logout = async () => {
 
             <Separator class="my-1" />
 
-            <DropdownItem
+            <!-- <DropdownItem
                 @click="emit('open-shortcuts')"
                 class="justify-between"
             >
@@ -144,7 +144,7 @@ const logout = async () => {
                     Keyboard shortcuts
                 </span>
                 <KbdGroup><Kbd>?</Kbd></KbdGroup>
-            </DropdownItem>
+            </DropdownItem> -->
             <DropdownItem @click="emit('open-help')" class="justify-between">
                 <span class="flex items-center gap-2">
                     <PhQuestion

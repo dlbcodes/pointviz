@@ -47,7 +47,7 @@ const chartBackground = computed(() => {
 });
 
 const remixHref = computed(() =>
-    spec.value ? `/#${encodeSpec(spec.value)}` : "/",
+    spec.value ? `/builder/#${encodeSpec(spec.value)}` : "/",
 );
 
 useSeoMeta({
@@ -127,8 +127,9 @@ useSeoMeta({
                                 variant="outline"
                                 size="sm"
                                 class="w-full sm:w-auto"
-                                >Remix</Button
                             >
+                                Remix
+                            </Button>
                         </NuxtLink>
                         <NuxtLink to="/" class="flex-1 sm:flex-none">
                             <Button

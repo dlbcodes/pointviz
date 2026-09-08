@@ -1,4 +1,3 @@
-<!-- ChartBuilder.vue -->
 <script setup lang="ts">
 const exportPanelOpen = useState("export-panel-open", () => true);
 </script>
