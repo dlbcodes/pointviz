@@ -23,15 +23,15 @@ function onCta(tier: PricingTier) {
 
 <template>
     <div class="mx-auto max-w-3xl px-6 py-16 sm:py-24">
-        <div class="mb-14 text-center">
-            <GuideFrame>
+        <div class="gap-y-4 mb-18 text-center">
+            <GuideFrame color="subtle">
                 <h1
                     class="font-display text-4xl font-semibold tracking-tight sm:text-5xl"
                 >
                     Simple pricing
                 </h1>
             </GuideFrame>
-            <p class="mt-3 text-lg text-text-secondary">
+            <p class="mt-6 text-lg text-text-secondary">
                 Start free. Upgrade when you need unlimited AI.
             </p>
         </div>
@@ -45,7 +45,7 @@ function onCta(tier: PricingTier) {
             />
         </div>
 
-        <p class="mt-10 text-center text-xs text-text-tertiary">
+        <p class="mt-18 text-center text-xs text-text-tertiary">
             Questions?
             <a href="mailto:hello@pointviz.co" class="text-chart-teal"
                 >Get in touch</a
