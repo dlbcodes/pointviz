@@ -5,7 +5,7 @@ export const SUBTITLE_SIZES = { sm: 10, md: 12, lg: 14, xl: 16 } as const;
 
 export const FONT_STACKS = {
 	sans: "Inter, ui-sans-serif, sans-serif",
-	serif: "'Instrument Serif', ui-serif, serif",
+	serif: "'Georgia', ui-sans-serif, sans-serif",
 	mono: "'Geist Mono', ui-monospace, monospace",
 	display: "'Clash Display', ui-sans-serif, sans-serif",
 } as const;

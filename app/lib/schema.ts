@@ -58,6 +58,8 @@ const StyleSchema = z.strictObject({
 	yAxis: AxisStyle.optional(),
 	titleFont: z.enum(FONT_NAMES).optional(),  // now validates "sans"|"serif"|"mono"|"display"
 	bodyFont: z.enum(FONT_NAMES).optional(),
+	barRadius: z.enum(["none", "sm", "md", "lg", "full"]).optional(),  // rounding amount
+	barRadiusEnds: z.enum(["end", "both"]).optional(),  // round only the far end, or both
 });
 
 // ── Series shapes ──

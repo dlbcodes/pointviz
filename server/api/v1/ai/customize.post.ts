@@ -34,6 +34,7 @@ const PatchSchema = z.object({
 		label: z.string().optional(),
 		color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
 	})).optional(),
+
 	style: z
 		.object({
 			theme: z.enum(THEME_NAMES as [string, ...string[]]).optional(),
@@ -81,6 +82,8 @@ const PatchSchema = z.object({
 				max: z.number().optional(),
 			}).optional(),
 			showSymbol: z.boolean().optional(),
+			barRadius: z.enum(["none", "sm", "md", "lg", "full"]).optional(),  // rounding amount
+			barRadiusEnds: z.enum(["end", "both"]).optional(),  // round only the far end, or both
 		})
 		.optional(),
 });
@@ -135,6 +138,9 @@ Fields you may patch:
 - style.titleFont — font for the title and subtitle (the headline). Options: "serif" (editorial, like FT/Economist), "display" (bold branded), "sans" (clean), "mono" (technical).
 - style.bodyFont — font for axis labels, value labels, and legend (the data text). Options: "sans" (clean, default), "mono" (data-journalism look), "serif", "display".
 - For an editorial / newspaper look, use titleFont "serif" + bodyFont "sans" or "mono".
+- style.barRadius: how rounded the bars are — "none" (square), "sm", "md", "lg", "full" (pill). "round the bars" → { "style": { "barRadius": "md" } }; "square bars" → "none".
+- style.barRadiusEnds: "end" (default, round only the outer end) or "both" (round both ends, pill-like). Only meaningful on non-stacked bars.
+- On stacked bars, only the outer segments round automatically — you don't control per-segment rounding.
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.

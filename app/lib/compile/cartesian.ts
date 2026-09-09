@@ -5,6 +5,45 @@ import { applyAxisStyle, legendConfig, resolveLabel } from "./style";
 
 type CartesianSpec = Extract<ChartSpec, { type: "bar" | "line" | "area" }>;
 
+const RADIUS_PX = { none: 0, sm: 3, md: 6, lg: 10, full: 999 } as const;
+
+function barBorderRadius(opts: {
+	radius: number;
+	horizontal: boolean;
+	stacked: boolean;
+	seriesIndex: number;
+	seriesCount: number;
+	bothEnds: boolean;  // user wants both ends rounded
+}): number[] {
+	const { radius, horizontal, stacked, seriesIndex, seriesCount, bothEnds } = opts;
+	if (radius === 0) return [0, 0, 0, 0];
+
+	// borderRadius order: [top-left, top-right, bottom-right, bottom-left]
+	if (!stacked) {
+		// single bar: round the "end" (top for vertical, right for horizontal), or both
+		if (horizontal) {
+			return bothEnds ? [radius, radius, radius, radius] : [0, radius, radius, 0]; // right end
+		}
+		return bothEnds ? [radius, radius, radius, radius] : [radius, radius, 0, 0]; // top end
+	}
+
+	// stacked: only outermost segments round
+	const isFirst = seriesIndex === 0;
+	const isLast = seriesIndex === seriesCount - 1;
+
+	if (horizontal) {
+		// stack grows left→right: first segment rounds left, last rounds right
+		const left = isFirst ? radius : 0;
+		const right = isLast ? radius : 0;
+		return [left, right, right, left]; // [tl, tr, br, bl]
+	}
+	// vertical stack grows bottom→top: first (bottom) rounds bottom, last (top) rounds top
+	const top = isLast ? radius : 0;
+	const bottom = isFirst ? radius : 0;
+	return [top, top, bottom, bottom]; // [tl, tr, br, bl]
+}
+
+
 export function compileCartesian(spec: CartesianSpec, ctx: CompileContext) {
 	const { s, preview, style, brandmark } = ctx;
 	const { type, orientation, stack, categories, series, title, subtitle, goals } = spec;
@@ -129,7 +168,18 @@ export function compileCartesian(spec: CartesianSpec, ctx: CompileContext) {
 				areaStyle: type === "area" ? { opacity: 0.15 } : undefined,
 				barCategoryGap: "40%",
 				emphasis: { disabled: true },
-				itemStyle: type === "bar" ? { borderRadius: horizontal ? [0, 0, 0, 0] : [4, 4, 0, 0] } : undefined,
+				itemStyle: type === "bar"
+					? {
+						borderRadius: barBorderRadius({
+							radius: RADIUS_PX[style?.barRadius ?? "sm"],
+							horizontal,
+							stacked: stack,
+							seriesIndex: i,
+							seriesCount: series.length,
+							bothEnds: style?.barRadiusEnds === "both",
+						}),
+					}
+					: undefined,
 				smooth: type !== "bar" ? 0.35 : undefined,
 				lineStyle: type !== "bar" ? { width: 2.5 } : undefined,
 				showSymbol: type !== "bar" ? (style?.showSymbol ?? true) : undefined,

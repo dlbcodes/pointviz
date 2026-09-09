@@ -7,7 +7,7 @@
 @theme {
     --font-sans: "Inter", system-ui, sans-serif;
     /* --font-sans: "Geist Mono", ui-monospace, monospace; */
-    --font-serif: "Instrument Serif", system-ui, sans-serif;
+    --font-serif: "Georgia", system-ui, sans-serif;
     --font-mono: "Geist Mono", ui-monospace, monospace;
     --font-display: "Clash Display", ui-sans-serif, sans-serif;
 
