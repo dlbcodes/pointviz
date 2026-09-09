@@ -107,6 +107,7 @@ const emit = defineEmits<{ cta: [tier: PricingTier] }>();
                 size="lg"
                 class="w-full justify-center gap-2"
                 @click="emit('cta', tier)"
+                data-umami-event="pricing_cta_click"
             >
                 <PhLightning
                     v-if="tier.highlight"

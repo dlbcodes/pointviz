@@ -129,4 +129,6 @@ const filteredExamples = computed(() =>
             </div>
         </div>
     </div>
+
+    <Cta />
 </template>

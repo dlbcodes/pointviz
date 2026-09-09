@@ -196,13 +196,19 @@ const chartBg = computed(() => {
             </p>
 
             <div class="flex items-center gap-x-8">
-                <Button variant="primary" size="lg" to="/signup">
+                <Button
+                    variant="primary"
+                    size="lg"
+                    to="/signup"
+                    data-umami-event="hero_cta_click"
+                >
                     Try it — it's free
                     <AnimatedArrow />
                 </Button>
                 <NuxtLink
                     to="/examples"
                     class="group inline-flex items-center gap-x-2 font-mono text-current"
+                    data-umami-event="hero_click_see_examples"
                 >
                     <span
                         class="relative after:absolute after:left-0 after:-bottom-0.5 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out group-hover:after:scale-x-100"

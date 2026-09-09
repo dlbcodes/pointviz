@@ -69,6 +69,7 @@ withDefaults(
                     <NuxtLink
                         to="/signup"
                         :aria-label="buttonLabel"
+                        data-umami-event="cta_click_create_chart"
                         class="group flex h-28 w-full items-center justify-center gap-2 overflow-hidden rounded-[56px] bg-brand-100 font-mono text-3xl font-semibold tracking-tight text-text-inverse transition-[border-radius] duration-300 ease-out hover:rounded-none md:h-32 md:rounded-[64px] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
                     >
                         {{ buttonLabel }}

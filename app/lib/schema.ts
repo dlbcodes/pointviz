@@ -1,6 +1,9 @@
 // app/lib/schema.ts
 import * as z from "zod";
 import { THEME_NAMES, PALETTE_NAMES } from "~/lib/theme";
+import { FONT_STACKS } from "./compile/chart-constants"
+
+const FONT_NAMES = Object.keys(FONT_STACKS) as [string, ...string[]];
 
 const HEX = z
 	.string()
@@ -53,6 +56,8 @@ const StyleSchema = z.strictObject({
 		.optional(),
 	xAxis: AxisStyle.optional(),
 	yAxis: AxisStyle.optional(),
+	titleFont: z.enum(FONT_NAMES).optional(),  // now validates "sans"|"serif"|"mono"|"display"
+	bodyFont: z.enum(FONT_NAMES).optional(),
 });
 
 // ── Series shapes ──

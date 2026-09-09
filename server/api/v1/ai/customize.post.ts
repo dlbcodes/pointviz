@@ -41,6 +41,8 @@ const PatchSchema = z.object({
 			colors: z.array(HEX).optional(),
 			gridColor: HEX.optional(),
 			backgroundColor: HEX.optional(),
+			titleFont: z.enum(["sans", "serif", "mono", "display"]).optional(),
+			bodyFont: z.enum(["sans", "serif", "mono", "display"]).optional(),
 			title: z.object({
 				size: z.enum(["sm", "md", "lg", "xl"]).optional(),
 				color: HEX.optional(),
@@ -103,6 +105,9 @@ Examples:
 - "remove the goal line" → { "goals": [] }
 - "start the y-axis at zero" → { "style": { "yAxis": { "min": 0 } } }
 - "start the y-axis at zero" → { "style": { "yAxis": { "min": 0 } } }
+- "make the title a serif" → { "style": { "titleFont": "serif" } }
+- "give it a data-journalism look" → { "style": { "titleFont": "serif", "bodyFont": "mono" } }
+- "use a monospace for the numbers" → { "style": { "bodyFont": "mono" } }
 
 Fields you may patch:
 - type: bar/line/area/pie/donut. Pie and donut show ONE series as slices (categories become slice labels, the first series' values become slice sizes). Use pie/donut for parts-of-a-whole (proportions, shares), not for comparisons over categories.
@@ -127,6 +132,9 @@ Fields you may patch:
 - On scatter charts, style.xAxis.min/max and style.yAxis.min/max set the axis ranges (e.g. start the gini axis at 0.2). xAxis = the xLabel measure, yAxis = the yLabel measure.
 - style.showSymbol: on line/area charts, false removes the point markers (dots) for a clean line. "remove the dots" / "hide point markers" → { "style": { "showSymbol": false } }
 - On stacked bar charts, style.showValues: { total: true } shows the TOTAL of each bar at its top (instead of labeling each segment). "show the totals" / "show the sum on each bar" → { "style": { "showValues": { "total": true } } }
+- style.titleFont — font for the title and subtitle (the headline). Options: "serif" (editorial, like FT/Economist), "display" (bold branded), "sans" (clean), "mono" (technical).
+- style.bodyFont — font for axis labels, value labels, and legend (the data text). Options: "sans" (clean, default), "mono" (data-journalism look), "serif", "display".
+- For an editorial / newspaper look, use titleFont "serif" + bodyFont "sans" or "mono".
 
 Resolve vague color names (e.g. "light gray", "navy") to a reasonable hex value.
 Never change the data (categories, series, values). Emit only what the instruction requires.
@@ -261,12 +269,15 @@ export default defineEventHandler(async (event) => {
 				return { spec: final.data, raw: JSON.stringify(final.data, null, 2) };
 			}
 			parseError = `Applying that patch produced an invalid chart:\n${z.prettifyError(final.error)}`;
+			console.error(`[customize] attempt ${attempt} failed:`, parseError); // ← here
 		}
 
 		// Feed whatever went wrong back for repair.
 		messages.push({ role: "assistant", content: raw });
 		messages.push({ role: "user", content: `${parseError}\n\nReturn a corrected patch.` });
 	}
+
+
 
 	throw createError({ statusCode: 422, statusMessage: "Couldn't apply that change. Try rephrasing." });
 });

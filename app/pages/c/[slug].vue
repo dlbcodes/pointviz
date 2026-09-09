@@ -71,7 +71,7 @@ useSeoMeta({
             class="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center"
         >
             <p class="text-text-secondary">This chart isn't available.</p>
-            <NuxtLink to="/">
+            <NuxtLink to="/" data-umami-event="404_click_make_own">
                 <Button variant="primary">
                     Make your own
                     <PhArrowRight class="size-4" />
@@ -122,7 +122,11 @@ useSeoMeta({
                         in plain English.
                     </p>
                     <div class="flex w-full gap-2 sm:w-auto">
-                        <NuxtLink :to="remixHref" class="flex-1 sm:flex-none">
+                        <NuxtLink
+                            :to="remixHref"
+                            class="flex-1 sm:flex-none"
+                            data-umami-event="public_chart_click_remix"
+                        >
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -131,7 +135,11 @@ useSeoMeta({
                                 Remix
                             </Button>
                         </NuxtLink>
-                        <NuxtLink to="/" class="flex-1 sm:flex-none">
+                        <NuxtLink
+                            to="/"
+                            class="flex-1 sm:flex-none"
+                            data-umami-event="public_chart_click_make_own"
+                        >
                             <Button
                                 variant="primary"
                                 size="sm"
