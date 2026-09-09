@@ -21,12 +21,13 @@ useSeoMeta({
     robots: "noindex, nofollow",
 });
 
-const { login, loading, error: authError } = useAuth();
+const { login, loginWithGoogle, loading, error: authError } = useAuth();
 const route = useRoute();
 
 const email = ref("");
 const password = ref("");
 const errors = ref<Record<string, string>>({});
+const googleLoading = ref(false);
 
 // where to go after login: the ?redirect= param, else home
 const redirectTo = computed(() => {
@@ -52,6 +53,14 @@ const onSubmit = async (): Promise<void> => {
         await navigateTo(redirectTo.value);
     }
 };
+
+async function onGoogle() {
+    googleLoading.value = true;
+    const ok = await loginWithGoogle("/charts");
+    if (!ok) {
+        googleLoading.value = false;
+    }
+}
 </script>
 
 <template>
@@ -71,6 +80,24 @@ const onSubmit = async (): Promise<void> => {
             <p v-if="authError" class="text-sm text-danger-text">
                 {{ authError }}
             </p>
+
+            <!-- Google -->
+            <Button
+                variant="secondary"
+                class="w-full justify-center gap-2"
+                :disabled="googleLoading"
+                @click="onGoogle"
+            >
+                <GoogleLogo />
+                {{ googleLoading ? "Redirecting…" : "Continue with Google" }}
+            </Button>
+
+            <!-- divider -->
+            <div class="flex items-center gap-3">
+                <span class="h-px flex-1 bg-border-default" />
+                <span class="font-mono text-xs text-text-tertiary">or</span>
+                <span class="h-px flex-1 bg-border-default" />
+            </div>
 
             <div class="flex flex-col gap-4">
                 <Field :invalid="!!errors.email">
