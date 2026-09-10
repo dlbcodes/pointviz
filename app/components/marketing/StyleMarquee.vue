@@ -5,11 +5,13 @@ import { PhCaretLeft, PhCaretRight } from "@phosphor-icons/vue";
 import { Button } from "@dlbcodes/ui";
 
 const styles = [
-    { src: "/showcase/ft_style.webp", label: "Financial Times" },
-    { src: "/showcase/apple_style.webp", label: "Apple Fitness" },
-    { src: "/showcase/customer_traffic.webp", label: "Customer traffic" },
-    { src: "/showcase/mrr_growth.webp", label: "MRR growth" },
-    { src: "/showcase/eccomerce_revenue.webp", label: "E-commerce revenue" },
+    { src: "/showcase/ft_style.png", label: "Financial Times" },
+    { src: "/showcase/apple_style.png", label: "Apple Fitness" },
+    { src: "/showcase/customer_traffic.png", label: "Customer traffic" },
+    { src: "/showcase/mrr_growth.png", label: "MRR growth" },
+    { src: "/showcase/ecommerce_revenue.png", label: "E-commerce revenue" },
+    { src: "/showcase/economist_style.png", label: "Economist style" },
+    { src: "/showcase/government_funding.png", label: "Economist style" },
 ];
 
 const active = ref(0);

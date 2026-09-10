@@ -33,7 +33,7 @@ export const PRICING_TIERS: PricingTier[] = [
 	{
 		id: "PRO",
 		name: "Pro",
-		price: "$12",
+		price: "$14",
 		period: "/ month",
 		tagline: "For when you're charting a lot.",
 		cta: "Upgrade to Pro",        // ← add
