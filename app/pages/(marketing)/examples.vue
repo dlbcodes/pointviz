@@ -6,6 +6,28 @@ import { EXAMPLES, EXAMPLE_CATEGORIES } from "~/lib/examples-showcase";
 
 definePageMeta({ layout: "default" });
 
+useSeoMeta({
+    title: "Interactive Chart Examples & Templates",
+    description:
+        "Explore real-world examples of beautiful, interactive charts built with PointViz. Find your use case, copy the AI prompt, and remix it with your own data in seconds.",
+
+    // Open Graph
+    ogTitle: "Interactive Chart Examples & Templates | PointViz",
+    ogDescription:
+        "Explore real-world examples of beautiful, interactive charts built with PointViz. Find your use case, copy the AI prompt, and remix it with your own data.",
+    ogUrl: "https://www.pointviz.co/examples",
+
+    // Twitter
+    twitterTitle: "Interactive Chart Examples & Templates | PointViz",
+    twitterDescription:
+        "Explore real-world examples of beautiful, interactive charts built with PointViz. Find your use case, copy the AI prompt, and remix it with your own data.",
+});
+
+// Add canonical link specifically for this page
+useHead({
+    link: [{ rel: "canonical", href: "https://www.pointviz.co/examples" }],
+});
+
 const activeCategory = ref("All");
 
 const filteredExamples = computed(() =>

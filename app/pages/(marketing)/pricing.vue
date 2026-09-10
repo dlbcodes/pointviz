@@ -5,6 +5,27 @@ import { PRICING_TIERS, type PricingTier } from "~/lib/pricing";
 import { PRICING_FAQS } from "~/config/faqs";
 
 definePageMeta({ layout: "default" });
+useSeoMeta({
+    title: "Simple, Transparent Pricing",
+    description:
+        "Start building beautiful, interactive charts for free. Upgrade to PointViz Pro for unlimited AI prompts, private charts, and custom branding. No hidden fees.",
+
+    // Open Graph
+    ogTitle: "Simple, Transparent Pricing | PointViz",
+    ogDescription:
+        "Start building beautiful, interactive charts for free. Upgrade to PointViz Pro for unlimited AI prompts, private charts, and custom branding.",
+    ogUrl: "https://www.pointviz.co/pricing",
+
+    // Twitter
+    twitterTitle: "Simple, Transparent Pricing | PointViz",
+    twitterDescription:
+        "Start building beautiful, interactive charts for free. Upgrade to PointViz Pro for unlimited AI prompts, private charts, and custom branding.",
+});
+
+// Add canonical link specifically for this page
+useHead({
+    link: [{ rel: "canonical", href: "https://www.pointviz.co/pricing" }],
+});
 
 const user = useSupabaseUser();
 const authModalOpen = useState("auth-modal-open", () => false);
