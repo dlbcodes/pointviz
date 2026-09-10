@@ -7,8 +7,13 @@ import {
     PanelContent,
     Textarea,
     Button,
+    Dropdown,
+    DropdownTrigger,
+    DropdownContent,
+    DropdownItem,
 } from "@dlbcodes/ui";
-import { PhArrowElbowDownLeft } from "@phosphor-icons/vue";
+import { PhArrowElbowDownLeft, PhSparkle, PhPlus } from "@phosphor-icons/vue";
+import { STYLE_PRESETS, type StylePreset } from "~/lib/style-presets";
 
 const { instruction, pending, customizeError, customize, canCustomize } =
     useCustomize();
@@ -36,6 +41,12 @@ const useSuggestion = (text: string): void => {
     const el = inputRef.value?.$el ?? inputRef.value;
     el?.querySelector?.("textarea")?.focus() ?? el?.focus?.();
 };
+
+function applyPreset(preset: StylePreset) {
+    instruction.value = preset.instruction;
+    // auto-send the preset (it's a complete instruction, not a phrasing hint):
+    customize();
+}
 
 const submit = (): void => {
     if (!instruction.value.trim() || pending.value) return;
@@ -70,10 +81,42 @@ const onKeydown = (e: KeyboardEvent): void => {
             </PanelHeader>
 
             <PanelContent
-                class="cursor-text p-3 border border-border-subtle"
+                class="cursor-text p-3 border border-border-subtle overflow-visible"
                 @click="focusInput"
             >
                 <div class="flex items-end gap-2">
+                    <!-- Style presets dropdown -->
+                    <Dropdown placement="top-start">
+                        <DropdownTrigger
+                            class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border-default text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+                            aria-label="Apply a preset style"
+                            :disabled="pending"
+                        >
+                            <PhSparkle class="size-4" />
+                        </DropdownTrigger>
+                        <DropdownContent size="sm" class="p-1">
+                            <div
+                                class="px-2 py-1.5 text-xs font-medium text-text-tertiary"
+                            >
+                                Preset styles
+                            </div>
+                            <DropdownItem
+                                v-for="preset in STYLE_PRESETS"
+                                :key="preset.id"
+                                class="flex-col items-start gap-0.5"
+                                @click="applyPreset(preset)"
+                            >
+                                <span
+                                    class="text-sm font-medium text-text-primary"
+                                    >{{ preset.name }}</span
+                                >
+                                <span class="text-xs text-text-tertiary">{{
+                                    preset.description
+                                }}</span>
+                            </DropdownItem>
+                        </DropdownContent>
+                    </Dropdown>
+
                     <Textarea
                         ref="inputRef"
                         v-model="instruction"
