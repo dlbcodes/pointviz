@@ -3,6 +3,7 @@
 @source "../../../node_modules/@dlbcodes/ui/dist";
 @import "./fonts.css" layer(utilities);
 @source "../error.vue";
+@plugin "@tailwindcss/typography";
 
 @theme {
     --font-sans: "Inter", system-ui, sans-serif;

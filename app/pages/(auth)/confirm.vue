@@ -9,7 +9,7 @@ const { loadSpec } = useChartSpec();
 const target = computed(() => {
     const r = route.query.redirect;
     const t = Array.isArray(r) ? r[0] : r;
-    return t && t.startsWith("/") ? t : "/";
+    return t && t.startsWith("/charts") ? t : "/charts";
 });
 
 watch(

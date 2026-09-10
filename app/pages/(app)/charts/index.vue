@@ -16,6 +16,9 @@ import {
 import { PhPlus, PhChartBar } from "@phosphor-icons/vue";
 
 definePageMeta({ layout: "app" });
+useSeoMeta({
+    title: "Dashboard",
+});
 
 const chartStore = useChartStore();
 
