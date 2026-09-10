@@ -7,7 +7,7 @@ import { useResizable } from "~/composables/useResizable";
 const emit = defineEmits<{ close: [] }>();
 
 const userStore = useUserStore();
-const isDesktop = useMediaQuery("(min-width: 768px)");
+const isDesktop = useMediaQuery("(min-width: 1024px)");
 const { width, dragging, startResize } = useResizable({
     min: 300,
     max: 400,
@@ -19,7 +19,7 @@ const { width, dragging, startResize } = useResizable({
 
 <template>
     <aside
-        class="flex flex-col border-l border-border-default bg-bg-base max-md:absolute max-md:top-0 max-md:right-0 max-md:bottom-0 max-md:z-40 max-md:w-72 max-md:shadow-xl md:relative md:shrink-0"
+        class="flex flex-col border-l border-border-default bg-bg-base max-lg:absolute max-lg:top-0 max-lg:right-0 max-lg:bottom-0 max-lg:z-40 max-lg:w-72 max-lg:shadow-xl lg:relative lg:shrink-0"
         :class="dragging ? 'border-brand-100' : ''"
         :style="{ width: isDesktop ? `${width}px` : undefined }"
     >

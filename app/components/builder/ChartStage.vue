@@ -100,7 +100,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 
         <!-- Chart region: grows, scrolls, chart sits toward the top -->
         <div
-            class="flex flex-1 flex-col items-center justify-center gap-2 overflow-auto"
+            class="flex flex-1 flex-col items-center justify-center gap-2 overflow-auto p-4"
         >
             <div
                 ref="stageEl"
