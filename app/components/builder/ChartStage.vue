@@ -104,7 +104,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
         >
             <div
                 ref="stageEl"
-                class="flex aspect-video w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-border-default"
+                class="flex aspect-3/4 sm:aspect-4/3 md:aspect-video w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-border-default"
                 :class="chartBackground ? '' : 'bg-bg-base'"
                 :style="
                     chartBackground ? { backgroundColor: chartBackground } : {}
@@ -116,7 +116,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
                         ref="chartRef"
                         :option="option"
                         autoresize
-                        class="min-h-0 w-full flex-1 p-4"
+                        class="min-h-0 w-full flex-1 p-2 md:p-4"
                     />
                     <div v-else class="flex flex-1 items-center justify-center">
                         <div class="space-y-2 text-center">

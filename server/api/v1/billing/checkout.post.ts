@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 		customer: customerId,
 		line_items: [{ price: config.stripePricePro, quantity: 1 }],
 		success_url: `${origin}/account?upgraded=1`,
-		cancel_url: `${origin}/pricing`,
+		cancel_url: `${origin}/charts`,
 		client_reference_id: me.id,
 		metadata: { userId: me.id },
 	});
