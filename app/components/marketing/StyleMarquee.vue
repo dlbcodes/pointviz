@@ -5,13 +5,14 @@ import { PhCaretLeft, PhCaretRight } from "@phosphor-icons/vue";
 import { Button } from "@dlbcodes/ui";
 
 const styles = [
-    { src: "/showcase/ft_style.png", label: "Financial Times" },
-    { src: "/showcase/apple_style.png", label: "Apple Fitness" },
+    { src: "/showcase/ft_style.png", label: "Editorial warm" },
+    { src: "/showcase/apple_style.png", label: "Neon dark" },
     { src: "/showcase/customer_traffic.png", label: "Customer traffic" },
     { src: "/showcase/mrr_growth.png", label: "MRR growth" },
     { src: "/showcase/ecommerce_revenue.png", label: "E-commerce revenue" },
     { src: "/showcase/economist_style.png", label: "Economist style" },
     { src: "/showcase/government_funding.png", label: "Economist style" },
+    { src: "/showcase/soft_pill.png", label: "Soft pill" },
 ];
 
 const active = ref(0);

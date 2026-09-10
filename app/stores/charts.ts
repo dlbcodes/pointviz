@@ -8,9 +8,46 @@ import { ChartSpecSchema } from "~/lib/schema";
 
 export const STARTER_JSON = `{
   "type": "bar",
-  "title": "Untitled chart",
-  "categories": ["A", "B", "C"],
-  "series": [{ "name": "Series 1", "values": [10, 20, 15] }]
+  "stack": false,
+  "title": "Weekly Training Volume by Activity",
+  "subtitle": "Active minutes per week across running, cycling, strength, and yoga over a 12-week program.",
+  "categories": [
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Week 5",
+    "Week 6"
+  ],
+  "series": [
+    {
+      "name": "Running (min)",
+      "values": [120, 135, 150, 140, 165, 180]
+    },
+    {
+      "name": "Cycling (min)",
+      "values": [60, 75, 90, 105, 120, 135]
+    },
+    {
+      "name": "Strength (min)",
+      "values": [90, 90, 105, 105, 120, 120]
+    },
+    {
+      "name": "Yoga (min)",
+      "values": [45, 45, 60, 60, 75, 75]
+    }
+  ],
+  "style": {
+    "colors": [  "#E63946", "#1D3557", "#2A9D8F", "#E9C46A"],
+	"legend": {
+      "visible": true,
+      "position": "top"
+    },
+	 "yAxis": {
+      "visible": true,
+      "position": "right"
+    }
+  }
 }`;
 
 export const useChartStore = defineStore("charts", () => {

@@ -12,7 +12,11 @@ import {
     DropdownContent,
     DropdownItem,
 } from "@dlbcodes/ui";
-import { PhArrowElbowDownLeft, PhSparkle, PhPlus } from "@phosphor-icons/vue";
+import {
+    PhArrowElbowDownLeft,
+    PhSparkle,
+    PhLightbulb,
+} from "@phosphor-icons/vue";
 import { STYLE_PRESETS, type StylePreset } from "~/lib/style-presets";
 
 const { instruction, pending, customizeError, customize, canCustomize } =
@@ -25,7 +29,6 @@ const suggestions = [
     "Use a colorblind-safe palette",
     "Make it horizontal and sorted descending",
     "Show values inside the bars",
-    "Apply the DataPoint theme",
     "Put the legend on top",
 ];
 
@@ -67,7 +70,7 @@ const onKeydown = (e: KeyboardEvent): void => {
             <PanelHeader
                 class="flex flex-nowrap gap-1.5 overflow-x-auto pb-2 no-scrollbar"
             >
-                <span class="text-sm text-text-secondary">Hints:</span>
+                <span class="text-sm text-text-secondary"> Hints: </span>
                 <button
                     v-for="s in suggestions"
                     :key="s"
@@ -88,13 +91,22 @@ const onKeydown = (e: KeyboardEvent): void => {
                     <!-- Style presets dropdown -->
                     <Dropdown placement="top-start">
                         <DropdownTrigger
-                            class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border-default text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+                            v-slot="{ open }"
                             aria-label="Apply a preset style"
                             :disabled="pending"
                         >
-                            <PhSparkle class="size-4" />
+                            <div
+                                class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border-default transition-colors"
+                                :class="
+                                    open
+                                        ? 'bg-bg-subtle text-text-primary'
+                                        : 'hover:text-text-primary text-text-secondary '
+                                "
+                            >
+                                <PhSparkle class="size-5" />
+                            </div>
                         </DropdownTrigger>
-                        <DropdownContent size="sm" class="p-1">
+                        <DropdownContent size="sm" class="p-1 no-scrollbar">
                             <div
                                 class="px-2 py-1.5 text-xs font-medium text-text-tertiary"
                             >
@@ -103,16 +115,43 @@ const onKeydown = (e: KeyboardEvent): void => {
                             <DropdownItem
                                 v-for="preset in STYLE_PRESETS"
                                 :key="preset.id"
-                                class="flex-col items-start gap-0.5"
+                                class="flex items-center gap-3"
                                 @click="applyPreset(preset)"
                             >
-                                <span
-                                    class="text-sm font-medium text-text-primary"
-                                    >{{ preset.name }}</span
+                                <!-- Dynamic Background -->
+                                <div
+                                    class="flex items-center justify-center size-8 rounded-lg shrink-0"
+                                    :style="{ backgroundColor: preset.bgColor }"
                                 >
-                                <span class="text-xs text-text-tertiary">{{
-                                    preset.description
-                                }}</span>
+                                    <div class="flex -space-x-1">
+                                        <!-- Dynamic Colors -->
+                                        <div
+                                            v-for="(
+                                                color, index
+                                            ) in preset.colors.slice(0, 3)"
+                                            :key="color"
+                                            class="size-2.5 rounded-xs border border-white/10"
+                                            :class="{
+                                                '-rotate-8': index === 0,
+                                                'rotate-8': index === 1,
+                                                'rotate-12': index === 2,
+                                            }"
+                                            :style="{ backgroundColor: color }"
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Text -->
+                                <div class="flex flex-col items-start">
+                                    <span
+                                        class="text-sm font-medium text-text-primary"
+                                    >
+                                        {{ preset.name }}
+                                    </span>
+                                    <span class="text-xs text-text-tertiary">
+                                        {{ preset.description }}
+                                    </span>
+                                </div>
                             </DropdownItem>
                         </DropdownContent>
                     </Dropdown>
@@ -124,7 +163,7 @@ const onKeydown = (e: KeyboardEvent): void => {
                         :rows="1"
                         :disabled="pending"
                         placeholder="Describe a change — e.g. make it horizontal with a colorblind palette"
-                        class="flex-1 border-0 bg-transparent shadow-none focus-within:ring-0"
+                        class="flex-1 border-0 bg-transparent shadow-none focus-within:ring-0 no-scrollbar"
                         @keydown="onKeydown"
                     />
                     <Button
