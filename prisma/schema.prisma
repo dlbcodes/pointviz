@@ -13,6 +13,10 @@ model User {
   name      String?
   avatarUrl String?
 
+  stripeCustomerId     String?   @unique
+	stripeSubscriptionId String?   @unique
+	planExpiresAt        DateTime?
+
   plan             Plan     @default(FREE)
   customizeCount   Int      @default(0)
   customizeResetAt DateTime @default(now())

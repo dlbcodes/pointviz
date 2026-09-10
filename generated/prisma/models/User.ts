@@ -39,6 +39,9 @@ export type UserMinAggregateOutputType = {
   email: string | null
   name: string | null
   avatarUrl: string | null
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  planExpiresAt: Date | null
   plan: $Enums.Plan | null
   customizeCount: number | null
   customizeResetAt: Date | null
@@ -51,6 +54,9 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   name: string | null
   avatarUrl: string | null
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  planExpiresAt: Date | null
   plan: $Enums.Plan | null
   customizeCount: number | null
   customizeResetAt: Date | null
@@ -63,6 +69,9 @@ export type UserCountAggregateOutputType = {
   email: number
   name: number
   avatarUrl: number
+  stripeCustomerId: number
+  stripeSubscriptionId: number
+  planExpiresAt: number
   plan: number
   customizeCount: number
   customizeResetAt: number
@@ -85,6 +94,9 @@ export type UserMinAggregateInputType = {
   email?: true
   name?: true
   avatarUrl?: true
+  stripeCustomerId?: true
+  stripeSubscriptionId?: true
+  planExpiresAt?: true
   plan?: true
   customizeCount?: true
   customizeResetAt?: true
@@ -97,6 +109,9 @@ export type UserMaxAggregateInputType = {
   email?: true
   name?: true
   avatarUrl?: true
+  stripeCustomerId?: true
+  stripeSubscriptionId?: true
+  planExpiresAt?: true
   plan?: true
   customizeCount?: true
   customizeResetAt?: true
@@ -109,6 +124,9 @@ export type UserCountAggregateInputType = {
   email?: true
   name?: true
   avatarUrl?: true
+  stripeCustomerId?: true
+  stripeSubscriptionId?: true
+  planExpiresAt?: true
   plan?: true
   customizeCount?: true
   customizeResetAt?: true
@@ -208,6 +226,9 @@ export type UserGroupByOutputType = {
   email: string
   name: string | null
   avatarUrl: string | null
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  planExpiresAt: Date | null
   plan: $Enums.Plan
   customizeCount: number
   customizeResetAt: Date
@@ -243,6 +264,9 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
+  planExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   plan?: Prisma.EnumPlanFilter<"User"> | $Enums.Plan
   customizeCount?: Prisma.IntFilter<"User"> | number
   customizeResetAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -256,6 +280,9 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
   customizeCount?: Prisma.SortOrder
   customizeResetAt?: Prisma.SortOrder
@@ -267,24 +294,30 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  stripeCustomerId?: string
+  stripeSubscriptionId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  planExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   plan?: Prisma.EnumPlanFilter<"User"> | $Enums.Plan
   customizeCount?: Prisma.IntFilter<"User"> | number
   customizeResetAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   charts?: Prisma.ChartListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "stripeCustomerId" | "stripeSubscriptionId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
   customizeCount?: Prisma.SortOrder
   customizeResetAt?: Prisma.SortOrder
@@ -305,6 +338,9 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  planExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   plan?: Prisma.EnumPlanWithAggregatesFilter<"User"> | $Enums.Plan
   customizeCount?: Prisma.IntWithAggregatesFilter<"User"> | number
   customizeResetAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -317,6 +353,9 @@ export type UserCreateInput = {
   email: string
   name?: string | null
   avatarUrl?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   plan?: $Enums.Plan
   customizeCount?: number
   customizeResetAt?: Date | string
@@ -330,6 +369,9 @@ export type UserUncheckedCreateInput = {
   email: string
   name?: string | null
   avatarUrl?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   plan?: $Enums.Plan
   customizeCount?: number
   customizeResetAt?: Date | string
@@ -343,6 +385,9 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   customizeCount?: Prisma.IntFieldUpdateOperationsInput | number
   customizeResetAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -356,6 +401,9 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   customizeCount?: Prisma.IntFieldUpdateOperationsInput | number
   customizeResetAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,6 +417,9 @@ export type UserCreateManyInput = {
   email: string
   name?: string | null
   avatarUrl?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   plan?: $Enums.Plan
   customizeCount?: number
   customizeResetAt?: Date | string
@@ -381,6 +432,9 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   customizeCount?: Prisma.IntFieldUpdateOperationsInput | number
   customizeResetAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -393,6 +447,9 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   customizeCount?: Prisma.IntFieldUpdateOperationsInput | number
   customizeResetAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -405,6 +462,9 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   customizeCount?: Prisma.SortOrder
   customizeResetAt?: Prisma.SortOrder
@@ -421,6 +481,9 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   customizeCount?: Prisma.SortOrder
   customizeResetAt?: Prisma.SortOrder
@@ -433,6 +496,9 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   customizeCount?: Prisma.SortOrder
   customizeResetAt?: Prisma.SortOrder
@@ -455,6 +521,10 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type EnumPlanFieldUpdateOperationsInput = {
@@ -492,6 +562,9 @@ export type UserCreateWithoutChartsInput = {
   email: string
   name?: string | null
   avatarUrl?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   plan?: $Enums.Plan
   customizeCount?: number
   customizeResetAt?: Date | string
@@ -504,6 +577,9 @@ export type UserUncheckedCreateWithoutChartsInput = {
   email: string
   name?: string | null
   avatarUrl?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   plan?: $Enums.Plan
   customizeCount?: number
   customizeResetAt?: Date | string
@@ -532,6 +608,9 @@ export type UserUpdateWithoutChartsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   customizeCount?: Prisma.IntFieldUpdateOperationsInput | number
   customizeResetAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -544,6 +623,9 @@ export type UserUncheckedUpdateWithoutChartsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   customizeCount?: Prisma.IntFieldUpdateOperationsInput | number
   customizeResetAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -587,6 +669,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   name?: boolean
   avatarUrl?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   plan?: boolean
   customizeCount?: boolean
   customizeResetAt?: boolean
@@ -601,6 +686,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   name?: boolean
   avatarUrl?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   plan?: boolean
   customizeCount?: boolean
   customizeResetAt?: boolean
@@ -613,6 +701,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   name?: boolean
   avatarUrl?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   plan?: boolean
   customizeCount?: boolean
   customizeResetAt?: boolean
@@ -625,6 +716,9 @@ export type UserSelectScalar = {
   email?: boolean
   name?: boolean
   avatarUrl?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   plan?: boolean
   customizeCount?: boolean
   customizeResetAt?: boolean
@@ -632,7 +726,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "plan" | "customizeCount" | "customizeResetAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "avatarUrl" | "stripeCustomerId" | "stripeSubscriptionId" | "planExpiresAt" | "plan" | "customizeCount" | "customizeResetAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   charts?: boolean | Prisma.User$chartsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -650,6 +744,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     name: string | null
     avatarUrl: string | null
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    planExpiresAt: Date | null
     plan: $Enums.Plan
     customizeCount: number
     customizeResetAt: Date
@@ -1083,6 +1180,9 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly stripeCustomerId: Prisma.FieldRef<"User", 'String'>
+  readonly stripeSubscriptionId: Prisma.FieldRef<"User", 'String'>
+  readonly planExpiresAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly plan: Prisma.FieldRef<"User", 'Plan'>
   readonly customizeCount: Prisma.FieldRef<"User", 'Int'>
   readonly customizeResetAt: Prisma.FieldRef<"User", 'DateTime'>
