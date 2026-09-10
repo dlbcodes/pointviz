@@ -3,7 +3,7 @@
 import { Button } from "@dlbcodes/ui";
 import { PhLightning } from "@phosphor-icons/vue";
 
-const user = useSupabaseUser();
+const userStore = useUserStore();
 const feedbackModalOpen = useState("feedback-modal-open", () => false);
 const helpModalOpen = useState("help-modal-open", () => false);
 const shortcutsModalOpen = useState("shortcuts-modal-open", () => false);
@@ -20,7 +20,11 @@ const upgradeModalOpen = useState("upgrade-modal-open", () => false);
                 <BrandMark />
             </NuxtLink>
             <div class="flex items-center gap-x-4">
-                <Button size="sm" @click="upgradeModalOpen = true">
+                <Button
+                    v-if="!userStore.isPro"
+                    size="sm"
+                    @click="upgradeModalOpen = true"
+                >
                     <PhLightning class="text-amber-400" weight="fill" />
                     Upgrade
                 </Button>

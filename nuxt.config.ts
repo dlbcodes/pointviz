@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     customizeModel: process.env.CUSTOMIZE_MODEL || "claude-haiku-4-5",
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    stripePricePro: process.env.STRIPE_PRICE_PRO,
   },
   devtools: { enabled: true },
   modules: ['@vueuse/nuxt', '@nuxtjs/supabase', '@pinia/nuxt', '@vercel/analytics', '@nuxtjs/sitemap', '@nuxtjs/robots'],

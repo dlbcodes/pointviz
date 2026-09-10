@@ -1,4 +1,3 @@
-<!-- app/pages/(app)/account.vue -->
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
 import {
@@ -13,19 +12,19 @@ import {
 import { PhCheck } from "@phosphor-icons/vue";
 import { PRICING_TIERS } from "~/lib/pricing";
 import { PLANS } from "~~/shared/plans";
+import { billingApiService } from "~/services/BillingApiService";
 
 definePageMeta({ layout: "app" });
 
 const userStore = useUserStore();
-const upgradeModalOpen = useState("upgrade-modal-open", () => false);
 
 onMounted(() => {
     if (!userStore.profile) userStore.fetchProfile();
 });
 
 const profile = computed(() => userStore.profile);
+const isPro = computed(() => userStore.isPro); // use the store getter
 
-// ── Settings nav ──
 const sections = [
     { id: "profile", label: "Profile" },
     { id: "plan", label: "Plan & Billing" },
@@ -45,7 +44,6 @@ watch(
     },
     { immediate: true },
 );
-
 const dirty = computed(() => name.value.trim() !== (profile.value?.name ?? ""));
 
 async function saveProfile() {
@@ -65,9 +63,38 @@ async function saveProfile() {
 }
 
 // ── Plan ──
-const isPro = computed(() => profile.value?.plan === "PRO");
 const freeLimit = PLANS.FREE.customizeLimit;
 const used = computed(() => profile.value?.customizeCount ?? 0);
+
+// ── Billing actions ──
+const billingLoading = ref(false);
+const billingError = ref<string | null>(null);
+
+async function upgrade() {
+    if (billingLoading.value) return;
+    billingLoading.value = true;
+    billingError.value = null;
+    try {
+        const url = await billingApiService.createCheckout();
+        window.location.href = url;
+    } catch (e) {
+        billingError.value = (e as Error).message ?? "Couldn't start checkout.";
+        billingLoading.value = false;
+    }
+}
+
+async function manageBilling() {
+    if (billingLoading.value) return;
+    billingLoading.value = true;
+    billingError.value = null;
+    try {
+        const url = await billingApiService.createPortalSession();
+        window.location.href = url;
+    } catch (e) {
+        billingError.value = (e as Error).message ?? "Couldn't open billing.";
+        billingLoading.value = false;
+    }
+}
 </script>
 
 <template>
@@ -94,16 +121,14 @@ const used = computed(() => profile.value?.customizeCount ?? 0);
             </div>
         </nav>
 
-        <!-- Content column (constrained width) -->
         <div class="min-w-0 max-w-xl flex-1">
-            <!-- PROFILE -->
+            <!-- PROFILE (unchanged) -->
             <div v-if="active === 'profile'" class="space-y-6">
                 <div class="rounded-2xl border border-border-default p-6">
                     <h2 class="text-base font-semibold">Profile</h2>
                     <p class="mt-0.5 text-sm text-text-tertiary">
                         Your name and how you appear.
                     </p>
-
                     <div class="mt-6 space-y-4">
                         <Field>
                             <FieldLabel>Name</FieldLabel>
@@ -114,7 +139,6 @@ const used = computed(() => profile.value?.customizeCount ?? 0);
                                 }}</FieldError>
                             </FieldContent>
                         </Field>
-
                         <Field>
                             <FieldLabel>Email</FieldLabel>
                             <FieldContent>
@@ -125,7 +149,6 @@ const used = computed(() => profile.value?.customizeCount ?? 0);
                                 />
                             </FieldContent>
                         </Field>
-
                         <div class="flex items-center justify-end gap-3 pt-1">
                             <span
                                 v-if="savedOk"
@@ -178,8 +201,25 @@ const used = computed(() => profile.value?.customizeCount ?? 0);
                         </div>
                         <Progress :value="used" :max="freeLimit" />
                     </div>
-                    <p v-else class="mt-4 text-sm text-text-secondary">
-                        You have unlimited AI customizations.
+
+                    <!-- Pro: unlimited + manage billing -->
+                    <template v-else>
+                        <p class="mt-4 text-sm text-text-secondary">
+                            You have unlimited AI customizations.
+                        </p>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            class="mt-4"
+                            :disabled="billingLoading"
+                            @click="manageBilling"
+                        >
+                            {{ billingLoading ? "Opening…" : "Manage billing" }}
+                        </Button>
+                    </template>
+
+                    <p v-if="billingError" class="mt-3 text-xs text-danger-500">
+                        {{ billingError }}
                     </p>
                 </div>
 
@@ -229,9 +269,14 @@ const used = computed(() => profile.value?.customizeCount ?? 0);
                         <Button
                             v-if="tier.id === 'PRO'"
                             class="mt-5 w-full"
-                            disabled
+                            :disabled="billingLoading"
+                            @click="upgrade"
                         >
-                            Upgrade (billing soon)
+                            {{
+                                billingLoading
+                                    ? "Redirecting…"
+                                    : "Upgrade to Pro"
+                            }}
                         </Button>
                         <div
                             v-else

@@ -6,6 +6,8 @@ import { useResizable } from "~/composables/useResizable";
 
 const emit = defineEmits<{ close: [] }>();
 
+const userStore = useUserStore();
+const isDesktop = useMediaQuery("(min-width: 768px)");
 const { width, dragging, startResize } = useResizable({
     min: 300,
     max: 400,
@@ -17,13 +19,13 @@ const { width, dragging, startResize } = useResizable({
 
 <template>
     <aside
-        class="relative hidden md:flex shrink-0 flex-col border-l border-border-default"
+        class="flex flex-col border-l border-border-default bg-bg-base max-md:absolute max-md:top-0 max-md:right-0 max-md:bottom-0 max-md:z-40 max-md:w-72 max-md:shadow-xl md:relative md:shrink-0"
         :class="dragging ? 'border-brand-100' : ''"
-        :style="{ width: `${width}px` }"
+        :style="{ width: isDesktop ? `${width}px` : undefined }"
     >
-        <!-- Resize handle -->
+        <!-- Resize handle (desktop only) -->
         <div
-            class="group absolute top-0 -left-1.5 z-10 flex h-full w-3 cursor-col-resize items-center justify-center select-none"
+            class="group absolute top-0 -left-1.5 z-10 hidden h-full w-3 cursor-col-resize items-center justify-center select-none md:flex"
             @pointerdown.prevent="startResize"
         >
             <div
@@ -49,14 +51,15 @@ const { width, dragging, startResize } = useResizable({
             </Button>
         </div>
 
-        <!-- Composed sections -->
         <div class="flex-1 space-y-6 overflow-y-auto p-5">
             <ImageExport />
             <ShareControls />
         </div>
 
-        <!-- Footer -->
-        <footer class="shrink-0 border-t border-border-default px-6 py-4">
+        <footer
+            v-if="!userStore.isPro"
+            class="shrink-0 border-t border-border-default px-6 py-4"
+        >
             <UpgradeCta />
         </footer>
     </aside>

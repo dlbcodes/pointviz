@@ -8,6 +8,10 @@ export default defineEventHandler(async (event) => {
 	const config = useRuntimeConfig();
 	const origin = getRequestURL(event).origin;
 
+	if (!config.stripePricePro) {
+		throw createError({ statusCode: 500, statusMessage: "Billing is not configured." });
+	}
+
 	const me = await prisma.user.findUnique({
 		where: { id: authUser.id },
 		select: { id: true, email: true, plan: true, stripeCustomerId: true },
@@ -23,13 +27,16 @@ export default defineEventHandler(async (event) => {
 			metadata: { userId: me.id },
 		});
 		customerId = customer.id;
-		await prisma.user.update({ where: { id: me.id }, data: { stripeCustomerId: customerId } });
+		await prisma.user.update({
+			where: { id: me.id },
+			data: { stripeCustomerId: customerId },
+		});
 	}
 
 	const session = await stripe.checkout.sessions.create({
 		mode: "subscription",
 		customer: customerId,
-		line_items: [{ price: process.env.STRIPE_PRICE_PRO!, quantity: 1 }],
+		line_items: [{ price: config.stripePricePro, quantity: 1 }],
 		success_url: `${origin}/account?upgraded=1`,
 		cancel_url: `${origin}/pricing`,
 		client_reference_id: me.id,

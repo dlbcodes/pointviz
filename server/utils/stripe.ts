@@ -3,9 +3,9 @@ import Stripe from "stripe";
 let _stripe: Stripe | null = null;
 export function useStripe(): Stripe {
 	if (!_stripe) {
-		const key = process.env.STRIPE_SECRET_KEY;
-		if (!key) throw new Error("STRIPE_SECRET_KEY not set");
-		_stripe = new Stripe(key, { apiVersion: "2026-08-26.dahlia" });
+		const config = useRuntimeConfig();
+		if (!config.stripeSecretKey) throw new Error("stripeSecretKey not set");
+		_stripe = new Stripe(config.stripeSecretKey);
 	}
 	return _stripe;
 }

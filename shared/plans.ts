@@ -2,7 +2,7 @@
 export const PLANS = {
 	FREE: {
 		id: "FREE",
-		customizeLimit: 40,
+		customizeLimit: 20,
 		windowMs: 1000 * 60 * 60 * 24 * 30, // 30 days
 	},
 	PRO: {

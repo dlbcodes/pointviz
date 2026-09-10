@@ -1,10 +1,28 @@
 <!-- app/components/UpgradeModal.vue -->
 <script setup lang="ts">
+import { ref } from "vue";
 import { Modal, ModalContent, ModalClose, Button, Badge } from "@dlbcodes/ui";
 import { PhCheck, PhSparkle } from "@phosphor-icons/vue";
 import { PRICING_TIERS } from "~/lib/pricing";
+import { billingApiService } from "~/services/BillingApiService";
 
 const open = defineModel<boolean>("open", { required: true });
+
+const upgrading = ref(false);
+const error = ref<string | null>(null);
+
+async function upgrade() {
+    if (upgrading.value) return;
+    upgrading.value = true;
+    error.value = null;
+    try {
+        const url = await billingApiService.createCheckout();
+        window.location.href = url; // redirect to Stripe checkout
+    } catch (e) {
+        error.value = (e as Error).message ?? "Couldn't start checkout.";
+        upgrading.value = false; // reset on error (success navigates away)
+    }
+}
 </script>
 
 <template>
@@ -12,7 +30,6 @@ const open = defineModel<boolean>("open", { required: true });
         <ModalContent class="p-8">
             <ModalClose />
 
-            <!-- Centered offer header -->
             <div class="mb-8 flex flex-col items-center text-center">
                 <div
                     class="mb-3 flex size-14 items-center justify-center rounded-full bg-linear-to-r from-gray-700 via-gray-900 to-black"
@@ -28,7 +45,6 @@ const open = defineModel<boolean>("open", { required: true });
                 </p>
             </div>
 
-            <!-- Both tiers side by side -->
             <div class="grid gap-4 sm:grid-cols-2">
                 <div
                     v-for="tier in PRICING_TIERS"
@@ -40,13 +56,11 @@ const open = defineModel<boolean>("open", { required: true });
                             : 'border-border-default'
                     "
                 >
-                    <!-- 'Current plan' marker on Free -->
                     <Badge
                         v-if="tier.id === 'FREE'"
                         class="absolute right-4 top-4"
+                        >Current</Badge
                     >
-                        Current
-                    </Badge>
 
                     <h3 class="text-sm font-semibold text-text-primary">
                         {{ tier.name }}
@@ -83,15 +97,29 @@ const open = defineModel<boolean>("open", { required: true });
                         </li>
                     </ul>
 
-                    <!-- CTA: Free is inert (you're on it), Pro is the action -->
-                    <Button v-if="tier.highlight" class="mt-5 w-full" disabled>
-                        Upgrade (billing soon)
+                    <!-- Pro: real checkout. Free: inert (current plan). -->
+                    <Button
+                        v-if="tier.highlight"
+                        class="mt-5 w-full"
+                        :disabled="upgrading"
+                        @click="upgrade"
+                    >
+                        {{ upgrading ? "Redirecting…" : "Upgrade to Pro" }}
                     </Button>
-                    <Button v-else variant="outline" disabled>
+                    <Button
+                        v-else
+                        variant="outline"
+                        class="mt-5 w-full"
+                        disabled
+                    >
                         Your current plan
                     </Button>
                 </div>
             </div>
+
+            <p v-if="error" class="mt-4 text-center text-xs text-danger-500">
+                {{ error }}
+            </p>
         </ModalContent>
     </Modal>
 </template>

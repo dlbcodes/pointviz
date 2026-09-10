@@ -36,6 +36,8 @@ export const useUserStore = defineStore("user", () => {
 		return updated;
 	};
 
+	const isPro = computed(() => profile.value?.plan === "PRO");
+
 	const clearAll = () => {
 		authUser.value = null;
 		profile.value = null;
@@ -49,5 +51,6 @@ export const useUserStore = defineStore("user", () => {
 		fetchProfile,
 		updateProfile,
 		clearAll,
+		isPro
 	};
 });
