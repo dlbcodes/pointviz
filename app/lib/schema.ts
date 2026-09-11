@@ -82,7 +82,7 @@ const PointSeriesSchema = z.strictObject({
 
 // ── Cartesian variant: category-vs-value charts ──
 const CartesianShape = z.strictObject({
-	type: z.enum(["bar", "line", "area", "pie", "donut"]),
+	type: z.enum(["bar", "line", "area", "pie", "donut", "dumbbell"]),
 	orientation: z.enum(["vertical", "horizontal"]).default("vertical"),
 	stack: z.boolean().default(false),
 	title: z.string().optional(),

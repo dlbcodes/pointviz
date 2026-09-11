@@ -6,6 +6,7 @@ import { compileScatter } from "./scatter";
 import { compilePie } from "./pie";
 import { compileCartesian } from "./cartesian";
 import type { CompileContext } from "./context";
+import { compileDumbbell } from "./compile-dumbbell";
 
 export function compileToECharts(
 	spec: ChartSpec,
@@ -23,7 +24,10 @@ export function compileToECharts(
 		brandmark: showBrandmark ? buildBrandmark() : undefined,
 	};
 
+	// Route to the correct compiler
 	if (spec.type === "scatter") return compileScatter(spec, ctx);
 	if (spec.type === "pie" || spec.type === "donut") return compilePie(spec, ctx);
-	return compileCartesian(spec, ctx);
+	if (spec.type === "dumbbell") return compileDumbbell(spec as any, ctx); // <-- Add this
+
+	return compileCartesian(spec as any, ctx);
 }

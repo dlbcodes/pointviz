@@ -11,7 +11,7 @@ const HEX = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
 
 // The model returns ONLY the fields that change — never the whole spec.
 const PatchSchema = z.object({
-	type: z.enum(["bar", "line", "area", "pie", "donut", "scatter"]).optional(),
+	type: z.enum(["bar", "line", "area", "pie", "donut", "scatter", "dumbbell"]).optional(),
 	orientation: z.enum(["vertical", "horizontal"]).optional(),
 	stack: z.boolean().optional(),
 	title: z.string().optional(),
@@ -115,6 +115,7 @@ Examples:
 Fields you may patch:
 - type: bar/line/area/pie/donut. Pie and donut show ONE series as slices (categories become slice labels, the first series' values become slice sizes). Use pie/donut for parts-of-a-whole (proportions, shares), not for comparisons over categories.
 - Scatter charts plot two numeric measures as (x, y) points, with xLabel/yLabel naming the axes. You can tweak an existing scatter's labels, colors, and styling.
+- dumbbell: compares exactly two points in time (e.g., "2019" vs "2026") across categories using connected dots. REQUIRES the chart to have exactly two series. If the user asks for this but the chart has >2 series, you must either ask them to specify which two to use, or the validation will fail and prompt you to fix it.
 - To convert an existing chart to scatter, the chart MUST have exactly two value-series across the same categories (two measures per category). Pair them: each category i becomes a point { x: series[0].values[i], y: series[1].values[i], label: categories[i] }. Set xLabel to series[0].name, yLabel to series[1].name. Return the full scatter spec (type: "scatter", series: [{ name, points: [...] }], xLabel, yLabel).
 - If the chart has only ONE series (one measure), you CANNOT make a scatter — there's no second axis. Explain that scatter needs two measures.
 - style.theme: ${THEME_NAMES.join(", ")}
@@ -148,25 +149,41 @@ Respond with ONLY the JSON patch object — no prose, no markdown fences, nothin
 `;
 
 // Shallow-merge, merging `style` one level deep so a color change doesn't erase a theme.
-function applyPatch(base, patch) {
+// Shallow-merge, merging `style` one level deep so a color change doesn't erase a theme.
+function applyPatch(base: any, patch: any) {
 	const merged = { ...base, ...patch };
 	if (patch.style) merged.style = { ...base.style, ...patch.style };
 
-	// Type change between scatter and cartesian = shape change → drop incompatible fields
 	const becomingScatter = patch.type === "scatter" && base.type !== "scatter";
 	const leavingScatter = patch.type && patch.type !== "scatter" && base.type === "scatter";
+
+	// --- NEW: Dumbbell transition logic ---
+	const becomingDumbbell = patch.type === "dumbbell" && base.type !== "dumbbell";
+	const leavingDumbbell = patch.type && patch.type !== "dumbbell" && base.type === "dumbbell";
 
 	if (becomingScatter) {
 		delete merged.categories;
 		delete merged.orientation;
 		delete merged.stack;
 		delete merged.goals;
-		// series must be the point-series the patch provided
 	}
 	if (leavingScatter) {
 		delete merged.xLabel;
 		delete merged.yLabel;
 	}
+
+	// --- NEW: Enforce dumbbell constraints ---
+	if (becomingDumbbell) {
+		merged.orientation = "horizontal"; // Dumbbells render best horizontally
+		delete merged.stack; // Dumbbells cannot be stacked
+	}
+	if (leavingDumbbell) {
+		// Optional: reset to default vertical if leaving dumbbell, or leave as user specified
+		if (!patch.orientation) {
+			merged.orientation = "vertical";
+		}
+	}
+
 	return merged;
 }
 

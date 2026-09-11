@@ -1,7 +1,7 @@
 // plugins/echarts.client.ts
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { BarChart, LineChart, PieChart, ScatterChart } from "echarts/charts";
+import { BarChart, LineChart, PieChart, ScatterChart, CustomChart } from "echarts/charts";
 import {
 	GridComponent,
 	TooltipComponent,
@@ -25,7 +25,8 @@ use([
 	TitleComponent,
 	DatasetComponent,
 	MarkLineComponent,
-	GraphicComponent
+	GraphicComponent,
+	CustomChart
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {
