@@ -44,7 +44,7 @@ import { FEATURED_EXAMPLES } from "~/lib/examples-showcase";
             <NuxtLink
                 v-for="example in FEATURED_EXAMPLES"
                 :key="example.id"
-                :to="`/app?template=${example.id}`"
+                :to="`/builder/${example.to}`"
                 class="group relative flex flex-col"
             >
                 <div

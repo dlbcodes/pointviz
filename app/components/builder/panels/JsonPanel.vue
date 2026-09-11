@@ -32,16 +32,17 @@ function format() {
     <Field :invalid="!!error">
         <div class="flex items-center justify-between">
             <FieldLabel>Data Source (JSON)</FieldLabel>
-            <Button
-                variant="ghost"
-                size="sm"
-                :disabled="!canFormat"
-                aria-label="Format JSON"
-                @click="format"
-            >
-                <PhBracketsCurly class="size-4" />
-                Format
-            </Button>
+            <Tooltip text="Format">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    :disabled="!canFormat"
+                    aria-label="Format JSON"
+                    @click="format"
+                >
+                    <PhBracketsCurly class="size-4" />
+                </Button>
+            </Tooltip>
         </div>
         <FieldContent>
             <Textarea

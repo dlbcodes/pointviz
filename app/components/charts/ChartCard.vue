@@ -97,10 +97,19 @@ async function confirmDelete() {
             <div class="shrink-0" @click.prevent.stop>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger
-                        class="flex size-7 items-center justify-center rounded-lg text-text-tertiary outline-none transition-all duration-200 hover:bg-bg-subtle hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100 data-[state=open]:opacity-100 data-[state=open]:bg-bg-subtle"
+                        v-slot="{ open }"
                         aria-label="Chart options"
                     >
-                        <PhDotsThreeVertical class="size-4" weight="bold" />
+                        <div
+                            class="flex size-7 items-center justify-center rounded-lg outline-none transition-all duration-200 hover:bg-bg-subtle focus-visible:opacity-100 group-hover:opacity-100"
+                            :class="
+                                open
+                                    ? 'bg-bg-subtle text-text-primary'
+                                    : 'hover:text-text-primary text-text-tertiary '
+                            "
+                        >
+                            <PhDotsThreeVertical class="size-4" weight="bold" />
+                        </div>
                     </DropdownTrigger>
 
                     <DropdownContent size="fit" class="p-1">

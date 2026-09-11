@@ -90,11 +90,13 @@ async function togglePublic(next: boolean) {
                             size="sm"
                             class="flex-1 font-mono text-xs"
                         />
-                        <CopyButton
-                            :text="publicUrl"
-                            :icon="PhLink"
-                            class="h-9"
-                        />
+                        <Tooltip text="Copy link" :delay="400">
+                            <CopyButton
+                                :text="publicUrl"
+                                :icon="PhLink"
+                                class="h-9"
+                            />
+                        </Tooltip>
                     </div>
                 </Field>
             </div>

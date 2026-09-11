@@ -90,7 +90,7 @@ const filteredExamples = computed(() =>
                 <NuxtLink
                     v-for="example in filteredExamples"
                     :key="example.id"
-                    :to="`/app?template=${example.id}`"
+                    :to="`/builder/${example.to}`"
                     class="group relative flex flex-col"
                 >
                     <div

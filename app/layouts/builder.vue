@@ -26,14 +26,16 @@ const exportPanelOpen = useState("export-panel-open", () => false);
             <div class="flex items-center gap-3">
                 <SaveIndicator />
 
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Fullscreen"
-                    @click="toggle"
-                >
-                    <PhCornersOut class="size-4" />
-                </Button>
+                <Tooltip text="View fullscreen">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Fullscreen"
+                        @click="toggle"
+                    >
+                        <PhCornersOut class="size-4" />
+                    </Button>
+                </Tooltip>
 
                 <Button
                     variant="ghost"
